@@ -13,7 +13,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_frontpage);
+        setContentView(R.layout.activity_register);
     }
 
     public void onRegisterBtnCLick (View view){

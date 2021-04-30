@@ -25,7 +25,7 @@ import pt.vow.R;
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
-    private pt.vow.ui.login.LoginActivity mActivity;
+    private LoginActivity mActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
