@@ -9,7 +9,9 @@ import android.util.Patterns;
 import pt.vow.data.LoginRepository;
 import pt.vow.data.Result;
 import pt.vow.data.model.LoggedInUser;
-import pt.vow.R;
+import com.example.myapplication.R;
+
+import java.util.concurrent.Executor;
 
 public class LoginViewModel extends ViewModel {
 
@@ -17,8 +19,11 @@ public class LoginViewModel extends ViewModel {
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
 
-    LoginViewModel(LoginRepository loginRepository) {
+    private final Executor executor;
+
+    LoginViewModel(LoginRepository loginRepository, Executor executor) {
         this.loginRepository = loginRepository;
+        this.executor = executor;
     }
 
     LiveData<LoginFormState> getLoginFormState() {
@@ -30,6 +35,21 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(String username, String password) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                Result<LoggedInUser> result = loginRepository.login(username, password);
+                if (result instanceof Result.Success) {
+                    LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
+                    loginResult.postValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
+                } else {
+                    loginResult.postValue(new LoginResult(R.string.login_failed));
+                }
+            }
+        });
+    }
+
+    public void login_old(String username, String password) {
         // can be launched in a separate asynchronous job
         Result<LoggedInUser> result = loginRepository.login(username, password);
 

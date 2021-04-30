@@ -8,7 +8,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import pt.vow.ui.frontPage.FrontPageActivity;
-import pt.vow.R;
+import com.example.myapplication.R;
 import pt.vow.ui.login.LoginActivity;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -19,7 +19,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_acc1);
+        setContentView(R.layout.activity_register);
         loginAct = this;
         frontPageAct = this;
         final Button loginBttn = findViewById(R.id.loginBttn);

@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import pt.vow.R;
+import com.example.myapplication.R;
 
 public class FrontPageActivity extends AppCompatActivity {
 
