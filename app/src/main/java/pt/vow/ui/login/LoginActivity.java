@@ -20,7 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import pt.vow.ui.LoginApp;
-import com.example.myapplication.R;
+import pt.vow.R;
 
 public class LoginActivity extends AppCompatActivity {
 

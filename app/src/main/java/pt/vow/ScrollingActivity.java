@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
 
-import com.example.myapplication.R;
+import pt.vow.R;
 
 public class ScrollingActivity extends AppCompatActivity {
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pt.vow.RegisterChoose">
+    tools:context="pt.vow.ui.register.RegisterChoose">
 
     <Button
         android:id="@+id/personBttn"

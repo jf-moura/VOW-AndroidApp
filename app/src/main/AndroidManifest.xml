@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.myapplication">
+    package="pt.vow">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -17,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VOW">
-        <activity android:name="pt.vow.RegisterChoose"></activity>
+        <activity android:name="pt.vow.ui.register.RegisterChoose"  android:label="Choose"></activity>
         <activity
             android:name="pt.vow.ScrollingActivity"
             android:label="@string/title_activity_scrolling"
@@ -26,14 +26,13 @@
             android:name="pt.vow.ui.login.LoginActivity"
             android:label="Login" />
         <activity
-            android:name="pt.vow.ui.frontPage.FrontPageActivity"
-            android:label="FrontPageActivity" />
-        <activity
             android:name="pt.vow.ui.register.RegisterActivity"
+            android:label="Register" />
+        <activity
+            android:name="pt.vow.ui.frontPage.FrontPageActivity"
             android:label="VOW">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

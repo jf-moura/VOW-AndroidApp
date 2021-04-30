@@ -1,44 +1,27 @@
 package pt.vow.ui.register;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import pt.vow.ui.frontPage.FrontPageActivity;
-import com.example.myapplication.R;
-import pt.vow.ui.login.LoginActivity;
+import pt.vow.R;
 
 public class RegisterActivity extends AppCompatActivity {
-
-    private RegisterActivity loginAct;
-    private RegisterActivity frontPageAct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
-        loginAct = this;
-        frontPageAct = this;
-        final Button loginBttn = findViewById(R.id.loginBttn);
-        final Button createAccBttn = findViewById(R.id.createAccBttn);
+        setContentView(R.layout.activity_frontpage);
+    }
 
-        loginBttn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(loginAct, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        createAccBttn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(frontPageAct, FrontPageActivity.class);
-                startActivity(intent);
-            }
-        });
+    public void onRegisterBtnCLick (View view){
+        TextView txtName = findViewById(R.id.txtName);
+        TextView txtUsername = findViewById(R.id.txtUsername);
+        TextView txtEmail = findViewById(R.id.txtEmail);
+        TextView txtPassword = findViewById(R.id.txtPassword);
+        TextView txtConfirmation = findViewById(R.id.txtConfirmation);
+        TextView txtDate = findViewById(R.id.txtDate);
     }
 }

@@ -9,7 +9,7 @@ import android.util.Patterns;
 import pt.vow.data.LoginRepository;
 import pt.vow.data.Result;
 import pt.vow.data.model.LoggedInUser;
-import com.example.myapplication.R;
+import pt.vow.R;
 
 import java.util.concurrent.Executor;
 

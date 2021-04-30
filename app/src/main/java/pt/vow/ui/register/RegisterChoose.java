@@ -1,10 +1,10 @@
-package pt.vow;
+package pt.vow.ui.register;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.example.myapplication.R;
+import pt.vow.R;
 
 public class RegisterChoose extends AppCompatActivity {
 
