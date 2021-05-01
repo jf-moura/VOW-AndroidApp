@@ -35,17 +35,23 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String text = parent.getItemAtPosition(position).toString();
             Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
+
+            EditText entName = findViewById(R.id.entityName);
+            EditText persName = findViewById(R.id.personName);
+            EditText entWebsite = findViewById(R.id.entitySite);
+            EditText dateBirth = findViewById(R.id.dateBirth);
             switch (position) {
                 case 0:
-                    EditText t = findViewById(R.id.editTextTextPersonName);
-
-                    t.setVisibility(view.VISIBLE);
-                    // Whatever you want to happen when the first item gets selected
+                    entName.setVisibility(view.VISIBLE);
+                    entWebsite.setVisibility(view.VISIBLE);
+                    dateBirth.setVisibility(view.GONE);
+                    persName.setVisibility(view.GONE);
                     break;
                 case 1:
-                    // Whatever you want to happen when the second item gets selected
-                    EditText t2 = findViewById(R.id.editTextTextPersonName2);
-                    t2.setVisibility(view.VISIBLE);
+                    persName.setVisibility(view.VISIBLE);
+                    entWebsite.setVisibility(view.GONE);
+                    dateBirth.setVisibility(view.VISIBLE);
+                    entName.setVisibility(view.GONE);
                     break;
             }
         }

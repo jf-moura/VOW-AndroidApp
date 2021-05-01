@@ -26,8 +26,9 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="80dp"
                 android:background="@android:drawable/btn_dropdown" />
+
             <EditText
-                android:id="@+id/editTextTextPersonName"
+                android:id="@+id/entityName"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
@@ -38,23 +39,23 @@
                 tools:visibility="visible" />
 
             <EditText
-                android:id="@+id/editTextTextPersonName2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
-                android:ems="10"
-                android:hint="username"
-                android:inputType="textPersonName"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <EditText
-                android:id="@+id/editTextTextPersonName3"
+                android:id="@+id/personName"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
                 android:ems="10"
                 android:hint="name"
+                android:inputType="textPersonName"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:ems="10"
+                android:hint="username"
                 android:inputType="textPersonName"
                 android:visibility="visible"
                 tools:visibility="visible" />
@@ -72,7 +73,7 @@
 
 
             <EditText
-                android:id="@+id/Entitypassword"
+                android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
@@ -83,7 +84,7 @@
                 tools:visibility="visible" />
 
             <EditText
-                android:id="@+id/entityConfirmation"
+                android:id="@+id/passwordConfirmation"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
@@ -94,7 +95,7 @@
                 tools:visibility="visible" />
 
             <EditText
-                android:id="@+id/entityPhone"
+                android:id="@+id/phoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -102,6 +103,28 @@
                 android:hint="phone number"
                 android:inputType="phone"
                 android:visibility="visible"
+                tools:visibility="visible" />
+
+            <EditText
+                android:id="@+id/entitySite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:ems="10"
+                android:hint="website"
+                android:inputType="textUri"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <EditText
+                android:id="@+id/dateBirth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:ems="10"
+                android:hint="date of birth"
+                android:inputType="date"
+                android:visibility="gone"
                 tools:visibility="visible" />
 
 
