@@ -127,6 +127,14 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
+            <Button
+                android:id="@+id/confirmBttn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Confirm"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
 
         </LinearLayout>
     </ScrollView>

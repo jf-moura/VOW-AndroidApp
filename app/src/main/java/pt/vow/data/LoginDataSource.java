@@ -24,7 +24,7 @@ public class LoginDataSource {
     public LoginDataSource() {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://vow-project-311114.ey.r.appspot.com/rest/login/")
+                .baseUrl("https://vow-project-311114.ey.r.appspot.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

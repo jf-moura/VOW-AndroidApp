@@ -26,10 +26,6 @@
             android:name="pt.vow.ui.login.LoginActivity"
             android:label="Login" />
         <activity
-            android:name="pt.vow.ui.register.RegisterActivity"
-            android:label="Register"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
             android:name="pt.vow.ui.frontPage.FrontPageActivity"
             android:label="FrontPage">
             <intent-filter>
