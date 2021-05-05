@@ -19,10 +19,6 @@
         android:theme="@style/Theme.VOW">
         <activity android:name="pt.vow.ui.register.RegisterChoose"  android:label="Choose"></activity>
         <activity
-            android:name="pt.vow.ScrollingActivity"
-            android:label="@string/title_activity_scrolling"
-            android:theme="@style/Theme.VOW.NoActionBar" />
-        <activity
             android:name="pt.vow.ui.login.LoginActivity"
             android:label="Login" />
         <activity
