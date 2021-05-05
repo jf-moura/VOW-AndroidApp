@@ -1,13 +1,9 @@
 package pt.vow.data;
 
-import android.util.Log;
-
-import okhttp3.ResponseBody;
 import pt.vow.data.model.LoggedInUser;
 import pt.vow.data.model.UserAuthenticated;
 import pt.vow.data.model.UserCredentials;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -19,7 +15,7 @@ import java.io.IOException;
  */
 public class LoginDataSource {
 
-    private UserService service;
+    private ApiLogin service;
 
     public LoginDataSource() {
 
@@ -28,7 +24,7 @@ public class LoginDataSource {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        this.service = retrofit.create(UserService.class);
+        this.service = retrofit.create(ApiLogin.class);
     }
 
     public Result<LoggedInUser> login(String username, String password) {

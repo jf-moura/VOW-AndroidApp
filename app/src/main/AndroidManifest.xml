@@ -17,13 +17,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VOW">
-        <activity android:name="pt.vow.ui.register.RegisterChoose"  android:label="Choose"></activity>
+        <activity
+            android:name="pt.vow.ui.register.RegisterChoose"
+            android:label="Register" />
         <activity
             android:name="pt.vow.ui.login.LoginActivity"
             android:label="Login" />
         <activity
             android:name="pt.vow.ui.frontPage.FrontPageActivity"
-            android:label="FrontPage">
+            android:label="VOW">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

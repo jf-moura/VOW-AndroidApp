@@ -81,8 +81,11 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
 
 
     private void userSignUpEntity() {
-        String email = editTextEmail.getText().toString().trim();
         String entityName = editTextEntName.getText().toString().trim();
+        String email = editTextEmail.getText().toString().trim();
+        String username = editTextUsername.getText().toString().trim();
+        String password = editTextPassword.getText().toString().trim();
+        String confirmation = editTextConfirmation.getText().toString().trim();
         String website = editTextEntWebsite.getText().toString().trim();
 
         if (entityName.isEmpty()) {
@@ -91,23 +94,15 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
             return;
         }
 
-        if (email.isEmpty()) {
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
-            return;
-        }
+        this.validateData(email, username, password, confirmation);
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError("Enter a valid email");
-            editTextEmail.requestFocus();
-            return;
-        }
         if (website.isEmpty()) {
             editTextEntWebsite.setError("Website is required");
             editTextEntWebsite.requestFocus();
             return;
         }
 
+        // TODO: verificar url
         if (!URLUtil.isValidUrl(website)) {
             editTextEntWebsite.setError("Website must be valid");
             editTextEntWebsite.requestFocus();
@@ -118,8 +113,8 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
 
 
     private void userSignUpPerson() {
-        String email = editTextEmail.getText().toString().trim();
         String persName = editTextPersName.getText().toString().trim();
+        String email = editTextEmail.getText().toString().trim();
         String username = editTextUsername.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String confirmation = editTextConfirmation.getText().toString().trim();
@@ -130,53 +125,13 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
             editTextPersName.requestFocus();
             return;
         }
-        if (email.isEmpty()) {
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
-            return;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError("Enter a valid email");
-            editTextEmail.requestFocus();
-            return;
-        }
-        if (username.isEmpty()) {
-            editTextUsername.setError("Error");
-            editTextUsername.requestFocus();
-            return;
-        }
-        if (password.isEmpty()) {
-            editTextPassword.setError("Error");
-            editTextPassword.requestFocus();
-            return;
-        }
 
-        //TODO ver como o resto do grupo
-        if (password.length() < 6) {
-            editTextPassword.setError("Password should be at least 6 character long");
-            editTextPassword.requestFocus();
-            return;
-        }
+        this.validateData(email, username, password, confirmation);
 
-        if (confirmation.isEmpty()) {
-            editTextConfirmation.setError("Error");
-            editTextConfirmation.requestFocus();
-            return;
-        }
-        if (!confirmation.equals(password)) {
-            editTextConfirmation.setError("Must be equal to password.");
-            editTextConfirmation.requestFocus();
-            return;
-        }
-        if (dateBirth.isEmpty()) {
-            editTextDateBirth.setError("Error");
-            editTextDateBirth.requestFocus();
-            return;
-        }
         Call<ResponseBody> call = CreateAccSource
                 .getInstance()
                 .getApi()
-                .createUser(persName, username, email, password, confirmation, dateBirth);
+                .createUser(persName, username, email, password, dateBirth, "PERSON");
 
 
         call.enqueue(new Callback<ResponseBody>() {
@@ -197,6 +152,50 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
 
             }
         });
+    }
+
+    private void validateData(String email, String username, String password, String confirmation) {
+        if (email.isEmpty()) {
+            editTextEmail.setError("Email is required");
+            editTextEmail.requestFocus();
+            return;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editTextEmail.setError("Enter a valid email");
+            editTextEmail.requestFocus();
+            return;
+        }
+
+        if (username.isEmpty()) {
+            editTextUsername.setError("Username is required");
+            editTextUsername.requestFocus();
+            return;
+        }
+
+        if (password.isEmpty()) {
+            editTextPassword.setError("Password is required");
+            editTextPassword.requestFocus();
+            return;
+        }
+
+        //TODO ver como o resto do grupo
+        if (password.length() < 6) {
+            editTextPassword.setError("Password should be at least 6 character long");
+            editTextPassword.requestFocus();
+            return;
+        }
+
+        if (confirmation.isEmpty()) {
+            editTextConfirmation.setError("Password verification is required");
+            editTextConfirmation.requestFocus();
+            return;
+        }
+
+        if (!confirmation.equals(password)) {
+            editTextConfirmation.setError("Must be equal to password.");
+            editTextConfirmation.requestFocus();
+            return;
+        }
     }
 
     @Override

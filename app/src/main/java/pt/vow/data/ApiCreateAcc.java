@@ -13,14 +13,13 @@ import retrofit2.http.POST;
 public interface ApiCreateAcc {
 
     @FormUrlEncoded
-    @POST("rest/create")
+    @POST("rest/register")
     Call<ResponseBody> createUser(
-
             @Field("name") String name,
             @Field("username") String username,
             @Field("email") String email,
             @Field("password") String password,
-            @Field("confirmation") String confirmation,
-            @Field("dateBirth") String dateBirth
+            @Field("dateBirth") String dateBirth,
+            @Field("role") String role
     );
 }
