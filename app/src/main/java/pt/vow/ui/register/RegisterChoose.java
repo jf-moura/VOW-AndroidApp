@@ -5,14 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -82,14 +84,9 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         String email = editTextEmail.getText().toString().trim();
         String entityName = editTextEntName.getText().toString().trim();
         String website = editTextEntWebsite.getText().toString().trim();
-        String persName = editTextPersName.getText().toString().trim();
-        String username = editTextUsername.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
-        String confirmation = editTextConfirmation.getText().toString().trim();
-        String dateBirth = editTextDateBirth.getText().toString().trim();
 
         if (entityName.isEmpty()) {
-            editTextEntName.setError("Error");
+            editTextEntName.setError("Entity's name is required");
             editTextEntName.requestFocus();
             return;
         }
@@ -106,12 +103,19 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
             return;
         }
         if (website.isEmpty()) {
-            editTextEntWebsite.setError("Error");
+            editTextEntWebsite.setError("Website is required");
+            editTextEntWebsite.requestFocus();
+            return;
+        }
+
+        if (!URLUtil.isValidUrl(website)) {
+            editTextEntWebsite.setError("Website must be valid");
             editTextEntWebsite.requestFocus();
             return;
         }
 
     }
+
 
     private void userSignUpPerson() {
         String email = editTextEmail.getText().toString().trim();
@@ -122,7 +126,7 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         String dateBirth = editTextDateBirth.getText().toString().trim();
 
         if (persName.isEmpty()) {
-            editTextPersName.setError("Error");
+            editTextPersName.setError("Name is required");
             editTextPersName.requestFocus();
             return;
         }
