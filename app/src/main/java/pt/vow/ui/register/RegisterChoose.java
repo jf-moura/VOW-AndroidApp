@@ -8,8 +8,10 @@ import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -26,7 +28,9 @@ import pt.vow.data.CreateAccSource;
 
 public class RegisterChoose extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
-    private EditText editTextEmail, editTextEntName, editTextPersName, editTextEntWebsite, editTextDateBirth, editTextPassword, editTextConfirmation, editTextUsername, editTextPhoneNumber;
+    private EditText editTextEmail, editTextEntName, editTextPersName, editTextEntWebsite, editTextPassword, editTextConfirmation, editTextUsername, editTextPhoneNumber;
+    private DatePicker editTextDateBirth;
+    private TextView textViewDateBirth;
     private boolean isEntity;
 
     @Override
@@ -44,6 +48,7 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         editTextPassword = findViewById(R.id.password);
         editTextConfirmation = findViewById(R.id.passwordConfirmation);
         editTextPhoneNumber = findViewById(R.id.phoneNumber);
+        textViewDateBirth = findViewById(R.id.textViewDateBirth);
 
         Spinner spinner = findViewById(R.id.spinner1);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -65,6 +70,7 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
                 editTextEntWebsite.setVisibility(view.VISIBLE);
                 editTextDateBirth.setVisibility(view.GONE);
                 editTextPersName.setVisibility(view.GONE);
+                textViewDateBirth.setVisibility(view.GONE);
                 isEntity = true;
                 findViewById(R.id.confirmBttn).setOnClickListener(this);
                 break;
@@ -74,6 +80,7 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
                 editTextEntWebsite.setVisibility(view.GONE);
                 editTextDateBirth.setVisibility(view.VISIBLE);
                 editTextEntName.setVisibility(view.GONE);
+                textViewDateBirth.setVisibility(view.VISIBLE);
                 isEntity = false;
                 findViewById(R.id.confirmBttn).setOnClickListener(this);
                 break;
@@ -127,8 +134,12 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         String username = editTextUsername.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String confirmation = editTextConfirmation.getText().toString().trim();
-        String dateBirth = editTextDateBirth.getText().toString().trim();
+
+
         String phoneNumber = editTextPhoneNumber.getText().toString().trim();
+
+        String dateBirth = new String().concat(String.valueOf(editTextDateBirth.getDayOfMonth())).concat("/")
+                .concat(String.valueOf(editTextDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(editTextDateBirth.getYear()));
 
         if (persName.isEmpty()) {
             editTextPersName.setError("Name is required");
