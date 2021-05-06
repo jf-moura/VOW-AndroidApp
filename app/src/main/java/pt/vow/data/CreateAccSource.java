@@ -8,7 +8,7 @@ public class CreateAccSource {
     private static CreateAccSource mInstance;
     private Retrofit retrofit;
     private CreateAccSource() {
-        Retrofit retrofit = new Retrofit.Builder()
+        retrofit = new Retrofit.Builder()
                 .baseUrl("https://vow-project-311114.ey.r.appspot.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

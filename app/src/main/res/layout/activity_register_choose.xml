@@ -25,10 +25,12 @@
 
             <Spinner
                 android:id="@+id/spinner1"
+                style="@style/Widget.AppCompat.Light.Spinner.DropDown.ActionBar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="80dp"
-                android:background="@android:drawable/btn_dropdown" />
+                android:background="@android:drawable/btn_dropdown"
+                android:popupBackground="#28D5D3" />
 
             <EditText
                 android:id="@+id/entityName"

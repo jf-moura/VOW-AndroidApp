@@ -2,6 +2,7 @@ package pt.vow.ui.register;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -32,12 +33,15 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
     private DatePicker editTextDateBirth;
     private TextView textViewDateBirth;
     private boolean isEntity;
+    private RegisterChoose extraInfoActP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_choose);
         isEntity = false;
+
+        extraInfoActP = this;
 
         editTextEmail = findViewById(R.id.emailAddress);
         editTextEntName = findViewById(R.id.entityName);
@@ -103,7 +107,7 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
             return;
         }
 
-        this.validateData(email, username, password, confirmation);
+        this.validateData(email, username, password, confirmation, phoneNumber);
 
         if (phoneNumber.isEmpty()) {
             editTextPhoneNumber.setError("Phone number is required");
@@ -147,12 +151,13 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
             return;
         }
 
-        this.validateData(email, username, password, confirmation);
+
+        this.validateData(email, username, password, confirmation, phoneNumber);
 
         this.createAcc(persName, username, email, password, phoneNumber, null, dateBirth, "PERSON");
     }
 
-    private void validateData(String email, String username, String password, String confirmation) {
+    private void validateData(String email, String username, String password, String confirmation, String phoneNumber) {
         if (username.isEmpty()) {
             editTextUsername.setError("Username is required");
             editTextUsername.requestFocus();
@@ -194,6 +199,12 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
             editTextConfirmation.requestFocus();
             return;
         }
+
+        if (!phoneNumber.isEmpty() && phoneNumber.length() != 9) {
+            editTextPassword.setError("Invalid number.");
+            editTextPassword.requestFocus();
+            return;
+        }
     }
 
     private void createAcc(String name, String username, String email, String password, String phoneNumber, String website, String dateBirth, String role) {
@@ -229,8 +240,12 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
             case R.id.confirmBttn:
                 if (isEntity)
                     userSignUpEntity();
-                else
+                else {
                     userSignUpPerson();
+                    //TODO corrigir erro com o retrofit e register
+                    Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoActivity.class);
+                    startActivity(intent);
+                }
                 break;
         }
     }
