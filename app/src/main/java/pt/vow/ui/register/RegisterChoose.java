@@ -26,7 +26,7 @@ import pt.vow.data.CreateAccSource;
 
 public class RegisterChoose extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
-    private EditText editTextEmail, editTextEntName, editTextPersName, editTextEntWebsite, editTextDateBirth, editTextPassword, editTextConfirmation, editTextUsername;
+    private EditText editTextEmail, editTextEntName, editTextPersName, editTextEntWebsite, editTextDateBirth, editTextPassword, editTextConfirmation, editTextUsername, editTextPhoneNumber;
     private boolean isEntity;
 
     @Override
@@ -43,6 +43,7 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         editTextDateBirth = findViewById(R.id.dateBirth);
         editTextPassword = findViewById(R.id.password);
         editTextConfirmation = findViewById(R.id.passwordConfirmation);
+        editTextPhoneNumber = findViewById(R.id.phoneNumber);
 
         Spinner spinner = findViewById(R.id.spinner1);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -87,6 +88,7 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         String password = editTextPassword.getText().toString().trim();
         String confirmation = editTextConfirmation.getText().toString().trim();
         String website = editTextEntWebsite.getText().toString().trim();
+        String phoneNumber = editTextPhoneNumber.getText().toString().trim();
 
         if (entityName.isEmpty()) {
             editTextEntName.setError("Entity's name is required");
@@ -95,6 +97,12 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         }
 
         this.validateData(email, username, password, confirmation);
+
+        if (phoneNumber.isEmpty()) {
+            editTextPhoneNumber.setError("Phone number is required");
+            editTextPhoneNumber.requestFocus();
+            return;
+        }
 
         if (website.isEmpty()) {
             editTextEntWebsite.setError("Website is required");
@@ -109,6 +117,7 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
             return;
         }
 
+        this.createAcc(entityName, username, email, password, phoneNumber, website, null, "ENTITY");
     }
 
 
@@ -119,6 +128,7 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         String password = editTextPassword.getText().toString().trim();
         String confirmation = editTextConfirmation.getText().toString().trim();
         String dateBirth = editTextDateBirth.getText().toString().trim();
+        String phoneNumber = editTextPhoneNumber.getText().toString().trim();
 
         if (persName.isEmpty()) {
             editTextPersName.setError("Name is required");
@@ -128,33 +138,16 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
 
         this.validateData(email, username, password, confirmation);
 
-        Call<ResponseBody> call = CreateAccSource
-                .getInstance()
-                .getApi()
-                .createUser(persName, username, email, password, dateBirth, "PERSON");
-
-
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String s = response.body().string();
-                    Toast.makeText(RegisterChoose.this, s, Toast.LENGTH_LONG).show();
-                } catch (IOException e) {
-                    Toast.makeText(RegisterChoose.this, "User already exist", Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(RegisterChoose.this, t.getMessage(), Toast.LENGTH_LONG).show();
-
-            }
-        });
+        this.createAcc(persName, username, email, password, phoneNumber, null, dateBirth, "PERSON");
     }
 
     private void validateData(String email, String username, String password, String confirmation) {
+        if (username.isEmpty()) {
+            editTextUsername.setError("Username is required");
+            editTextUsername.requestFocus();
+            return;
+        }
+
         if (email.isEmpty()) {
             editTextEmail.setError("Email is required");
             editTextEmail.requestFocus();
@@ -163,12 +156,6 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Enter a valid email");
             editTextEmail.requestFocus();
-            return;
-        }
-
-        if (username.isEmpty()) {
-            editTextUsername.setError("Username is required");
-            editTextUsername.requestFocus();
             return;
         }
 
@@ -196,6 +183,33 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
             editTextConfirmation.requestFocus();
             return;
         }
+    }
+
+    private void createAcc(String name, String username, String email, String password, String phoneNumber, String website, String dateBirth, String role) {
+        Call<ResponseBody> call = CreateAccSource
+                .getInstance()
+                .getApi()
+                .createUser(name, username, email, password, phoneNumber, phoneNumber, dateBirth, role);
+
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String s = response.body().string();
+                    Toast.makeText(RegisterChoose.this, s, Toast.LENGTH_LONG).show();
+                } catch (IOException e) {
+                    Toast.makeText(RegisterChoose.this, "User already exist", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(RegisterChoose.this, t.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 
     @Override

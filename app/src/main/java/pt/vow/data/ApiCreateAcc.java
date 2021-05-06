@@ -19,6 +19,8 @@ public interface ApiCreateAcc {
             @Field("username") String username,
             @Field("email") String email,
             @Field("password") String password,
+            @Field("phoneNumber") String phoneNumber,
+            @Field("website") String website,
             @Field("dateBirth") String dateBirth,
             @Field("role") String role
     );
