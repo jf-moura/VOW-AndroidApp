@@ -22,10 +22,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VOW">
 
-        <activity
+        <!--<activity
             android:name=".ui.extraInfo.ExtraInfoActivity"
             android:label="@string/title_activity_extra_info">
-        </activity>
+        </activity>-->
         <activity
             android:name=".ui.register.RegisterChoose"
             android:label="Register" />
@@ -34,7 +34,10 @@
             android:label="Login" />
         <activity
             android:name=".ui.frontPage.FrontPageActivity"
-            android:label="VOW">
+            android:label="VOW"/>
+        <activity
+            android:name=".ui.extraInfo.ExtraInfoActivity"
+            android:label="@string/title_activity_extra_info">>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
