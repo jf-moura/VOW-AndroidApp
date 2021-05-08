@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executor;
 
-import pt.vow.data.LoginDataSource;
-import pt.vow.data.LoginRepository;
+import pt.vow.data.login.LoginDataSource;
+import pt.vow.data.login.LoginRepository;
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

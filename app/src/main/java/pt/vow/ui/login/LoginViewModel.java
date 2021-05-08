@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import android.util.Patterns;
 
-import pt.vow.data.LoginRepository;
+import pt.vow.data.login.LoginRepository;
 import pt.vow.data.Result;
 import pt.vow.data.model.LoggedInUser;
 import pt.vow.R;
@@ -85,6 +85,6 @@ public class LoginViewModel extends ViewModel {
 
     // A placeholder password validation check
     private boolean isPasswordValid(String password) {
-        return password != null && password.trim().length() > 5;
+        return password != null && password.trim().length() > 4;
     }
 }

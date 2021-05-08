@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import pt.vow.R;
 import pt.vow.ui.login.LoginActivity;
+import pt.vow.ui.register.RegisterActivity;
 
 public class FrontPageActivity extends AppCompatActivity {
 
@@ -35,7 +36,7 @@ public class FrontPageActivity extends AppCompatActivity {
         createAccBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(registerChooseAct, pt.vow.ui.register.RegisterChoose.class);
+                Intent intent = new Intent(registerChooseAct, RegisterActivity.class);
                 startActivity(intent);
             }
         });

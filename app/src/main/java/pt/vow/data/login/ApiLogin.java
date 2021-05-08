@@ -1,4 +1,4 @@
-package pt.vow.data;
+package pt.vow.data.login;
 
 import pt.vow.data.model.UserAuthenticated;
 import pt.vow.data.model.UserCredentials;

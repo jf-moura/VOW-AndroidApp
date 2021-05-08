@@ -1,5 +1,6 @@
-package pt.vow.data;
+package pt.vow.data.login;
 
+import pt.vow.data.Result;
 import pt.vow.data.model.LoggedInUser;
 
 /**

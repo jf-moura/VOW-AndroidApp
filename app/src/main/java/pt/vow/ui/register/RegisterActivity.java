@@ -16,24 +16,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import pt.vow.R;
-import pt.vow.data.CreateAccSource;
+import pt.vow.data.register.CreateAccSource;
 
 
-public class RegisterChoose extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private EditText editTextEmail, editTextEntName, editTextPersName, editTextEntWebsite, editTextPassword, editTextConfirmation, editTextUsername, editTextPhoneNumber;
     private DatePicker editTextDateBirth;
     private TextView textViewDateBirth;
     private boolean isEntity, isValid;
-    private RegisterChoose extraInfoActP;
+    private RegisterActivity extraInfoActP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,16 +244,16 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String s = response.body().string();
-                    Toast.makeText(RegisterChoose.this, s, Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, s, Toast.LENGTH_LONG).show();
                 } catch (IOException e) {
-                    Toast.makeText(RegisterChoose.this, "User already exist", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, "User already exist", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(RegisterChoose.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
 
             }
         });
