@@ -32,7 +32,7 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
     private EditText editTextEmail, editTextEntName, editTextPersName, editTextEntWebsite, editTextPassword, editTextConfirmation, editTextUsername, editTextPhoneNumber;
     private DatePicker editTextDateBirth;
     private TextView textViewDateBirth;
-    private boolean isEntity;
+    private boolean isEntity, isValid;
     private RegisterChoose extraInfoActP;
 
     @Override
@@ -40,7 +40,7 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_choose);
         isEntity = false;
-
+        isValid = true;
         extraInfoActP = this;
 
         editTextEmail = findViewById(R.id.emailAddress);
@@ -104,29 +104,37 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         if (entityName.isEmpty()) {
             editTextEntName.setError("Entity's name is required");
             editTextEntName.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
 
         this.validateData(email, username, password, confirmation, phoneNumber);
 
         if (phoneNumber.isEmpty()) {
             editTextPhoneNumber.setError("Phone number is required");
             editTextPhoneNumber.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
 
         if (website.isEmpty()) {
             editTextEntWebsite.setError("Website is required");
             editTextEntWebsite.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
 
         // TODO: verificar url
         if (!URLUtil.isValidUrl(website)) {
             editTextEntWebsite.setError("Website must be valid");
             editTextEntWebsite.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
 
         this.createAcc(entityName, username, email, password, phoneNumber, website, null, "ENTITY");
     }
@@ -148,8 +156,10 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         if (persName.isEmpty()) {
             editTextPersName.setError("Name is required");
             editTextPersName.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
 
 
         this.validateData(email, username, password, confirmation, phoneNumber);
@@ -161,50 +171,67 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
         if (username.isEmpty()) {
             editTextUsername.setError("Username is required");
             editTextUsername.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
 
         if (email.isEmpty()) {
             editTextEmail.setError("Email is required");
             editTextEmail.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
+
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Enter a valid email");
             editTextEmail.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
 
         if (password.isEmpty()) {
             editTextPassword.setError("Password is required");
             editTextPassword.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
 
         //TODO ver como o resto do grupo
         if (password.length() < 6) {
             editTextPassword.setError("Password should be at least 6 character long");
             editTextPassword.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
 
         if (confirmation.isEmpty()) {
             editTextConfirmation.setError("Password verification is required");
             editTextConfirmation.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
 
         if (!confirmation.equals(password)) {
             editTextConfirmation.setError("Must be equal to password.");
             editTextConfirmation.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
 
         if (!phoneNumber.isEmpty() && phoneNumber.length() != 9) {
             editTextPassword.setError("Invalid number.");
             editTextPassword.requestFocus();
+            isValid = false;
             return;
-        }
+        } else
+            isValid = true;
     }
 
     private void createAcc(String name, String username, String email, String password, String phoneNumber, String website, String dateBirth, String role) {
@@ -238,13 +265,19 @@ public class RegisterChoose extends AppCompatActivity implements AdapterView.OnI
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.confirmBttn:
-                if (isEntity)
+                if (isEntity) {
                     userSignUpEntity();
-                else {
+                    if (isValid) {
+                        Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoEntityActivity.class);
+                        startActivity(intent);
+                    }
+                } else {
                     userSignUpPerson();
                     //TODO corrigir erro com o retrofit e register
-                    Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoActivity.class);
-                    startActivity(intent);
+                    if (isValid) {
+                        Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoActivity.class);
+                        startActivity(intent);
+                    }
                 }
                 break;
         }

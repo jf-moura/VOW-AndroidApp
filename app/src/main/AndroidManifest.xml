@@ -20,12 +20,16 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".ui.LoginApp"
         android:theme="@style/Theme.VOW">
 
-        <!--<activity
+        <activity
             android:name=".ui.extraInfo.ExtraInfoActivity"
-            android:label="@string/title_activity_extra_info">
-        </activity>-->
+            android:label="Register"/>
+        <activity
+            android:name=".ui.extraInfo.ExtraInfoEntityActivity"
+            android:label="Register"/>
+
         <activity
             android:name=".ui.register.RegisterChoose"
             android:label="Register" />
@@ -34,10 +38,8 @@
             android:label="Login" />
         <activity
             android:name=".ui.frontPage.FrontPageActivity"
-            android:label="VOW"/>
-        <activity
-            android:name=".ui.extraInfo.ExtraInfoActivity"
-            android:label="@string/title_activity_extra_info">>
+            android:label="VOW">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
