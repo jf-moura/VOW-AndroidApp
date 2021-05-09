@@ -1,6 +1,7 @@
 package pt.vow.data.model;
 
 public class RegisteredUser {
+
     private String displayName;
 
     public RegisteredUser(String displayName) {

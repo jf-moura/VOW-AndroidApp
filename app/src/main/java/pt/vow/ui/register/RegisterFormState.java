@@ -17,12 +17,10 @@ public class RegisterFormState {
     private Integer phoneNumberError;
     @Nullable
     private Integer websiteError;
-    @Nullable
-    private Integer dateBirthError;
 
     private boolean isDataValid;
 
-    RegisterFormState(@Nullable Integer nameError, @Nullable Integer usernameError, @Nullable Integer emailError, @Nullable Integer passwordError, @Nullable Integer passwordConfirmationError, @Nullable Integer phoneNumberError, @Nullable Integer websiteError, @Nullable Integer dateBirthError) {
+    RegisterFormState(@Nullable Integer nameError, @Nullable Integer usernameError, @Nullable Integer emailError, @Nullable Integer passwordError, @Nullable Integer passwordConfirmationError, @Nullable Integer phoneNumberError, @Nullable Integer websiteError) {
         this.nameError = nameError;
         this.usernameError = usernameError;
         this.emailError = emailError;
@@ -30,7 +28,6 @@ public class RegisterFormState {
         this.passwordConfirmationError = passwordConfirmationError;
         this.phoneNumberError = phoneNumberError;
         this.websiteError = websiteError;
-        this.dateBirthError = dateBirthError;
         this.isDataValid = false;
     }
 
@@ -42,7 +39,6 @@ public class RegisterFormState {
         this.passwordConfirmationError = null;
         this.phoneNumberError = null;
         this.websiteError = null;
-        this.dateBirthError = null;
         this.isDataValid = isDataValid;
     }
 
@@ -78,9 +74,6 @@ public class RegisterFormState {
     Integer getWebsiteError() {
         return websiteError;
     }
-
-    @Nullable
-    Integer getDateBirthError() { return dateBirthError; }
 
     boolean isDataValid() {
         return isDataValid;

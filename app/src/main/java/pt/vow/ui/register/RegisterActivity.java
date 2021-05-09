@@ -11,11 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,24 +23,25 @@ import android.widget.Toast;
 
 import pt.vow.R;
 import pt.vow.ui.LoginApp;
-import pt.vow.ui.RegisterApp;
+import pt.vow.ui.extraInfo.ExtraInfoActivity;
+import pt.vow.ui.extraInfo.ExtraInfoEntityActivity;
 
 public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private EditText editTextEmail, editTextName, editTextEntWebsite, editTextPassword, editTextConfirmation, editTextUsername, editTextPhoneNumber;
     private DatePicker datePickerDateBirth;
     private TextView textViewDateBirth;
-    private boolean isEntity, isValid;
+    private boolean isEntity;
     private RegisterActivity extraInfoActP;
     private RegisterViewModel registerViewModel;
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_choose);
 
-        isEntity = false;
-        isValid = true;
+        isEntity = true;
         extraInfoActP = this;
 
         editTextEmail = findViewById(R.id.emailAddress);
@@ -77,7 +74,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                     return;
                 }
                 confirmButton.setEnabled(registerFormState.isDataValid());
-                if (registerFormState.getPasswordError() != null) {
+                if (registerFormState.getNameError() != null) {
                     editTextName.setError(getString(registerFormState.getNameError()));
                 }
                 if (registerFormState.getUsernameError() != null) {
@@ -117,10 +114,10 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                     registerUserSuccess(registerResult.getSuccess());
                     setResult(Activity.RESULT_OK);
                     if (isEntity) {
-                        Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoEntityActivity.class);
+                        Intent intent = new Intent(extraInfoActP, ExtraInfoEntityActivity.class);
                         startActivity(intent);
                     } else {
-                        Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoActivity.class);
+                        Intent intent = new Intent(extraInfoActP, ExtraInfoActivity.class);
                         startActivity(intent);
 
                     }
@@ -144,17 +141,41 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
             @Override
             public void afterTextChanged(Editable s) {
-                registerViewModel.registerDataChanged(editTextUsername.getText().toString(),
-                        editTextPassword.getText().toString(), editTextName.getText().toString(),
-                        editTextEmail.getText().toString(), editTextConfirmation.getText().toString(),
-                        editTextPhoneNumber.getText().toString(), editTextEntWebsite.getText().toString());
+                if (isEntity)
+                    registerViewModel.registerDataChangedEntity(editTextName.getText().toString(),
+                            editTextUsername.getText().toString(), editTextEmail.getText().toString(),
+                            editTextPassword.getText().toString(), editTextConfirmation.getText().toString(),
+                            editTextPhoneNumber.getText().toString(), editTextEntWebsite.getText().toString());
+                else {
+                    registerViewModel.registerDataChangedPerson(editTextName.getText().toString(),
+                            editTextUsername.getText().toString(), editTextEmail.getText().toString(),
+                            editTextPassword.getText().toString(), editTextConfirmation.getText().toString(), date);
+                }
             }
         };
 
+
+        editTextName.addTextChangedListener(afterTextChangedListener);
+        editTextUsername.addTextChangedListener(afterTextChangedListener);
+        editTextEmail.addTextChangedListener(afterTextChangedListener);
+        editTextPassword.addTextChangedListener(afterTextChangedListener);
+        editTextConfirmation.addTextChangedListener(afterTextChangedListener);
+        editTextPhoneNumber.addTextChangedListener(afterTextChangedListener);
+        editTextEntWebsite.addTextChangedListener(afterTextChangedListener);
+
+
+        datePickerDateBirth.init( datePickerDateBirth.getYear(), datePickerDateBirth.getMonth(), datePickerDateBirth.getDayOfMonth(),
+                new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker view, int year, int month, int dayOfMonth) {
+                date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
+                        .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
+                Toast.makeText(view.getContext(), "Year=" + year + " Month=" + month + " Day=" + dayOfMonth, Toast.LENGTH_LONG).show();
+            }
+        });
+
         //TODO : é preciso fazer tambem para o register?
-        /*usernameEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        /*passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -169,17 +190,14 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isEntity) {
+                if (isEntity)
                     registerViewModel.registerEntity(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
                             editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
                             editTextEntWebsite.getText().toString());
-                    Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoEntityActivity.class);
-                    startActivity(intent);
-                } else {
+                else
                     registerViewModel.registerPerson(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
                             editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
-                            datePickerDateBirth.toString());
-                }
+                            date);
 
             }
         });

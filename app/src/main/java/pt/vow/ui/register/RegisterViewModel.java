@@ -80,21 +80,38 @@ public class RegisterViewModel extends ViewModel {
         }
     }*/
 
-    public void registerDataChanged(String name, String username, String email, String password, String confirmPassword, String phoneNumber, String website) {
+    public void registerDataChangedEntity(String name, String username, String email, String password, String confirmPassword, String phoneNumber, String website) {
         if (!isNameValid(name))
-            registerFormState.setValue(new RegisterFormState(R.string.invalid_name, null, null, null, null, null, null, null));
+            registerFormState.setValue(new RegisterFormState(R.string.invalid_name, null, null, null, null, null, null));
         else if (!isUserNameValid(username))
-            registerFormState.setValue(new RegisterFormState(null, R.string.invalid_username, null, null, null, null, null, null));
+            registerFormState.setValue(new RegisterFormState(null, R.string.invalid_username, null, null, null, null, null));
         else if (!isEmailValid(email))
-            registerFormState.setValue(new RegisterFormState(null, null, R.string.invalid_email, null, null, null, null, null));
+            registerFormState.setValue(new RegisterFormState(null, null, R.string.invalid_email, null, null, null, null));
         else if (!isPasswordValid(password))
-            registerFormState.setValue(new RegisterFormState(null, null, null, R.string.invalid_password, null, null, null, null));
+            registerFormState.setValue(new RegisterFormState(null, null, null, R.string.invalid_password, null, null, null));
         else if (!isConfirmPasswordValid(password, confirmPassword))
-            registerFormState.setValue(new RegisterFormState(null, null, null, null, R.string.invalid_password_confirmation, null, null, null));
+            registerFormState.setValue(new RegisterFormState(null, null, null, null, R.string.invalid_password_confirmation, null, null));
         else if (!isPhoneNumberValid(phoneNumber))
-            registerFormState.setValue(new RegisterFormState(null, null, null, null, null, R.string.invalid_phone_number, null, null));
+            registerFormState.setValue(new RegisterFormState(null, null, null, null, null, R.string.invalid_phone_number, null));
         else if (!isWebsiteValid(website))
-            registerFormState.setValue(new RegisterFormState(null, null, null, null, null, null, R.string.invalid_website, null));
+            registerFormState.setValue(new RegisterFormState(null, null, null, null, null, null, R.string.invalid_website));
+        else
+            registerFormState.setValue(new RegisterFormState(true));
+    }
+
+    public void registerDataChangedPerson(String name, String username, String email, String password, String confirmPassword, String phoneNumber) {
+        if (!isNameValid(name))
+            registerFormState.setValue(new RegisterFormState(R.string.invalid_name, null, null, null, null, null, null));
+        else if (!isUserNameValid(username))
+            registerFormState.setValue(new RegisterFormState(null, R.string.invalid_username, null, null, null, null, null));
+        else if (!isEmailValid(email))
+            registerFormState.setValue(new RegisterFormState(null, null, R.string.invalid_email, null, null, null, null));
+        else if (!isPasswordValid(password))
+            registerFormState.setValue(new RegisterFormState(null, null, null, R.string.invalid_password, null, null, null));
+        else if (!isConfirmPasswordValid(password, confirmPassword))
+            registerFormState.setValue(new RegisterFormState(null, null, null, null, R.string.invalid_password_confirmation, null, null));
+        else if (!isPhoneNumberValidPerson(phoneNumber))
+            registerFormState.setValue(new RegisterFormState(null, null, null, null, null, R.string.invalid_phone_number, null));
         else
             registerFormState.setValue(new RegisterFormState(true));
     }
@@ -127,12 +144,18 @@ public class RegisterViewModel extends ViewModel {
 
     // A placeholder password confirmation validation check
     private boolean isConfirmPasswordValid(String password, String confirmPassword) {
-        return confirmPassword == password;
+        return confirmPassword.equals(password);
     }
 
     // A placeholder phone number validation check
     private boolean isPhoneNumberValid(String phoneNumber) {
-        return phoneNumber != null && phoneNumber.trim().length() == 9 && phoneNumber.toCharArray()[0] == 9;
+        return phoneNumber != null && phoneNumber.trim().length() == 9;
+    }
+
+    private boolean isPhoneNumberValidPerson(String phoneNumber) {
+        if (phoneNumber != null)
+            return phoneNumber.trim().length() == 9;
+        return true;
     }
 
     // A placeholder website check
