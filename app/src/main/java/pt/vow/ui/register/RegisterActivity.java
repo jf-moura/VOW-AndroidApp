@@ -22,7 +22,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import pt.vow.R;
-import pt.vow.data.register.CreateAccSource;
 
 
 public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -134,7 +133,6 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         } else
             isValid = true;
 
-        this.createAcc(entityName, username, email, password, phoneNumber, website, null, "ENTITY");
     }
 
 
@@ -162,7 +160,6 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
         this.validateData(email, username, password, confirmation, phoneNumber);
 
-        this.createAcc(persName, username, email, password, phoneNumber, null, dateBirth, "PERSON");
     }
 
     private void validateData(String email, String username, String password, String confirmation, String phoneNumber) {
@@ -230,33 +227,6 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             return;
         } else
             isValid = true;
-    }
-
-    private void createAcc(String name, String username, String email, String password, String phoneNumber, String website, String dateBirth, String role) {
-        Call<ResponseBody> call = CreateAccSource
-                .getInstance()
-                .getApi()
-                .createUser(name, username, email, password, phoneNumber, phoneNumber, dateBirth, role);
-
-
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String s = response.body().string();
-                    Toast.makeText(RegisterActivity.this, s, Toast.LENGTH_LONG).show();
-                } catch (IOException e) {
-                    Toast.makeText(RegisterActivity.this, "User already exist", Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-
-            }
-        });
     }
 
     @Override

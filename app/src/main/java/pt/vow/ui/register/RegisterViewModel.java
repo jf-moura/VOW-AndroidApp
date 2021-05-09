@@ -36,11 +36,11 @@ public class RegisterViewModel extends ViewModel {
         return registerResult;
     }
 
-    public void register(String name, String username, String email, String password, String phoneNumber, String website) {
+    public void register(String name, String username, String email, String password, String phoneNumber, String website, String dateBirth, String role) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredUser> result = registerRepository.register(name, username, email, password, phoneNumber, website);
+                Result<RegisteredUser> result = registerRepository.register(name, username, email, password, phoneNumber, website, dateBirth, role);
                 if (result instanceof Result.Success) {
                     RegisteredUser data = ((Result.Success<RegisteredUser>) result).getData();
                     registerResult.postValue(new RegisterResult(new RegisteredUserView(data.getDisplayName())));

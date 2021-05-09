@@ -1,6 +1,6 @@
 package pt.vow.ui.register;
 
-public class RegisteredUserView {
+class RegisteredUserView {
     private String displayName;
     //... other data fields that may be accessible to the UI
 
