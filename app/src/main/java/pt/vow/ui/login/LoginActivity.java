@@ -69,9 +69,9 @@ public class LoginActivity extends AppCompatActivity {
                 if (loginResult.getSuccess() != null) {
                     updateUiWithUser(loginResult.getSuccess());
                     setResult(Activity.RESULT_OK);
+                    //TODO : iniciar nova atividade
                     finish();
                 }
-
 
                 //Complete and destroy login activity once successful
                 //finish();

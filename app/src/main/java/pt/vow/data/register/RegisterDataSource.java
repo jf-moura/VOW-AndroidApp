@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredUser;
-import pt.vow.data.model.UserRegistration;
+import pt.vow.data.model.UserRegistrationEntity;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -23,13 +23,28 @@ public class RegisterDataSource {
         this.service = retrofit.create(ApiCreateAcc.class);
     }
 
-    public Result<RegisteredUser> register(String name, String username, String email, String password, String phoneNumber, String website, String dateBirth, String role) {
+    public Result<RegisteredUser> registerEntity(String name, String username, String email, String password, String phoneNumber, String website) {
 
-        Call<UserRegistration> userRegistrationCall = service.createUser(new UserRegistration(name, username, email, password, phoneNumber, website, dateBirth, role));
+        Call<UserRegistrationEntity> userRegistrationCall = service.createUserEntity(new UserRegistrationEntity(name, username, email, password, phoneNumber, website));
         try {
-            Response<UserRegistration> response = userRegistrationCall.execute();
+            Response<UserRegistrationEntity> response = userRegistrationCall.execute();
             if (response.isSuccessful()) {
-                UserRegistration ur = response.body();
+                UserRegistrationEntity ur = response.body();
+                return new Result.Success<>(new RegisteredUser(ur.getUsername()));
+            }
+            return new Result.Error(new Exception(response.errorBody().toString()));
+        } catch (IOException e) {
+            return new Result.Error(new IOException("Error registering", e));
+        }
+    }
+
+    public Result<RegisteredUser> registerPerson(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
+
+        Call<UserRegistrationEntity> userRegistrationCall = service.createUserPerson(new UserRegistrationEntity(name, username, email, password, phoneNumber,dateBirth));
+        try {
+            Response<UserRegistrationEntity> response = userRegistrationCall.execute();
+            if (response.isSuccessful()) {
+                UserRegistrationEntity ur = response.body();
                 return new Result.Success<>(new RegisteredUser(ur.getUsername()));
             }
             return new Result.Error(new Exception(response.errorBody().toString()));

@@ -20,7 +20,6 @@ public class LoginDataSource {
     private ApiLogin service;
 
     public LoginDataSource() {
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://vow-project-311114.ey.r.appspot.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -30,7 +29,6 @@ public class LoginDataSource {
     }
 
     public Result<LoggedInUser> login(String username, String password) {
-
 
         Call<UserAuthenticated> userAuthenticationCall = service.authenticateUser(new UserCredentials(username, password));
         try {

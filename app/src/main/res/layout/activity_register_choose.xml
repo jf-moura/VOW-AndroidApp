@@ -32,25 +32,14 @@
                 android:background="@android:drawable/btn_dropdown"/>
 
             <EditText
-                android:id="@+id/entityName"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
-                android:ems="10"
-                android:hint="entity name"
-                android:inputType="textPersonName"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <EditText
-                android:id="@+id/personName"
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
                 android:ems="10"
                 android:hint="name"
                 android:inputType="textPersonName"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:visibility="visible" />
 
             <EditText

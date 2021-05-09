@@ -16,7 +16,6 @@ public class RegisterResult {
         this.success = success;
     }
 
-
     @Nullable
     RegisteredUserView getSuccess() {
         return success;

@@ -1,55 +1,63 @@
 package pt.vow.ui.register;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import pt.vow.R;
+import pt.vow.ui.LoginApp;
+import pt.vow.ui.RegisterApp;
 
+public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
-
-    private EditText editTextEmail, editTextEntName, editTextPersName, editTextEntWebsite, editTextPassword, editTextConfirmation, editTextUsername, editTextPhoneNumber;
-    private DatePicker editTextDateBirth;
+    private EditText editTextEmail, editTextName, editTextEntWebsite, editTextPassword, editTextConfirmation, editTextUsername, editTextPhoneNumber;
+    private DatePicker datePickerDateBirth;
     private TextView textViewDateBirth;
     private boolean isEntity, isValid;
     private RegisterActivity extraInfoActP;
+    private RegisterViewModel registerViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_choose);
+
         isEntity = false;
         isValid = true;
         extraInfoActP = this;
 
         editTextEmail = findViewById(R.id.emailAddress);
-        editTextEntName = findViewById(R.id.entityName);
         editTextUsername = findViewById(R.id.username);
-        editTextPersName = findViewById(R.id.personName);
+        editTextName = findViewById(R.id.name);
         editTextEntWebsite = findViewById(R.id.entitySite);
-        editTextDateBirth = findViewById(R.id.dateBirth);
+        datePickerDateBirth = findViewById(R.id.dateBirth);
         editTextPassword = findViewById(R.id.password);
         editTextConfirmation = findViewById(R.id.passwordConfirmation);
         editTextPhoneNumber = findViewById(R.id.phoneNumber);
         textViewDateBirth = findViewById(R.id.textViewDateBirth);
+
+        final Button confirmButton = findViewById(R.id.confirmBttn);
 
         Spinner spinner = findViewById(R.id.spinner1);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -58,6 +66,133 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(this);
+        registerViewModel = new ViewModelProvider(this, new RegisterViewModelFactory(((LoginApp) getApplication()).getExecutorService()))
+                .get(RegisterViewModel.class);
+
+
+        registerViewModel.getRegisterFormState().observe(this, new Observer<RegisterFormState>() {
+            @Override
+            public void onChanged(@Nullable RegisterFormState registerFormState) {
+                if (registerFormState == null) {
+                    return;
+                }
+                confirmButton.setEnabled(registerFormState.isDataValid());
+                if (registerFormState.getPasswordError() != null) {
+                    editTextName.setError(getString(registerFormState.getNameError()));
+                }
+                if (registerFormState.getUsernameError() != null) {
+                    editTextUsername.setError(getString(registerFormState.getUsernameError()));
+                }
+                if (registerFormState.getEmailError() != null) {
+                    editTextEmail.setError(getString(registerFormState.getEmailError()));
+                }
+                if (registerFormState.getPasswordError() != null) {
+                    editTextPassword.setError(getString(registerFormState.getPasswordError()));
+                }
+                if (registerFormState.getPasswordConfirmationError() != null) {
+                    editTextConfirmation.setError(getString(registerFormState.getPasswordConfirmationError()));
+                }
+
+                if (isEntity) {
+                    if (registerFormState.getPhoneNumberError() != null) {
+                        editTextPhoneNumber.setError(getString(registerFormState.getPhoneNumberError()));
+                    }
+                    if (registerFormState.getWebsiteError() != null) {
+                        editTextEntWebsite.setError(getString(registerFormState.getWebsiteError()));
+                    }
+                }
+            }
+        });
+
+        registerViewModel.getRegisterResult().observe(this, new Observer<RegisterResult>() {
+            @Override
+            public void onChanged(@Nullable RegisterResult registerResult) {
+                if (registerResult == null) {
+                    return;
+                }
+                if (registerResult.getError() != null) {
+                    showRegisterFailed(registerResult.getError());
+                }
+                if (registerResult.getSuccess() != null) {
+                    registerUserSuccess(registerResult.getSuccess());
+                    setResult(Activity.RESULT_OK);
+                    if (isEntity) {
+                        Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoEntityActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoActivity.class);
+                        startActivity(intent);
+
+                    }
+                }
+                finish();
+                //Complete and destroy login activity once successful
+                //finish();
+            }
+        });
+
+        TextWatcher afterTextChangedListener = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // ignore
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // ignore
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                registerViewModel.registerDataChanged(editTextUsername.getText().toString(),
+                        editTextPassword.getText().toString(), editTextName.getText().toString(),
+                        editTextEmail.getText().toString(), editTextConfirmation.getText().toString(),
+                        editTextPhoneNumber.getText().toString(), editTextEntWebsite.getText().toString());
+            }
+        };
+
+        //TODO : é preciso fazer tambem para o register?
+        /*usernameEditText.addTextChangedListener(afterTextChangedListener);
+        passwordEditText.addTextChangedListener(afterTextChangedListener);
+        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    loginViewModel.login(usernameEditText.getText().toString(),
+                            passwordEditText.getText().toString());
+                }
+                return false;
+            }
+        });*/
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isEntity) {
+                    registerViewModel.registerEntity(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
+                            editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
+                            editTextEntWebsite.getText().toString());
+                    Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoEntityActivity.class);
+                    startActivity(intent);
+                } else {
+                    registerViewModel.registerPerson(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
+                            editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
+                            datePickerDateBirth.toString());
+                }
+
+            }
+        });
+    }
+
+    private void registerUserSuccess(RegisteredUserView model) {
+        String success = getString(R.string.register_success) + " " + model.getDisplayName();
+        // TODO : initiate successful logged in experience
+        Toast.makeText(getApplicationContext(), success, Toast.LENGTH_LONG).show();
+    }
+
+    private void showRegisterFailed(@StringRes Integer errorString) {
+        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -67,186 +202,17 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
         switch (position) {
             case 0:
-                editTextEntName.setVisibility(view.VISIBLE);
                 editTextEntWebsite.setVisibility(view.VISIBLE);
-                editTextDateBirth.setVisibility(view.GONE);
-                editTextPersName.setVisibility(view.GONE);
+                datePickerDateBirth.setVisibility(view.GONE);
                 textViewDateBirth.setVisibility(view.GONE);
                 isEntity = true;
-                findViewById(R.id.confirmBttn).setOnClickListener(this);
                 break;
 
             case 1:
-                editTextPersName.setVisibility(view.VISIBLE);
                 editTextEntWebsite.setVisibility(view.GONE);
-                editTextDateBirth.setVisibility(view.VISIBLE);
-                editTextEntName.setVisibility(view.GONE);
+                datePickerDateBirth.setVisibility(view.VISIBLE);
                 textViewDateBirth.setVisibility(view.VISIBLE);
                 isEntity = false;
-                findViewById(R.id.confirmBttn).setOnClickListener(this);
-                break;
-        }
-    }
-
-
-    private void userSignUpEntity() {
-        String entityName = editTextEntName.getText().toString().trim();
-        String email = editTextEmail.getText().toString().trim();
-        String username = editTextUsername.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
-        String confirmation = editTextConfirmation.getText().toString().trim();
-        String website = editTextEntWebsite.getText().toString().trim();
-        String phoneNumber = editTextPhoneNumber.getText().toString().trim();
-
-        if (entityName.isEmpty()) {
-            editTextEntName.setError("Entity's name is required");
-            editTextEntName.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-        this.validateData(email, username, password, confirmation, phoneNumber);
-
-        if (phoneNumber.isEmpty()) {
-            editTextPhoneNumber.setError("Phone number is required");
-            editTextPhoneNumber.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-        if (website.isEmpty()) {
-            editTextEntWebsite.setError("Website is required");
-            editTextEntWebsite.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-        // TODO: verificar url
-        if (!URLUtil.isValidUrl(website)) {
-            editTextEntWebsite.setError("Website must be valid");
-            editTextEntWebsite.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-    }
-
-
-    private void userSignUpPerson() {
-        String persName = editTextPersName.getText().toString().trim();
-        String email = editTextEmail.getText().toString().trim();
-        String username = editTextUsername.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
-        String confirmation = editTextConfirmation.getText().toString().trim();
-
-
-        String phoneNumber = editTextPhoneNumber.getText().toString().trim();
-
-        String dateBirth = new String().concat(String.valueOf(editTextDateBirth.getDayOfMonth())).concat("/")
-                .concat(String.valueOf(editTextDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(editTextDateBirth.getYear()));
-
-        if (persName.isEmpty()) {
-            editTextPersName.setError("Name is required");
-            editTextPersName.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-
-        this.validateData(email, username, password, confirmation, phoneNumber);
-
-    }
-
-    private void validateData(String email, String username, String password, String confirmation, String phoneNumber) {
-        if (username.isEmpty()) {
-            editTextUsername.setError("Username is required");
-            editTextUsername.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-        if (email.isEmpty()) {
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError("Enter a valid email");
-            editTextEmail.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-        if (password.isEmpty()) {
-            editTextPassword.setError("Password is required");
-            editTextPassword.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-        //TODO ver como o resto do grupo
-        if (password.length() < 6) {
-            editTextPassword.setError("Password should be at least 6 character long");
-            editTextPassword.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-        if (confirmation.isEmpty()) {
-            editTextConfirmation.setError("Password verification is required");
-            editTextConfirmation.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-        if (!confirmation.equals(password)) {
-            editTextConfirmation.setError("Must be equal to password.");
-            editTextConfirmation.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-
-        if (!phoneNumber.isEmpty() && phoneNumber.length() != 9) {
-            editTextPassword.setError("Invalid number.");
-            editTextPassword.requestFocus();
-            isValid = false;
-            return;
-        } else
-            isValid = true;
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.confirmBttn:
-                if (isEntity) {
-                    userSignUpEntity();
-                    if (isValid) {
-                        Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoEntityActivity.class);
-                        startActivity(intent);
-                    }
-                } else {
-                    userSignUpPerson();
-                    //TODO corrigir erro com o retrofit e register
-                    if (isValid) {
-                        Intent intent = new Intent(extraInfoActP, pt.vow.ui.extraInfo.ExtraInfoActivity.class);
-                        startActivity(intent);
-                    }
-                }
                 break;
         }
     }

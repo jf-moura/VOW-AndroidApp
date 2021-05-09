@@ -38,8 +38,16 @@ public class RegisterRepository {
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public Result<RegisteredUser> register(String name, String username, String email, String password, String phoneNumber, String website, String dateBirth, String role) {
-        Result<RegisteredUser> result = dataSource.register(name, username, email, password, phoneNumber, website, dateBirth, role);
+    public Result<RegisteredUser> registerEntity(String name, String username, String email, String password, String phoneNumber, String website) {
+        Result<RegisteredUser> result = dataSource.registerEntity(name, username, email, password, phoneNumber, website);
+        if (result instanceof Result.Success) {
+            setRegisteredUser(((Result.Success<RegisteredUser>) result).getData());
+        }
+        return result;
+    }
+
+    public Result<RegisteredUser> registerPerson(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
+        Result<RegisteredUser> result = dataSource.registerPerson(name, username, email, password, phoneNumber, dateBirth);
         if (result instanceof Result.Success) {
             setRegisteredUser(((Result.Success<RegisteredUser>) result).getData());
         }
