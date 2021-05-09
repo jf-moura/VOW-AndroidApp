@@ -141,6 +141,7 @@
                 android:layout_marginBottom="80dp"
                 android:text="Confirm"
                 android:visibility="visible"
+                android:enabled="false"
                 tools:visibility="visible" />
 
 
