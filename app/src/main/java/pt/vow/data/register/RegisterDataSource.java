@@ -5,6 +5,7 @@ import java.io.IOException;
 import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredUser;
 import pt.vow.data.model.UserRegistrationEntity;
+import pt.vow.data.model.UserRegistrationPerson;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -40,11 +41,11 @@ public class RegisterDataSource {
 
     public Result<RegisteredUser> registerPerson(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
 
-        Call<UserRegistrationEntity> userRegistrationCall = service.createUserPerson(new UserRegistrationEntity(name, username, email, password, phoneNumber,dateBirth));
+        Call<UserRegistrationPerson> userRegistrationCall = service.createUserPerson(new UserRegistrationPerson(name, username, email, password, phoneNumber, dateBirth));
         try {
-            Response<UserRegistrationEntity> response = userRegistrationCall.execute();
+            Response<UserRegistrationPerson> response = userRegistrationCall.execute();
             if (response.isSuccessful()) {
-                UserRegistrationEntity ur = response.body();
+                UserRegistrationPerson ur = response.body();
                 return new Result.Success<>(new RegisteredUser(ur.getUsername()));
             }
             return new Result.Error(new Exception(response.errorBody().toString()));

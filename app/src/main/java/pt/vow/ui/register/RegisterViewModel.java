@@ -154,7 +154,7 @@ public class RegisterViewModel extends ViewModel {
 
     private boolean isPhoneNumberValidPerson(String phoneNumber) {
         if (phoneNumber != null)
-            return phoneNumber.trim().length() == 9;
+            return phoneNumber.trim().length() == 9 || phoneNumber.trim().length() == 0;
         return true;
     }
 

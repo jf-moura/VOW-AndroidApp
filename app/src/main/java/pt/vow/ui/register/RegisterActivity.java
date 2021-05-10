@@ -54,6 +54,9 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         editTextPhoneNumber = findViewById(R.id.phoneNumber);
         textViewDateBirth = findViewById(R.id.textViewDateBirth);
 
+        date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
+                .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
+
         final Button confirmButton = findViewById(R.id.confirmBttn);
 
         Spinner spinner = findViewById(R.id.spinner1);
@@ -149,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 else {
                     registerViewModel.registerDataChangedPerson(editTextName.getText().toString(),
                             editTextUsername.getText().toString(), editTextEmail.getText().toString(),
-                            editTextPassword.getText().toString(), editTextConfirmation.getText().toString(), date);
+                            editTextPassword.getText().toString(), editTextConfirmation.getText().toString(), editTextPhoneNumber.getText().toString());
                 }
             }
         };
@@ -162,15 +165,13 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         editTextConfirmation.addTextChangedListener(afterTextChangedListener);
         editTextPhoneNumber.addTextChangedListener(afterTextChangedListener);
         editTextEntWebsite.addTextChangedListener(afterTextChangedListener);
-
-
         datePickerDateBirth.init( datePickerDateBirth.getYear(), datePickerDateBirth.getMonth(), datePickerDateBirth.getDayOfMonth(),
                 new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker view, int year, int month, int dayOfMonth) {
                 date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
                         .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
-                Toast.makeText(view.getContext(), "Year=" + year + " Month=" + month + " Day=" + dayOfMonth, Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), "Year=" + year + " Month=" + month + 1 + " Day=" + dayOfMonth, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -196,9 +197,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                             editTextEntWebsite.getText().toString());
                 else
                     registerViewModel.registerPerson(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
-                            editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
-                            date);
-
+                            editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(), date);
             }
         });
     }
