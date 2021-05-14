@@ -127,13 +127,15 @@
                 android:text="Date Birth"
                 android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
             <DatePicker
                 android:id="@+id/dateBirth"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:datePickerMode="spinner"
                 android:calendarViewShown="false"
-                />
+                android:datePickerMode="spinner"
+                android:visibility="gone"
+                tools:visibility="visible" />
             <Button
                 android:id="@+id/confirmBttn"
                 android:layout_width="match_parent"
@@ -142,7 +144,6 @@
                 android:text="Confirm"
                 android:enabled="false"
                 tools:visibility="visible" />
-
 
 
         </LinearLayout>

@@ -66,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(this);
+
         registerViewModel = new ViewModelProvider(this, new RegisterViewModelFactory(((LoginApp) getApplication()).getExecutorService()))
                 .get(RegisterViewModel.class);
 
@@ -120,12 +121,14 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                         Intent intent = new Intent(extraInfoActP, ExtraInfoEntityActivity.class);
                         startActivity(intent);
                     } else {
+                        //Toast.makeText(getApplicationContext(), R.string.test, Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(extraInfoActP, ExtraInfoActivity.class);
                         startActivity(intent);
 
                     }
+                    finish();
                 }
-                finish();
+
                 //Complete and destroy login activity once successful
                 //finish();
             }
@@ -152,7 +155,8 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 else {
                     registerViewModel.registerDataChangedPerson(editTextName.getText().toString(),
                             editTextUsername.getText().toString(), editTextEmail.getText().toString(),
-                            editTextPassword.getText().toString(), editTextConfirmation.getText().toString(), editTextPhoneNumber.getText().toString());
+                            editTextPassword.getText().toString(), editTextConfirmation.getText().toString(),
+                           editTextPhoneNumber.getText().toString());
                 }
             }
         };
@@ -165,15 +169,15 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         editTextConfirmation.addTextChangedListener(afterTextChangedListener);
         editTextPhoneNumber.addTextChangedListener(afterTextChangedListener);
         editTextEntWebsite.addTextChangedListener(afterTextChangedListener);
-        datePickerDateBirth.init( datePickerDateBirth.getYear(), datePickerDateBirth.getMonth(), datePickerDateBirth.getDayOfMonth(),
+        datePickerDateBirth.init(datePickerDateBirth.getYear(), datePickerDateBirth.getMonth(), datePickerDateBirth.getDayOfMonth(),
                 new DatePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(DatePicker view, int year, int month, int dayOfMonth) {
-                date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
-                        .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
-                Toast.makeText(view.getContext(), "Year=" + year + " Month=" + month + 1 + " Day=" + dayOfMonth, Toast.LENGTH_LONG).show();
-            }
-        });
+                    @Override
+                    public void onDateChanged(DatePicker view, int year, int month, int dayOfMonth) {
+                        date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
+                                .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
+                       // Toast.makeText(view.getContext(), "Year=" + year + " Month=" + month + 1 + " Day=" + dayOfMonth, Toast.LENGTH_LONG).show();
+                    }
+                });
 
         //TODO : é preciso fazer tambem para o register?
         /*passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -196,8 +200,9 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                             editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
                             editTextEntWebsite.getText().toString());
                 else
-                    registerViewModel.registerPerson(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
-                            editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(), date);
+                    registerViewModel.registerPerson(editTextName.getText().toString(), editTextUsername.getText().toString(),
+                            editTextEmail.getText().toString(), editTextPassword.getText().toString(),
+                            editTextPhoneNumber.getText().toString(), date);
             }
         });
     }

@@ -1,5 +1,7 @@
 package pt.vow.data;
 
+import pt.vow.data.model.RegisteredUser;
+
 /**
  * A generic class that holds a result success w/ data or an error exception.
  */

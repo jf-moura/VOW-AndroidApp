@@ -9,10 +9,10 @@ import retrofit2.http.POST;
 
 public interface ApiCreateAcc {
 
-    @POST("rest/register/entity")
+    @POST("rest/register/entity/")
     Call<UserRegistrationEntity> createUserEntity(@Body UserRegistrationEntity user);
 
-    @POST("rest/register/person")
+    @POST("rest/register/person/")
     Call<UserRegistrationPerson> createUserPerson(@Body UserRegistrationPerson user);
 
 }

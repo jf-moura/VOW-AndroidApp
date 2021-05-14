@@ -79,19 +79,18 @@
         app:layout_constraintBottom_toTopOf="@+id/checkBoxEldery"
         app:layout_constraintEnd_toEndOf="@+id/checkBoxChildren"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/checkBoxChildren" />
 
     <CheckBox
         android:id="@+id/checkBoxNature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="nature"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.578"
-        app:layout_constraintStart_toEndOf="@+id/checkBoxAnimals"
-        app:layout_constraintTop_toBottomOf="@+id/checkBoxHealth"
-        app:layout_constraintVertical_bias="0.172" />
+        app:layout_constraintEnd_toEndOf="@+id/checkBoxHealth"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/checkBoxHealth"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxHealth" />
 
     <CheckBox
         android:id="@+id/checkBoxEldery"
@@ -102,7 +101,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/checkBoxAnimals"
         app:layout_constraintHorizontal_bias="0.886"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/checkBoxAnimals" />
 
     <CheckBox
         android:id="@+id/checkBoxHealth"
@@ -111,10 +110,10 @@
         android:text="health"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.575"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toEndOf="@+id/checkBoxChildren"
         app:layout_constraintTop_toBottomOf="@+id/imageBttn"
-        app:layout_constraintVertical_bias="0.445" />
+        app:layout_constraintVertical_bias="0.466" />
 
     <CheckBox
         android:id="@+id/checkBox2"
@@ -122,10 +121,10 @@
         android:layout_height="wrap_content"
         android:text="house building"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.634"
-        app:layout_constraintStart_toEndOf="@+id/checkBoxEldery"
+        app:layout_constraintEnd_toEndOf="@+id/checkBoxNature"
+        app:layout_constraintHorizontal_bias="0.274"
+        app:layout_constraintStart_toStartOf="@+id/checkBoxNature"
         app:layout_constraintTop_toBottomOf="@+id/checkBoxNature"
-        app:layout_constraintVertical_bias="0.269" />
+        app:layout_constraintVertical_bias="0.304" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
