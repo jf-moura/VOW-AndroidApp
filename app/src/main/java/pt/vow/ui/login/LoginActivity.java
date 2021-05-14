@@ -1,9 +1,7 @@
 package pt.vow.ui.login;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,7 +10,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import pt.vow.MainPage;
-import pt.vow.ui.LoginApp;
+import pt.vow.ui.VOW;
 import pt.vow.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -38,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mActivity = this;
         // The Application is necessary to extract the executor service. It can be c
-        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory(((LoginApp) getApplication()).getExecutorService()))
+        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(LoginViewModel.class);
 
         final EditText usernameEditText = findViewById(R.id.username);
@@ -119,6 +116,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
+                Intent intent = new Intent(mActivity, MainPage.class);
+                startActivity(intent);
             }
         });
     }

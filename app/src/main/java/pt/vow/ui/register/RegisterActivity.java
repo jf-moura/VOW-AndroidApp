@@ -11,9 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,7 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.vow.R;
-import pt.vow.ui.LoginApp;
+import pt.vow.ui.VOW;
 import pt.vow.ui.extraInfo.ExtraInfoActivity;
 import pt.vow.ui.extraInfo.ExtraInfoEntityActivity;
 
@@ -68,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(this);
-        registerViewModel = new ViewModelProvider(this, new RegisterViewModelFactory(((LoginApp) getApplication()).getExecutorService()))
+        registerViewModel = new ViewModelProvider(this, new RegisterViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(RegisterViewModel.class);
 
 
@@ -159,7 +157,6 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             }
         };
 
-
         editTextName.addTextChangedListener(afterTextChangedListener);
         editTextUsername.addTextChangedListener(afterTextChangedListener);
         editTextEmail.addTextChangedListener(afterTextChangedListener);
@@ -176,25 +173,6 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 }
         });
 
-        //TODO : é preciso fazer tambem para o register?
-        /*editTextPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (isEntity)
-                    registerViewModel.registerEntity(editTextName.getText().toString(),
-                            editTextUsername.getText().toString(), editTextEmail.getText().toString(),
-                            editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
-                            editTextEntWebsite.getText().toString());
-                    else
-                        registerViewModel.registerPerson(editTextName.getText().toString(),
-                                editTextUsername.getText().toString(), editTextEmail.getText().toString(),
-                                editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
-                                date);
-                }
-                return false;
-            }
-        });*/
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
