@@ -66,20 +66,6 @@ public class RegisterViewModel extends ViewModel {
         });
     }
 
-    // TODO: Descobrir se isto nos interessa para o register
-    /*
-    public void login_old(String username, String password) {
-        // can be launched in a separate asynchronous job
-        Result<LoggedInUser> result = loginRepository.login(username, password);
-
-        if (result instanceof Result.Success) {
-            LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
-        }
-    }*/
-
     public void registerDataChangedEntity(String name, String username, String email, String password, String confirmPassword, String phoneNumber, String website) {
         if (!isNameValid(name))
             registerFormState.setValue(new RegisterFormState(R.string.invalid_name, null, null, null, null, null, null));

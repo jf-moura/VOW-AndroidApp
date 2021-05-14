@@ -1,7 +1,6 @@
 package pt.vow.data.login;
 
 import pt.vow.data.Result;
-import pt.vow.data.login.ApiLogin;
 import pt.vow.data.model.LoggedInUser;
 import pt.vow.data.model.UserAuthenticated;
 import pt.vow.data.model.UserCredentials;

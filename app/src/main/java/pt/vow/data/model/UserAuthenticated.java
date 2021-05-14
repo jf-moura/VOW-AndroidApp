@@ -6,14 +6,12 @@ package pt.vow.data.model;
 
         String username;
         String tokenID;
-        String role;
         long creationData;
         long expirationData;
 
-        public void UserAuthenticated(String username, String tokenID, String role, long creationData, long expirationData) {
+        public void UserAuthenticated(String username, String tokenID, long creationData, long expirationData) {
             this.username = username;
             this.tokenID = tokenID;
-            this.role = role;
             this.creationData = creationData;
             this.expirationData = expirationData;
         }
@@ -24,10 +22,6 @@ package pt.vow.data.model;
 
         public String getTokenID() {
             return tokenID;
-        }
-
-        public String getRole() {
-            return role;
         }
 
         public long getCreationData() {

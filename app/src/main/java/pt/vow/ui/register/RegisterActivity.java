@@ -11,7 +11,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -66,7 +68,6 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(this);
-
         registerViewModel = new ViewModelProvider(this, new RegisterViewModelFactory(((LoginApp) getApplication()).getExecutorService()))
                 .get(RegisterViewModel.class);
 
@@ -121,12 +122,10 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                         Intent intent = new Intent(extraInfoActP, ExtraInfoEntityActivity.class);
                         startActivity(intent);
                     } else {
-                        //Toast.makeText(getApplicationContext(), R.string.test, Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(extraInfoActP, ExtraInfoActivity.class);
                         startActivity(intent);
 
                     }
-                    finish();
                 }
 
                 //Complete and destroy login activity once successful
@@ -155,8 +154,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 else {
                     registerViewModel.registerDataChangedPerson(editTextName.getText().toString(),
                             editTextUsername.getText().toString(), editTextEmail.getText().toString(),
-                            editTextPassword.getText().toString(), editTextConfirmation.getText().toString(),
-                           editTextPhoneNumber.getText().toString());
+                            editTextPassword.getText().toString(), editTextConfirmation.getText().toString(), editTextPhoneNumber.getText().toString());
                 }
             }
         };
@@ -169,24 +167,30 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         editTextConfirmation.addTextChangedListener(afterTextChangedListener);
         editTextPhoneNumber.addTextChangedListener(afterTextChangedListener);
         editTextEntWebsite.addTextChangedListener(afterTextChangedListener);
-        datePickerDateBirth.init(datePickerDateBirth.getYear(), datePickerDateBirth.getMonth(), datePickerDateBirth.getDayOfMonth(),
+        datePickerDateBirth.init( datePickerDateBirth.getYear(), datePickerDateBirth.getMonth(), datePickerDateBirth.getDayOfMonth(),
                 new DatePicker.OnDateChangedListener() {
-                    @Override
-                    public void onDateChanged(DatePicker view, int year, int month, int dayOfMonth) {
-                        date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
-                                .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
-                       // Toast.makeText(view.getContext(), "Year=" + year + " Month=" + month + 1 + " Day=" + dayOfMonth, Toast.LENGTH_LONG).show();
-                    }
-                });
+            @Override
+            public void onDateChanged(DatePicker view, int year, int month, int dayOfMonth) {
+                date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
+                        .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
+                }
+        });
 
         //TODO : é preciso fazer tambem para o register?
-        /*passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
+        /*editTextPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loginViewModel.login(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString());
+                    if (isEntity)
+                    registerViewModel.registerEntity(editTextName.getText().toString(),
+                            editTextUsername.getText().toString(), editTextEmail.getText().toString(),
+                            editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
+                            editTextEntWebsite.getText().toString());
+                    else
+                        registerViewModel.registerPerson(editTextName.getText().toString(),
+                                editTextUsername.getText().toString(), editTextEmail.getText().toString(),
+                                editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
+                                date);
                 }
                 return false;
             }
@@ -200,9 +204,8 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                             editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
                             editTextEntWebsite.getText().toString());
                 else
-                    registerViewModel.registerPerson(editTextName.getText().toString(), editTextUsername.getText().toString(),
-                            editTextEmail.getText().toString(), editTextPassword.getText().toString(),
-                            editTextPhoneNumber.getText().toString(), date);
+                    registerViewModel.registerPerson(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
+                            editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(), date);
             }
         });
     }

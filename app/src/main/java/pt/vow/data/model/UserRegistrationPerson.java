@@ -1,20 +1,22 @@
 package pt.vow.data.model;
 
+import java.util.Date;
+
 public class UserRegistrationPerson {
     String name;
     String username;
     String email;
     String password;
     String phoneNumber;
-    String birthDateString;
+    String dateBirth;
 
-    public UserRegistrationPerson(String name, String username, String email, String password, String phoneNumber, String birthDateString) {
+    public UserRegistrationPerson(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
         this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
-        this.birthDateString = birthDateString;
+        this.dateBirth = dateBirth;
     }
 
     public String getName() {
@@ -38,7 +40,7 @@ public class UserRegistrationPerson {
     }
 
     public String getDateBirth() {
-        return birthDateString;
+        return dateBirth;
     }
 
 }
