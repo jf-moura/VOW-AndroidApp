@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import pt.vow.MainPage;
 import pt.vow.ui.VOW;
 import pt.vow.R;
+import pt.vow.ui.frontPage.FrontPageActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -70,9 +71,9 @@ public class LoginActivity extends AppCompatActivity {
                 if (loginResult.getSuccess() != null) {
                     updateUiWithUser(loginResult.getSuccess());
                     setResult(Activity.RESULT_OK);
-                    String userName = loginResult.getSuccess().getDisplayName();
+                    /*String userName = loginResult.getSuccess().getDisplayName();
                     Intent intent = new Intent(mActivity, MainPage.class);
-                    startActivity(intent);
+                    startActivity(intent);*/
                     finish();
                 }
 
@@ -116,8 +117,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
-                Intent intent = new Intent(mActivity, MainPage.class);
-                startActivity(intent);
             }
         });
     }
@@ -126,6 +125,12 @@ public class LoginActivity extends AppCompatActivity {
         String welcome = getString(R.string.welcome) + " " + model.getDisplayName();
         // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+        Intent intent;
+        if (model.getRole() == 0)
+            intent = new Intent(mActivity, MainPage.class);
+        else
+            intent = new Intent(mActivity, MainPage.class); // Need to change
+        startActivity(intent);
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
