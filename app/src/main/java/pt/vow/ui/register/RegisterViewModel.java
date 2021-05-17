@@ -2,7 +2,6 @@ package pt.vow.ui.register;
 
 import android.util.Patterns;
 import android.webkit.URLUtil;
-import android.widget.DatePicker;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

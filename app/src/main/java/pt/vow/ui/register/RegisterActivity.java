@@ -72,33 +72,33 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
         registerViewModel.getRegisterFormState().observe(this, new Observer<RegisterFormState>() {
             @Override
-            public void onChanged(@Nullable RegisterFormState registerFormState) {
-                if (registerFormState == null) {
+            public void onChanged(@Nullable RegisterFormState newActivityFormState) {
+                if (newActivityFormState == null) {
                     return;
                 }
-                confirmButton.setEnabled(registerFormState.isDataValid());
-                if (registerFormState.getNameError() != null) {
-                    editTextName.setError(getString(registerFormState.getNameError()));
+                confirmButton.setEnabled(newActivityFormState.isDataValid());
+                if (newActivityFormState.getNameError() != null) {
+                    editTextName.setError(getString(newActivityFormState.getNameError()));
                 }
-                if (registerFormState.getUsernameError() != null) {
-                    editTextUsername.setError(getString(registerFormState.getUsernameError()));
+                if (newActivityFormState.getUsernameError() != null) {
+                    editTextUsername.setError(getString(newActivityFormState.getUsernameError()));
                 }
-                if (registerFormState.getEmailError() != null) {
-                    editTextEmail.setError(getString(registerFormState.getEmailError()));
+                if (newActivityFormState.getEmailError() != null) {
+                    editTextEmail.setError(getString(newActivityFormState.getEmailError()));
                 }
-                if (registerFormState.getPasswordError() != null) {
-                    editTextPassword.setError(getString(registerFormState.getPasswordError()));
+                if (newActivityFormState.getPasswordError() != null) {
+                    editTextPassword.setError(getString(newActivityFormState.getPasswordError()));
                 }
-                if (registerFormState.getPasswordConfirmationError() != null) {
-                    editTextConfirmation.setError(getString(registerFormState.getPasswordConfirmationError()));
+                if (newActivityFormState.getPasswordConfirmationError() != null) {
+                    editTextConfirmation.setError(getString(newActivityFormState.getPasswordConfirmationError()));
                 }
 
                 if (isEntity) {
-                    if (registerFormState.getPhoneNumberError() != null) {
-                        editTextPhoneNumber.setError(getString(registerFormState.getPhoneNumberError()));
+                    if (newActivityFormState.getPhoneNumberError() != null) {
+                        editTextPhoneNumber.setError(getString(newActivityFormState.getPhoneNumberError()));
                     }
-                    if (registerFormState.getWebsiteError() != null) {
-                        editTextEntWebsite.setError(getString(registerFormState.getWebsiteError()));
+                    if (newActivityFormState.getWebsiteError() != null) {
+                        editTextEntWebsite.setError(getString(newActivityFormState.getWebsiteError()));
                     }
                 }
             }
