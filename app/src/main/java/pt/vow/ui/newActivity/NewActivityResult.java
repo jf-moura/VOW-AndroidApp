@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 
 public class NewActivityResult {
     @Nullable
-    private NewActivityView success;
+    private RegisteredActivityView success;
     @Nullable
     private Integer error;
 
@@ -12,12 +12,12 @@ public class NewActivityResult {
         this.error = error;
     }
 
-    NewActivityResult(@Nullable NewActivityView success) {
+    NewActivityResult(@Nullable RegisteredActivityView success) {
         this.success = success;
     }
 
     @Nullable
-    NewActivityView getSuccess() {
+    RegisteredActivityView getSuccess() {
         return success;
     }
 

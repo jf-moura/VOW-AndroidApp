@@ -43,4 +43,8 @@
     <string name="title_new_activity">New Activity</string>
     <string name="title_map">Map</string>
     <string name="title_profile">Profile</string>
+    <string name="invalid_address">Not a valid address.</string>
+    <string name="invalid_time">Not a valid day/time</string>
+    <string name="invalid_participant_num">Not a valid number of participants.</string>
+    <string name="invalid_duration">Not a valid duration.</string>
 </resources>

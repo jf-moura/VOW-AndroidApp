@@ -16,10 +16,6 @@ public class RegisterDataSource {
     private ApiCreateAcc service;
 
     public RegisterDataSource() {
-        /*Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();*/
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://vow-project-311114.ey.r.appspot.com/")
                 .addConverterFactory(GsonConverterFactory.create())
