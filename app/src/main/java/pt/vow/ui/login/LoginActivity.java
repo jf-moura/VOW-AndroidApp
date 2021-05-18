@@ -3,6 +3,7 @@ package pt.vow.ui.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -122,14 +123,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + " " + model.getDisplayName();
+        String welcome = getString(R.string.welcome) + " " + model.getUsername();
         // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
         Intent intent;
-        if (model.getRole() == 0)
+        if (model.getRole() == 0) {
             intent = new Intent(mActivity, MainPage.class);
-        else
+            intent.putExtra("UserLogged", model);
+        }
+        else {
             intent = new Intent(mActivity, MainPage.class); // Need to change
+            intent.putExtra("UserLogged", model);
+        }
         startActivity(intent);
     }
 

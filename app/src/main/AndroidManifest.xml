@@ -36,13 +36,7 @@
             android:value="@string/google_maps_key" />
         <activity
             android:name=".MainPage"
-            android:label="@string/title_activity_main_page">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
+            android:label="@string/title_activity_main_page" />
         <activity
             android:name=".ui.extraInfo.ExtraInfoActivity"
             android:label="Register" />
@@ -57,7 +51,13 @@
             android:label="Login" />
         <activity
             android:name=".ui.frontPage.FrontPageActivity"
-            android:label="VOW" />
+            android:label="VOW" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
 
     </application>

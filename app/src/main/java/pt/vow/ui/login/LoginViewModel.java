@@ -41,7 +41,7 @@ public class LoginViewModel extends ViewModel {
                 Result<LoggedInUser> result = loginRepository.login(username, password);
                 if (result instanceof Result.Success) {
                     LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-                    loginResult.postValue(new LoginResult(new LoggedInUserView(data.getDisplayName(), data.getRole())));
+                    loginResult.postValue(new LoginResult(new LoggedInUserView(data.getRole(), data.getUsername(), data.getTokenID())));
                 } else {
                     loginResult.postValue(new LoginResult(R.string.login_failed));
                 }

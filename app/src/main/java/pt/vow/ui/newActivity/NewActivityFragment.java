@@ -1,5 +1,6 @@
 package pt.vow.ui.newActivity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -23,7 +24,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import pt.vow.R;
@@ -46,12 +46,10 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //newActivityFragment =
-                //new ViewModelProvider(this).get(NewActivityViewModel.class);
-
         binding = FragmentNewActivityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         editTextName = root.findViewById(R.id.editTextNameAct);
         editTextAddress = root.findViewById(R.id.editTextAddress);
@@ -108,7 +106,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                 }
                 if (newActResult.getSuccess() != null) {
                     registerActivitySuccess(newActResult.getSuccess());
-                    //setResult(Activity.RESULT_OK);
+                    getActivity().setResult(Activity.RESULT_OK);
                 }
 
                 //Complete and destroy login activity once successful
@@ -151,7 +149,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onClick(View v) {
                 // TODO: ver do username, tokenID e date
-                newActivityFragment.registerActivity(username, tokenID, editTextName.getText().toString(),
+                newActivityFragment.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
                         editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), editTextDuration.getText().toString());
             }
         });
@@ -177,7 +175,9 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                         date = new String().concat(String.valueOf(dayOfMonth)).concat("/")
                                 .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
                                         .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
-                        Toast.makeText(getActivity().getApplicationContext(), date, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity().getApplicationContext(), date, Toast.LENGTH_LONG).show();
+                        newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
+                                editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), editTextDuration.getText().toString());
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();}
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();

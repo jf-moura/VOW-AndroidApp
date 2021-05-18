@@ -34,7 +34,7 @@ public class LoginDataSource {
             Response<UserAuthenticated> response = userAuthenticationCall.execute();
             if (response.isSuccessful()) {
                 UserAuthenticated ua = response.body();
-                return new Result.Success<>(new LoggedInUser(ua.getTokenID(),ua.getUsername(), ua.getRole()));
+                return new Result.Success<>(new LoggedInUser(ua.getUsername(), ua.getRole(), ua.getTokenID()));
             }
             return new Result.Error(new Exception(response.errorBody().toString()));
         } catch (IOException e) {

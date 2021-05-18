@@ -13,7 +13,7 @@ import pt.vow.data.registerActivity.NewActivityRepository;
 
 public class NewActivityViewModel extends ViewModel {
 
-    private MutableLiveData<pt.vow.ui.newActivity.NewActivityFormState> newActFormState = new MutableLiveData<>();
+    private MutableLiveData<NewActivityFormState> newActFormState = new MutableLiveData<>();
     private MutableLiveData<NewActivityResult> newActResult = new MutableLiveData<>();
     private NewActivityRepository newActivityRepository;
     private final Executor executor;
@@ -23,7 +23,7 @@ public class NewActivityViewModel extends ViewModel {
         this.executor = executor;
     }
 
-    LiveData<pt.vow.ui.newActivity.NewActivityFormState> getNewActFormState() {
+    LiveData<NewActivityFormState> getNewActFormState() {
         return newActFormState;
     }
 

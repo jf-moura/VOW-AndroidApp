@@ -1,21 +1,26 @@
 package pt.vow.ui.login;
 
+import java.io.Serializable;
+
 /**
  * Class exposing authenticated user details to the UI.
  */
-public class LoggedInUserView {
-    private String displayName;
+public class LoggedInUserView implements Serializable {
     private long role;
+    private String tokenID;
+    private String username;
     //... other data fields that may be accessible to the UI
 
-    LoggedInUserView(String displayName, long role) {
-        this.displayName = displayName;
+    LoggedInUserView(long role, String username, String tokenID) {
         this.role = role;
-    }
-
-    public String getDisplayName() {
-        return displayName;
+        this.username = username;
+        this.tokenID = tokenID;
     }
 
     public long getRole() { return role; }
+
+    public String getUsername() { return username; }
+
+    public String getTokenID() { return tokenID; }
+
 }
