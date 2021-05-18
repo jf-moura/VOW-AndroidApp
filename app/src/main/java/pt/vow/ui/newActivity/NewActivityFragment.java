@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import pt.vow.R;
 import pt.vow.databinding.FragmentNewActivityBinding;
@@ -33,6 +36,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     private EditText editTextName, editTextAddress, editTextPartNum, editTextDuration;
     private String date;
     private String username, tokenID;
+    private String timeZone;
 
     private NewActivityViewModel newActivityFragment;
     private FragmentNewActivityBinding binding;
@@ -54,8 +58,15 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         editTextPartNum = root.findViewById(R.id.editTextParticipantNum);
         editTextDuration = root.findViewById(R.id.editTextDuration);
 
-        //date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
-                //.concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
+        Calendar currentDate = Calendar.getInstance();
+        timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
+
+        String curdate = new String().concat(String.valueOf(currentDate.get(Calendar.DAY_OF_MONTH))).concat("/")
+                .concat(String.valueOf(currentDate.get(Calendar.MONTH) + 1)).concat("/").concat(String.valueOf(currentDate.get(Calendar.YEAR))).concat(" ")
+                .concat(String.valueOf(currentDate.get(Calendar.HOUR_OF_DAY))).concat(":").concat(String.valueOf(currentDate.get(Calendar.MINUTE)))
+                .concat(" ").concat(timeZone);
+
+        Toast.makeText(getActivity().getApplicationContext(), curdate, Toast.LENGTH_LONG).show();
 
         final Button confirmButton = root.findViewById(R.id.bttnSaveChanges);
 
@@ -150,22 +161,26 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     }
 
     private void showDatePickerDialog() {
-        Calendar date;
-        final Calendar currentDate = Calendar.getInstance();
-        date = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
         new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                date.set(year, monthOfYear, dayOfMonth);
+                cal.set(year, monthOfYear, dayOfMonth);
                 new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        date.set(Calendar.MINUTE, minute);
+                        cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        cal.set(Calendar.MINUTE, minute);
+
+                        // TODO: timezone
+                        //timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
+                        date = new String().concat(String.valueOf(dayOfMonth)).concat("/")
+                                .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
+                                        .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
+                        Toast.makeText(getActivity().getApplicationContext(), date, Toast.LENGTH_LONG).show();
                     }
-                }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
-            }
-        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+                }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();}
+        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
     }
 
     private void registerActivitySuccess(RegisteredActivityView model) {
