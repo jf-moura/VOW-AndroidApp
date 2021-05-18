@@ -1,49 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".ui.newActivity.NewActivityFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.newActivity.NewActivityFragment">
 
     <TextView
         android:id="@+id/textViewNameAct"
         android:layout_width="140dp"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:layout_above="@+id/textViewAddress"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="232dp"
-        android:layout_marginBottom="154dp"
         android:inputType="textPersonName"
         android:text="Activity Name: "
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editTextNameAct"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.176" />
+        app:layout_constraintHorizontal_bias="0.794"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textViewAddress"
         android:layout_width="140dp"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:layout_above="@+id/textViewParticipantNum"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="232dp"
-        android:layout_marginBottom="16dp"
         android:inputType="textPersonName"
         android:text="Address: "
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.248" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/editTextAddress"
+        app:layout_constraintEnd_toEndOf="@+id/textViewNameAct"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textViewNameAct" />
 
     <TextView
         android:id="@+id/textViewParticipantNum"
         android:layout_width="140dp"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:layout_above="@+id/textViewDuration"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="235dp"
@@ -51,28 +45,27 @@ tools:context=".ui.newActivity.NewActivityFragment">
         android:inputType="textPersonName"
         android:text="Participants Number :"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.861"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textViewAddress"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textViewAddress"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.355" />
+        app:layout_constraintVertical_bias="0.409" />
 
     <TextView
         android:id="@+id/textViewDuration"
         android:layout_width="140dp"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="234dp"
         android:layout_marginBottom="209dp"
         android:inputType="textPersonName"
         android:text="Activity Duration :"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.837"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textViewParticipantNum"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textViewParticipantNum"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.648" />
+        app:layout_constraintVertical_bias="0.711" />
 
     <EditText
         android:id="@+id/editTextNameAct"
@@ -88,7 +81,7 @@ tools:context=".ui.newActivity.NewActivityFragment">
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.334" />
+        app:layout_constraintVertical_bias="0.392" />
 
     <EditText
         android:id="@+id/editTextAddress"
@@ -100,11 +93,11 @@ tools:context=".ui.newActivity.NewActivityFragment">
         android:layout_marginBottom="336dp"
         android:inputType="textPostalAddress"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/editTextNameAct"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editTextNameAct"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.478" />
+        app:layout_constraintVertical_bias="0.544" />
 
     <EditText
         android:id="@+id/editTextParticipantNum"
@@ -113,13 +106,11 @@ tools:context=".ui.newActivity.NewActivityFragment">
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="141dp"
-        android:layout_marginBottom="207dp"
         android:inputType="text|number"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/textViewParticipantNum"
+        app:layout_constraintEnd_toEndOf="@+id/editTextAddress"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editTextAddress" />
 
     <EditText
         android:id="@+id/editTextDuration"
@@ -128,14 +119,11 @@ tools:context=".ui.newActivity.NewActivityFragment">
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="143dp"
-        android:layout_marginBottom="270dp"
         android:inputType="time"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.849" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/textViewDuration"
+        app:layout_constraintEnd_toEndOf="@+id/editTextParticipantNum"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editTextParticipantNum" />
 
     <Button
         android:id="@+id/bttnSaveChanges"
@@ -179,15 +167,20 @@ tools:context=".ui.newActivity.NewActivityFragment">
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="38dp"
-        android:layout_marginEnd="240dp"
         android:layout_marginBottom="146dp"
         android:text="Select Date"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textViewDuration"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textViewDuration"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.743" />
+        app:layout_constraintVertical_bias="0.785" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="31dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
