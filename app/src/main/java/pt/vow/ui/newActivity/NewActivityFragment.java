@@ -42,8 +42,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        newActivityFragment =
-                new ViewModelProvider(this).get(NewActivityViewModel.class);
+        //newActivityFragment =
+                //new ViewModelProvider(this).get(NewActivityViewModel.class);
 
         binding = FragmentNewActivityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
