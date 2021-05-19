@@ -48,4 +48,7 @@
     <string name="invalid_participant_num">Not a valid number of participants.</string>
     <string name="invalid_duration">Not a valid duration.</string>
     <string name="activity_success">Activity Created!</string>
+    <string name="update_failed">Update failed</string>
+    <string name="invalid_incorrect_password">Password is incorrect.</string>
+    <string name="update_success">Informations updated with success</string>
 </resources>

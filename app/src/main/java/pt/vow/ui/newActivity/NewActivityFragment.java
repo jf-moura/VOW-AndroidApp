@@ -8,7 +8,6 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,6 @@ import pt.vow.R;
 import pt.vow.databinding.FragmentNewActivityBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.maps.MapsFragment;
 
 public class NewActivityFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 

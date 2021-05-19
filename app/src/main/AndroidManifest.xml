@@ -44,6 +44,9 @@
         </intent-filter>
     </activity>
         <activity
+            android:name=".ui.update.UpdateActivity"
+            android:label="Settings" />
+        <activity
             android:name=".ui.extraInfo.ExtraInfoActivity"
             android:label="Register" />
         <activity

@@ -129,7 +129,7 @@ public class RegisterViewModel extends ViewModel {
 
     // A placeholder password confirmation validation check
     private boolean isConfirmPasswordValid(String password, String confirmPassword) {
-        return confirmPassword.equals(password);
+        return confirmPassword.equals(password) && confirmPassword != null && !confirmPassword.isEmpty();
     }
 
     // A placeholder phone number validation check
