@@ -43,6 +43,7 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 

@@ -3,9 +3,12 @@ package pt.vow.ui.newActivity;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,25 +26,33 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 import pt.vow.R;
 import pt.vow.databinding.FragmentNewActivityBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.maps.MapsFragment;
 
 public class NewActivityFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private EditText editTextName, editTextAddress, editTextPartNum;
+    private LatLng latLng;
     private String date;
-    private String username, tokenID;
     private String timeZone;
     private String durationInMinutes;
 
     private NewActivityViewModel newActivityFragment;
     private FragmentNewActivityBinding binding;
     private LoggedInUserView user;
+    private Geocoder geocoder;
+
+    private static final String TAG = NewActivityFragment.class.getSimpleName();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -49,8 +60,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
         binding = FragmentNewActivityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
+        geocoder = new Geocoder(getActivity());
 
         editTextName = root.findViewById(R.id.editTextNameAct);
         editTextAddress = root.findViewById(R.id.editTextAddress);
@@ -129,8 +140,20 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
             @Override
             public void afterTextChanged(Editable s) {
-                    newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                            editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
+                LatLng ad = new LatLng(0, 0);
+                if (!editTextAddress.getText().toString().isEmpty()) {
+                    try {
+                        List<Address> addresses = geocoder.getFromLocationName(editTextAddress.getText().toString(), 1);
+                        if (addresses.size() > 0) {
+                            Address address = addresses.get(0);
+                            ad = new LatLng(address.getLatitude(), address.getLongitude());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
+                            ad.toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
             }
         };
 
