@@ -47,4 +47,5 @@
     <string name="invalid_time">Not a valid day/time</string>
     <string name="invalid_participant_num">Not a valid number of participants.</string>
     <string name="invalid_duration">Not a valid duration.</string>
+    <string name="activity_success">Activity Created!</string>
 </resources>

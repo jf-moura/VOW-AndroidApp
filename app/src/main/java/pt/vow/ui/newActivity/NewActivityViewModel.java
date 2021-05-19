@@ -78,7 +78,7 @@ public class NewActivityViewModel extends ViewModel {
 
     // A placeholder duration validation check
     private boolean isDurationInMinutesValid(String duration) {
-        return duration != null && !duration.trim().isEmpty() && duration.compareTo("0") >= 1;
+        return duration != null;
     }
 
     // A placeholder participant number validation check

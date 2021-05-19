@@ -33,10 +33,11 @@ import pt.vow.ui.login.LoggedInUserView;
 
 public class NewActivityFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    private EditText editTextName, editTextAddress, editTextPartNum, editTextDuration;
+    private EditText editTextName, editTextAddress, editTextPartNum;
     private String date;
     private String username, tokenID;
     private String timeZone;
+    private String durationInMinutes;
 
     private NewActivityViewModel newActivityFragment;
     private FragmentNewActivityBinding binding;
@@ -54,7 +55,11 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         editTextName = root.findViewById(R.id.editTextNameAct);
         editTextAddress = root.findViewById(R.id.editTextAddress);
         editTextPartNum = root.findViewById(R.id.editTextParticipantNum);
-        editTextDuration = root.findViewById(R.id.editTextDuration);
+
+        TimePicker durationPicker=(TimePicker)root.findViewById(R.id.durationPicker);
+        durationPicker.setIs24HourView(true);
+
+
 
         Calendar currentDate = Calendar.getInstance();
         timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
@@ -88,9 +93,6 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                 }
                 if (newActivityFormState.getParticipantNumError() != null) {
                     editTextPartNum.setError(getString(newActivityFormState.getParticipantNumError()));
-                }
-                if (newActivityFormState.getDurationError() != null) {
-                    editTextDuration.setError(getString(newActivityFormState.getDurationError()));
                 }
             }
         });
@@ -128,14 +130,24 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void afterTextChanged(Editable s) {
                     newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                            editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), editTextDuration.getText().toString());
+                            editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
             }
         };
 
         editTextName.addTextChangedListener(afterTextChangedListener);
         editTextAddress.addTextChangedListener(afterTextChangedListener);
         editTextPartNum.addTextChangedListener(afterTextChangedListener);
-        editTextDuration.addTextChangedListener(afterTextChangedListener);
+
+        durationPicker.setOnTimeChangedListener(
+                new TimePicker.OnTimeChangedListener() {
+                    @Override
+                    public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                        int hour = durationPicker.getHour();
+                        int minutes = durationPicker.getMinute();
+                        int aux = hour * 60 + minutes;
+                        durationInMinutes = new String().concat(String.valueOf(aux));
+                    }
+                });
 
         binding.bttnDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,10 +162,9 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             public void onClick(View v) {
                 // TODO: ver do username, tokenID e date
                 newActivityFragment.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                        editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), editTextDuration.getText().toString());
+                        editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
             }
         });
-
 
         return root;
     }
@@ -175,18 +186,18 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                         date = new String().concat(String.valueOf(dayOfMonth)).concat("/")
                                 .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
                                         .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
-                        //Toast.makeText(getActivity().getApplicationContext(), date, Toast.LENGTH_LONG).show();
+
                         newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                                editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), editTextDuration.getText().toString());
+                                editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();}
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
     }
 
     private void registerActivitySuccess(RegisteredActivityView model) {
-        String success = getString(R.string.register_success);
+        String success = getString(R.string.activity_success);
         // TODO : initiate successful logged in experience
-        //Toast.makeText(getApplicationContext(), success, Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity().getApplicationContext(), success, Toast.LENGTH_LONG).show();
     }
 
     private void showRegisterFailed(@StringRes Integer errorString) {
