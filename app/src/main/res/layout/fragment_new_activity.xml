@@ -7,138 +7,12 @@
     tools:context=".ui.newActivity.NewActivityFragment">
 
     <TextView
-        android:id="@+id/textViewNameAct"
-        android:layout_width="140dp"
-        android:layout_height="30dp"
-        android:layout_above="@+id/textViewAddress"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="232dp"
-        android:inputType="textPersonName"
-        android:text="Activity Name: "
-        app:layout_constraintBaseline_toBaselineOf="@+id/editTextNameAct"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.794"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewAddress"
-        android:layout_width="140dp"
-        android:layout_height="30dp"
-        android:layout_above="@+id/textViewParticipantNum"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="232dp"
-        android:inputType="textPersonName"
-        android:text="Address: "
-        app:layout_constraintBaseline_toBaselineOf="@+id/editTextAddress"
-        app:layout_constraintEnd_toEndOf="@+id/textViewNameAct"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textViewNameAct" />
-
-    <TextView
-        android:id="@+id/textViewParticipantNum"
-        android:layout_width="140dp"
-        android:layout_height="30dp"
-        android:layout_above="@+id/textViewDuration"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="235dp"
-        android:layout_marginBottom="14dp"
-        android:inputType="textPersonName"
-        android:text="Participants Number :"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textViewAddress"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textViewAddress"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.409" />
-
-    <TextView
-        android:id="@+id/textViewDuration"
-        android:layout_width="140dp"
-        android:layout_height="30dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="209dp"
-        android:inputType="textPersonName"
-        android:text="Activity Duration :"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textViewParticipantNum"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textViewParticipantNum"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.815" />
-
-    <EditText
-        android:id="@+id/editTextNameAct"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="86dp"
-        android:layout_marginBottom="403dp"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.392" />
-
-    <EditText
-        android:id="@+id/editTextAddress"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="86dp"
-        android:layout_marginBottom="336dp"
-        android:inputType="textPostalAddress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/editTextNameAct"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editTextNameAct"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.544" />
-
-    <EditText
-        android:id="@+id/editTextParticipantNum"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="141dp"
-        android:inputType="text|number"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textViewParticipantNum"
-        app:layout_constraintEnd_toEndOf="@+id/editTextAddress"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editTextAddress" />
-
-    <Button
-        android:id="@+id/bttnSaveChanges"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="111dp"
-        android:layout_marginEnd="119dp"
-        android:layout_marginBottom="44dp"
-        android:text="Save changes"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.894" />
-
-    <TextView
         android:id="@+id/textViewTittle"
         android:layout_width="299dp"
         android:layout_height="62dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-
-
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="56dp"
         android:text="Create Your Activity"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -147,6 +21,122 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textViewNameAct"
+        android:layout_width="99dp"
+        android:layout_height="29dp"
+        android:layout_above="@+id/textViewAddress"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="280dp"
+        android:inputType="textPersonName"
+        android:text="Activity Name: "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTittle" />
+
+    <TextView
+        android:id="@+id/textViewAddress"
+        android:layout_width="68dp"
+        android:layout_height="24dp"
+        android:layout_above="@+id/textViewParticipantNum"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="232dp"
+        android:inputType="textPersonName"
+        android:text="Address: "
+        app:layout_constraintEnd_toEndOf="@+id/textViewNameAct"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textViewNameAct"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNameAct" />
+
+    <TextView
+        android:id="@+id/textViewParticipantNum"
+        android:layout_width="140dp"
+        android:layout_height="30dp"
+        android:layout_above="@+id/textViewDuration"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="48dp"
+        android:inputType="textPersonName"
+        android:text="Participants Number :"
+        app:layout_constraintEnd_toEndOf="@+id/textViewAddress"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textViewAddress"
+        app:layout_constraintTop_toBottomOf="@+id/textViewAddress" />
+
+    <TextView
+        android:id="@+id/textViewDuration"
+        android:layout_width="121dp"
+        android:layout_height="31dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="72dp"
+        android:inputType="textPersonName"
+        android:text="Activity Duration :"
+        app:layout_constraintEnd_toEndOf="@+id/textViewParticipantNum"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textViewParticipantNum"
+        app:layout_constraintTop_toBottomOf="@+id/textViewParticipantNum" />
+
+    <EditText
+        android:id="@+id/editTextNameAct"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="76dp"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textViewNameAct"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTittle" />
+
+    <EditText
+        android:id="@+id/editTextAddress"
+        android:layout_width="281dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="20dp"
+        android:hint="street, number, postal code"
+        android:inputType="textPostalAddress"
+        app:layout_constraintEnd_toEndOf="@+id/editTextNameAct"
+        app:layout_constraintHorizontal_bias="0.627"
+        app:layout_constraintStart_toStartOf="@+id/editTextNameAct"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNameAct" />
+
+    <EditText
+        android:id="@+id/editTextParticipantNum"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="141dp"
+        android:inputType="text|number"
+        app:layout_constraintEnd_toEndOf="@+id/editTextAddress"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/editTextAddress"
+        app:layout_constraintTop_toBottomOf="@+id/editTextAddress" />
+
+
+    <Button
+        android:id="@+id/bttnSaveChanges"
+        android:layout_width="156dp"
+        android:layout_height="51dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="68dp"
+        android:layout_marginBottom="32dp"
+        android:text="Save changes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/durationPicker"
+        app:layout_constraintTop_toBottomOf="@+id/durationPicker"
+        app:layout_constraintVertical_bias="0.832" />
+
     <Button
         android:id="@+id/bttnDate"
         android:layout_width="wrap_content"
@@ -154,27 +144,23 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="146dp"
+        android:layout_marginTop="48dp"
         android:text="Select Date"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textViewDuration"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.083"
         app:layout_constraintStart_toStartOf="@+id/textViewDuration"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.871" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewDuration" />
 
     <TimePicker
         android:id="@+id/durationPicker"
         android:layout_width="174dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="260dp"
+        android:layout_marginTop="40dp"
         android:timePickerMode="spinner"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/editTextParticipantNum"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.435"
         app:layout_constraintStart_toStartOf="@+id/editTextParticipantNum"
-        app:layout_constraintTop_toBottomOf="@+id/editTextParticipantNum"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextParticipantNum" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

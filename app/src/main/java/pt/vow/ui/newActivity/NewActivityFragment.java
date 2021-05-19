@@ -70,8 +70,6 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         TimePicker durationPicker=(TimePicker)root.findViewById(R.id.durationPicker);
         durationPicker.setIs24HourView(true);
 
-
-
         Calendar currentDate = Calendar.getInstance();
         timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
 
