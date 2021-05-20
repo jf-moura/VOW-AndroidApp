@@ -34,14 +34,28 @@
 
     <ImageButton
         android:id="@+id/settingBttn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="72dp"
+        android:layout_height="67dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
         android:src="@drawable/ic_action_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.87"
+        app:layout_constraintHorizontal_bias="0.884"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.085" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.876"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingBttn"
+        app:layout_constraintVertical_bias="0.851" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

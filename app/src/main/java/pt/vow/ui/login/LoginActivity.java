@@ -3,7 +3,6 @@ package pt.vow.ui.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -20,10 +19,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import pt.vow.MainPagePerson;
 import pt.vow.MainPage;
 import pt.vow.ui.VOW;
 import pt.vow.R;
-import pt.vow.ui.frontPage.FrontPageActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -132,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
             intent.putExtra("UserLogged", model);
         }
         else {
-            intent = new Intent(mActivity, MainPage.class); // Need to change
+            intent = new Intent(mActivity, MainPagePerson.class); // Need to change
             intent.putExtra("UserLogged", model);
         }
         startActivity(intent);
