@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -190,6 +191,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
     private void showDatePickerDialog() {
         Calendar cal = Calendar.getInstance();
+        Date currentTime = Calendar.getInstance().getTime();
+
         new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
