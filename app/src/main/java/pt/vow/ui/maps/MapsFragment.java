@@ -136,9 +136,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     showGetActivitiesFailed(getActivitiesResult.getError());
                 }
                 if (getActivitiesResult.getSuccess() != null) {
-                    updateUiWithActivities(getActivitiesResult.getSuccess(), getActivity());
+                    updateUiWithActivities(getActivitiesResult.getSuccess());
                     getActivity().setResult(android.app.Activity.RESULT_OK);
-                    getActivity().finish();
+                    //getActivity().finish();
                 }
                 //Complete and destroy login activity once successful
                 //finish();
@@ -148,7 +148,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
 
 
-        /*for (Activity a: activities.getActivities()) {
+        for (Activity a: activities.getActivities()) {
             String[] latlng = a.getCoordinates().split(",");
             final double lat = Double.parseDouble(latlng[0].substring(1));
             final double lng = Double.parseDouble(latlng[1].substring(0, latlng[1].length()-2));
@@ -158,7 +158,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     new MarkerOptions()
                             .position(activityLocation)
                             .title(a.getName()));
-        }*/
+        }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -175,10 +175,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return v;
     }
 
-    private void updateUiWithActivities(ActivitiesRegisteredView model, FragmentActivity mActivity) {
-        Intent intent = new Intent(mActivity, MapsFragment.class);
+    private void updateUiWithActivities(ActivitiesRegisteredView model) {
+        String success = getString(R.string.obtain_activities_success);
+        Toast.makeText(getActivity().getApplicationContext(), success, Toast.LENGTH_LONG).show();
+
+        /*Intent intent = new Intent(getActivity(), MapsFragment.class);
         intent.putExtra("ActivitiesRegistered", model);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     private void showGetActivitiesFailed(@StringRes Integer errorString) {

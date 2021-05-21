@@ -1,6 +1,8 @@
 package pt.vow.data.model;
 
-public class Activity {
+import java.io.Serializable;
+
+public class Activity implements Serializable {
 
     String owner;
     String id;

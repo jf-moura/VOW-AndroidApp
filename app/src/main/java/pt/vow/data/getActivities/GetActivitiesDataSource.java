@@ -1,11 +1,9 @@
 package pt.vow.data.getActivities;
 
-import com.google.gson.Gson;
-
 import java.io.IOException;
+import java.util.List;
 
 import pt.vow.data.Result;
-import pt.vow.data.model.ActivitiesList;
 import pt.vow.data.model.Activity;
 import pt.vow.data.model.Credentials;
 import pt.vow.ui.maps.ActivitiesRegisteredView;
@@ -28,12 +26,12 @@ public class GetActivitiesDataSource {
     }
 
     public Result<ActivitiesRegisteredView> getActivities(String username, String tokenID) {
-        Call<ActivitiesList> getActivitiesCall = service.getActivities(new Credentials(username, tokenID));
+        Call<List<Activity>> getActivitiesCall = service.getActivities(new Credentials(username, tokenID));
         try {
-            Response<ActivitiesList> response = getActivitiesCall.execute();
+            Response<List<Activity>> response = getActivitiesCall.execute();
             if (response.isSuccessful()) {
-               ActivitiesList ua = response.body();
-               return new Result.Success<>(new ActivitiesRegisteredView(ua.getActivities()));
+               List<Activity> ua = response.body();
+               return new Result.Success<>(new ActivitiesRegisteredView(ua));
             }
             return new Result.Error(new Exception(response.errorBody().toString()));
         } catch (IOException e) {
