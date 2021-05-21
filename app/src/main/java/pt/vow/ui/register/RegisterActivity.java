@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register_choose);
+        setContentView(R.layout.activity_register);
 
         isEntity = true;
         extraInfoActP = this;

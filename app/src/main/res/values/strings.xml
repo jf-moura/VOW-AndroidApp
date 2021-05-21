@@ -53,5 +53,6 @@
     <string name="update_failed">Update failed</string>
     <string name="invalid_incorrect_password">Password is incorrect.</string>
     <string name="update_success">Informations updated with success</string>
+    <string name="get_activities_failed">Couldn\'t obtain activities registered.</string>
 
 </resources>

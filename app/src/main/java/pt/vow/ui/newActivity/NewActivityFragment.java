@@ -81,10 +81,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
         final Button confirmButton = root.findViewById(R.id.bttnSaveChanges);
 
-
         newActivityFragment = new ViewModelProvider(this, new NewActivityViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(NewActivityViewModel.class);
-
 
         newActivityFragment.getNewActFormState().observe(getViewLifecycleOwner(), new Observer<NewActivityFormState>() {
             @Override

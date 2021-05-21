@@ -3,6 +3,7 @@ package pt.vow.ui.maps;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -23,7 +26,10 @@ import androidx.fragment.app.Fragment;
 import android.location.Location;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,12 +55,18 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import pt.vow.R;
+import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentMapsBinding;
+import pt.vow.ui.VOW;
+import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.login.LoginViewModel;
+import pt.vow.ui.login.LoginViewModelFactory;
+import pt.vow.ui.newActivity.NewActivityViewModel;
+import pt.vow.ui.newActivity.NewActivityViewModelFactory;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
@@ -62,8 +74,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private final LatLng defaultLocation = new LatLng(38.738762, -9.143528);
 
+    private LoggedInUserView user;
 
-    private MapsViewModel mapsViewModel;
+    private GetActivitiesViewModel activitiesViewModel;
+    private ActivitiesRegisteredView activities;
+
+    //private GetActivitiesViewModel mapsViewModel;
     private FragmentMapsBinding binding;
 
     private GoogleMap mMap;
@@ -105,10 +121,49 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
+        activitiesViewModel = new ViewModelProvider(this, new GetActivitiesViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(GetActivitiesViewModel.class);
+
+        user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
+
+        activitiesViewModel.getActivitiesResult().observe(getViewLifecycleOwner(), new Observer<GetActivitiesResult>() {
+            @Override
+            public void onChanged(@Nullable GetActivitiesResult getActivitiesResult) {
+                if (getActivitiesResult == null) {
+                    return;
+                }
+                if (getActivitiesResult.getError() != null) {
+                    showGetActivitiesFailed(getActivitiesResult.getError());
+                }
+                if (getActivitiesResult.getSuccess() != null) {
+                    updateUiWithActivities(getActivitiesResult.getSuccess(), getActivity());
+                    getActivity().setResult(android.app.Activity.RESULT_OK);
+                    getActivity().finish();
+                }
+                //Complete and destroy login activity once successful
+                //finish();
+            }
+        });
+
+        activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
+
+
+        /*for (Activity a: activities.getActivities()) {
+            String[] latlng = a.getCoordinates().split(",");
+            final double lat = Double.parseDouble(latlng[0].substring(1));
+            final double lng = Double.parseDouble(latlng[1].substring(0, latlng[1].length()-2));
+            Log.d(TAG, "lat lng");
+            final LatLng activityLocation = new LatLng(lat, lng);
+            Marker act = mMap.addMarker(
+                    new MarkerOptions()
+                            .position(activityLocation)
+                            .title(a.getName()));
+        }*/
+
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        mapsViewModel =
-                new ViewModelProvider(this).get(MapsViewModel.class);
+        //mapsViewModel =
+                //new ViewModelProvider(this).get(GetActivitiesViewModel.class);
 
         // Construct a PlacesClient
         Places.initialize(getActivity().getApplicationContext(), getString(R.string.google_maps_key));
@@ -118,6 +173,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         return v;
+    }
+
+    private void updateUiWithActivities(ActivitiesRegisteredView model, FragmentActivity mActivity) {
+        Intent intent = new Intent(mActivity, MapsFragment.class);
+        intent.putExtra("ActivitiesRegistered", model);
+        startActivity(intent);
+    }
+
+    private void showGetActivitiesFailed(@StringRes Integer errorString) {
+        Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
     @Override

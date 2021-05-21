@@ -127,11 +127,11 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
         Intent intent;
         if (model.getRole() == 0) {
-            intent = new Intent(mActivity, MainPage.class);
+            intent = new Intent(mActivity, MainPagePerson.class);
             intent.putExtra("UserLogged", model);
         }
         else {
-            intent = new Intent(mActivity, MainPagePerson.class); // Need to change
+            intent = new Intent(mActivity, MainPage.class);
             intent.putExtra("UserLogged", model);
         }
         startActivity(intent);
