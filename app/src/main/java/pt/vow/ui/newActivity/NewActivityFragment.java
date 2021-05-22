@@ -135,20 +135,19 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
             @Override
             public void afterTextChanged(Editable s) {
-                LatLng ad = new LatLng(0, 0);
                 if (!editTextAddress.getText().toString().isEmpty()) {
                     try {
                         List<Address> addresses = geocoder.getFromLocationName(editTextAddress.getText().toString(), 1);
                         if (addresses.size() > 0) {
                             Address address = addresses.get(0);
-                            ad = new LatLng(address.getLatitude(), address.getLongitude());
+                            latLng = new LatLng(address.getLatitude(), address.getLongitude());
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
                 newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                            ad.toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
+                            editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
             }
         };
 
@@ -178,9 +177,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: ver do username, tokenID e date
                 newActivityFragment.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                        editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
+                        editTextAddress.getText().toString(), latLng.toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
             }
         });
 

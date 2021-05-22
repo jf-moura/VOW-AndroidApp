@@ -31,11 +31,11 @@ public class NewActivityViewModel extends ViewModel {
         return newActResult;
     }
 
-    public void registerActivity(String username, String tokenID, String name, String address, String time, String participantNum, String durationInMinutes) {
+    public void registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String participantNum, String durationInMinutes) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredActivity> result = newActivityRepository.registerActivity(username, tokenID, name, address, time, participantNum, durationInMinutes);
+                Result<RegisteredActivity> result = newActivityRepository.registerActivity(username, tokenID, name, address, coordinates, time, participantNum, durationInMinutes);
                 if (result instanceof Result.Success) {
                     RegisteredActivity data = ((Result.Success<RegisteredActivity>) result).getData();
                     newActResult.postValue(new NewActivityResult(new RegisteredActivityView()));

@@ -6,15 +6,17 @@ public class ActivityRegistration {
     String tokenID;
     String name;
     String address;
+    String coordinates;
     String time;
     String participantNum;
     String durationInMinutes;
 
-    public ActivityRegistration(String username, String tokenID, String name, String address, String time, String participantNum, String durationInMinutes) {
+    public ActivityRegistration(String username, String tokenID, String name, String address, String coordinates, String time, String participantNum, String durationInMinutes) {
         this.username = username;
         this.tokenID = tokenID;
         this.name = name;
         this.address = address;
+        this.coordinates = coordinates;
         this.time = time;
         this.participantNum = participantNum;
         this.durationInMinutes = durationInMinutes;
@@ -29,6 +31,8 @@ public class ActivityRegistration {
     public String getAddress() {
         return address;
     }
+
+    public String getCoordinates() { return coordinates; }
 
     public String getTime() {
         return time;
