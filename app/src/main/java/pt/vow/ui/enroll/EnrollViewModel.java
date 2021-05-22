@@ -4,6 +4,7 @@ import android.util.Patterns;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import java.util.concurrent.Executor;
 
@@ -13,7 +14,7 @@ import pt.vow.data.enrollActivity.EnrollRepository;
 import pt.vow.data.model.EnrolledActivity;
 
 
-public class EnrollViewModel {
+public class EnrollViewModel extends ViewModel {
 
     private MutableLiveData<EnrollResult> enrollResult = new MutableLiveData<>();
     private EnrollRepository enrollRepository;
@@ -25,7 +26,7 @@ public class EnrollViewModel {
         this.executor = executor;
     }
 
-    LiveData<EnrollResult> getRegisterResult() {
+    LiveData<EnrollResult> getEnrollResult() {
         return enrollResult;
     }
 

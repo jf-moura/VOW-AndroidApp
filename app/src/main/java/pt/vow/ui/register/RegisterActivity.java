@@ -92,7 +92,6 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 if (newActivityFormState.getPasswordConfirmationError() != null) {
                     editTextConfirmation.setError(getString(newActivityFormState.getPasswordConfirmationError()));
                 }
-
                 if (isEntity) {
                     if (newActivityFormState.getPhoneNumberError() != null) {
                         editTextPhoneNumber.setError(getString(newActivityFormState.getPhoneNumberError()));

@@ -5,9 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,11 +22,9 @@ import androidx.fragment.app.Fragment;
 
 import android.location.Location;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -37,8 +32,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -64,19 +57,12 @@ import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentMapsBinding;
 import pt.vow.test.MapWrapperLayout;
 import pt.vow.test.OnInfoWindowElemTouchListener;
-import pt.vow.test.TestActivity;
 import pt.vow.ui.VOW;
-import pt.vow.ui.extraInfo.ExtraInfoEntityActivity;
+import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.frontPage.FrontPageActivity;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.login.LoginViewModel;
-import pt.vow.ui.login.LoginViewModelFactory;
-import pt.vow.ui.newActivity.NewActivityViewModel;
-import pt.vow.ui.newActivity.NewActivityViewModelFactory;
 
-import static pt.vow.test.TestActivity.getPixelsFromDp;
-
-public class MapsFragment extends Fragment implements OnMapReadyCallback {
+public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private static final String TAG = MapsFragment.class.getSimpleName();
 
@@ -86,7 +72,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private GetActivitiesViewModel activitiesViewModel;
 
-   // private GetActivitiesViewModel mapsViewModel;
+    // private GetActivitiesViewModel mapsViewModel;
     private FragmentMapsBinding binding;
 
     private GoogleMap mMap;
@@ -119,6 +105,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private TextView infoTitle, infoOwner;
     private Button infoButtonViewActivity;
     private OnInfoWindowElemTouchListener infoButtonListener;
+    private ActivitiesRegisteredView aRView;
 
 
     public MapsFragment() {
@@ -151,9 +138,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     showGetActivitiesFailed(getActivitiesResult.getError());
                 }
                 if (getActivitiesResult.getSuccess() != null) {
+                    aRView = getActivitiesResult.getSuccess();
                     updateUiWithActivities(getActivitiesResult.getSuccess());
                     getActivity().setResult(android.app.Activity.RESULT_OK);
-                   // getActivity().finish();
+                    // getActivity().finish();
                 }
                 //Complete and destroy login activity once successful
                 //finish();
@@ -162,13 +150,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
 
-       //SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-       // mapFragment.getMapAsync(this);
+        //SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        // mapFragment.getMapAsync(this);
         //mapsViewModel =
-                //new ViewModelProvider(this).get(GetActivitiesViewModel.class);
+        //new ViewModelProvider(this).get(GetActivitiesViewModel.class);
 
         //MARKER WITH BUTTON
-       final SupportMapFragment mapFragment = (SupportMapFragment)getChildFragmentManager().findFragmentById(R.id.map);
+        final SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapWrapperLayout = (MapWrapperLayout) v.findViewById(R.id.map_relative_layout1);
         mapFragment.getMapAsync(this);
 
@@ -179,34 +167,37 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         // We want to reuse the info window for all the markers,
         // so let's create only one class member instance
-        this.infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.custom_infowindow, null);
+        this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_infowindow, null);
 
-        this.infoTitle = (TextView)infoWindow.findViewById(R.id.nameTxt);
-        this.infoOwner = (TextView)infoWindow.findViewById(R.id.ownerTxt);
+        this.infoTitle = (TextView) infoWindow.findViewById(R.id.nameTxt);
+        this.infoOwner = (TextView) infoWindow.findViewById(R.id.ownerTxt);
 
-        this.infoButtonViewActivity = (Button)infoWindow.findViewById(R.id.btnViewActivity);
+        infoButtonViewActivity = (Button) infoWindow.findViewById(R.id.btnViewActivity);
 
         // Setting custom OnTouchListener which deals with the pressed state
         // so it shows up
-        this.infoButtonListener = new OnInfoWindowElemTouchListener(infoButtonViewActivity, getActivity().getDrawable(R.drawable.ic_launcher_background), getActivity().getDrawable(R.drawable.ic_launcher_background)){
+        infoButtonListener = new OnInfoWindowElemTouchListener(infoButtonViewActivity,
+                getActivity().getResources().getDrawable(R.drawable.ic_launcher_background, getActivity().getTheme()),
+                getActivity().getResources().getDrawable(R.drawable.ic_launcher_background, getActivity().getTheme())) {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
                 // Here we can perform some action triggered after clicking the button
-                Toast.makeText(getActivity().getApplicationContext(), "click on button View Activity", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "click on button View Activity", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), FrontPageActivity.class);
-           //     intent.putExtra("ActivityInfo", v);
+                //     intent.putExtra("ActivityInfo", v);
                 startActivity(intent);
             }
         };
         this.infoButtonViewActivity.setOnTouchListener(infoButtonListener);
 
-        /*infoWindow.setOnClickListener(new View.OnClickListener() {
+
+        infoWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity().getApplicationContext(), "click on infowindow", Toast.LENGTH_LONG).show();
 
             }
-        });*/
+        });
         //[END MARKER WITH BUTTON]
 
         // Construct a PlacesClient
@@ -221,7 +212,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     //MARKER WITH BUTTON
     public static int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
-        return (int)(dp * scale + 0.5f);
+        return (int) (dp * scale + 0.5f);
     }
 
     private void updateUiWithActivities(ActivitiesRegisteredView model) {
@@ -230,16 +221,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         intent.putExtra("ActivitiesRegistered", model);
         startActivity(intent);*/
 
-        for (Activity a: model.getActivities()) {
+        for (Activity a : model.getActivities()) {
             String[] latlng = a.getCoordinates().split(",");
             final double lat = Double.parseDouble(latlng[0].substring(10));
-            final double lng = Double.parseDouble(latlng[1].substring(0, latlng[1].length()-1));
+            final double lng = Double.parseDouble(latlng[1].substring(0, latlng[1].length() - 1));
             Log.d(TAG, "lat lng");
             final LatLng activityLocation = new LatLng(lat, lng);
 
-           // infoTitle.setText(a.getName());
-           // infoOwner.setText(a.getOwner());
-            String title = a.getName() + "_"+ a.getOwner();
+            // infoTitle.setText(a.getName());
+            // infoOwner.setText(a.getOwner());
+            String title = a.getName() + "_" + a.getOwner();
 
             Marker act = mMap.addMarker(
                     new MarkerOptions()
@@ -491,6 +482,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         binding = null;
     }
 
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -517,11 +509,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 TextView snippet = infoWindow.findViewById(R.id.snippet);
                 snippet.setText(marker.getSnippet());
                 return infoWindow;*/
-                String str=marker.getTitle();
-                final String[] str2=str.split("_");
-               infoTitle.setText("Title: " + str2[0]);
-               infoOwner.setText("Owner: " + str2[1]);
-               infoButtonListener.setMarker(marker);
+                String str = marker.getTitle();
+                final String[] str2 = str.split("_");
+                infoTitle.setText("Title: " + str2[0]);
+                infoOwner.setText("Owner: " + str2[1]);
+                infoButtonListener.setMarker(marker);
 
                 // We must call this to set the current marker and infoWindow references
                 // to the MapWrapperLayout
@@ -529,6 +521,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 return infoWindow;
             }
         });
+
+        mMap.setOnInfoWindowClickListener(this::onInfoWindowClick);
         // [END map_current_place_set_info_window_adapter]
 
         // Prompt the user for permission.
@@ -541,22 +535,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-      /*  final LatLng melbourneLocation = new LatLng(38.738797, -9.143484);
-        Marker casaDaJoana = mMap.addMarker(
-                new MarkerOptions()
-                        .position(melbourneLocation)
-                        .title("Casa da Joana")
-                        .snippet("Population: Joana Linda")
-                        .icon(bitmapDescriptorFromVector(getActivity().getApplicationContext(), R.mipmap.ic_joana)));
     }
 
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
-        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),vectorDrawable.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }*/
-}
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(getActivity().getApplicationContext(), "Info window", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getActivity(), EnrollActivity.class);
+        intent.putExtra("ActivityInfo", aRView);
+        startActivity(intent);
+    }
+
 }
