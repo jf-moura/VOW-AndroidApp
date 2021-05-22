@@ -8,6 +8,7 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface ApiLogin {
+
     @POST("rest/login")
     Call<UserAuthenticated> authenticateUser(@Body UserCredentials user);
 }

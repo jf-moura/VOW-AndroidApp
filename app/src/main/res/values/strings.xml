@@ -54,6 +54,6 @@
     <string name="invalid_incorrect_password">Password is incorrect.</string>
     <string name="update_success">Informations updated with success</string>
     <string name="get_activities_failed">Couldn\'t obtain activities registered.</string>
-    <string name="obtain_activities_success">Obtain all activities with success</string>
+    <string name="enroll_failed">Enroll in activity failed.</string>
 
 </resources>
