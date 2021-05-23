@@ -1,21 +1,16 @@
 package pt.vow.ui.enroll;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import pt.vow.R;
 import pt.vow.ui.VOW;
+import pt.vow.ui.getActivities.ActivitiesRegisteredView;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.maps.ActivitiesRegisteredView;
 
 public class EnrollActivity extends AppCompatActivity {
 

@@ -60,6 +60,8 @@ import pt.vow.test.OnInfoWindowElemTouchListener;
 import pt.vow.ui.VOW;
 import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.frontPage.FrontPageActivity;
+import pt.vow.ui.getActivities.ActivitiesRegisteredView;
+import pt.vow.ui.getActivities.GetActivitiesViewModel;
 import pt.vow.ui.login.LoggedInUserView;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
@@ -68,11 +70,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private final LatLng defaultLocation = new LatLng(38.738762, -9.143528);
 
-    private LoggedInUserView user;
-
+    private List<Activity> activitiesList;
     private GetActivitiesViewModel activitiesViewModel;
 
-    // private GetActivitiesViewModel mapsViewModel;
     private FragmentMapsBinding binding;
 
     private GoogleMap mMap;
@@ -114,6 +114,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        activitiesViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesViewModel.class);
+        activitiesViewModel.getActivitiesList().observe(getActivity(), list -> {
+            activitiesList = list;
+        });
         View v = inflater.inflate(R.layout.fragment_maps, container, false);
         // [START_EXCLUDE silent]
         // [START maps_current_place_on_create_save_instance_state]
@@ -123,37 +127,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-        activitiesViewModel = new ViewModelProvider(this, new GetActivitiesViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
-                .get(GetActivitiesViewModel.class);
-
-        user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
-
-        activitiesViewModel.getActivitiesResult().observe(getViewLifecycleOwner(), new Observer<GetActivitiesResult>() {
-            @Override
-            public void onChanged(@Nullable GetActivitiesResult getActivitiesResult) {
-                if (getActivitiesResult == null) {
-                    return;
-                }
-                if (getActivitiesResult.getError() != null) {
-                    showGetActivitiesFailed(getActivitiesResult.getError());
-                }
-                if (getActivitiesResult.getSuccess() != null) {
-                    aRView = getActivitiesResult.getSuccess();
-                    updateUiWithActivities(getActivitiesResult.getSuccess());
-                    getActivity().setResult(android.app.Activity.RESULT_OK);
-                    // getActivity().finish();
-                }
-                //Complete and destroy login activity once successful
-                //finish();
-            }
-        });
-
-        activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
-
         //SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         // mapFragment.getMapAsync(this);
-        //mapsViewModel =
-        //new ViewModelProvider(this).get(GetActivitiesViewModel.class);
+        //mapsViewModel = new ViewModelProvider(this).get(MapsViewModel.class);
 
         //MARKER WITH BUTTON
         final SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -213,35 +189,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public static int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
-    }
-
-    private void updateUiWithActivities(ActivitiesRegisteredView model) {
-
-        /*Intent intent = new Intent(mActivity, MapsFragment.class);
-        intent.putExtra("ActivitiesRegistered", model);
-        startActivity(intent);*/
-
-        for (Activity a : model.getActivities()) {
-            String[] latlng = a.getCoordinates().split(",");
-            final double lat = Double.parseDouble(latlng[0].substring(10));
-            final double lng = Double.parseDouble(latlng[1].substring(0, latlng[1].length() - 1));
-            Log.d(TAG, "lat lng");
-            final LatLng activityLocation = new LatLng(lat, lng);
-
-            // infoTitle.setText(a.getName());
-            // infoOwner.setText(a.getOwner());
-            String title = a.getName() + "_" + a.getOwner();
-
-            Marker act = mMap.addMarker(
-                    new MarkerOptions()
-                            .position(activityLocation)
-                            .title(title));
-        }
-
-    }
-
-    private void showGetActivitiesFailed(@StringRes Integer errorString) {
-        Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -486,6 +433,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        for (Activity a : activitiesList) {
+            String[] latlng = a.getCoordinates().split(",");
+            final double lat = Double.parseDouble(latlng[0]);
+            final double lng = Double.parseDouble(latlng[1]);
+            final LatLng activityLocation = new LatLng(lat, lng);
+
+            // infoTitle.setText(a.getName());
+            // infoOwner.setText(a.getOwner());
+            String title = a.getName() + "_" + a.getOwner();
+
+            Marker act = mMap.addMarker(
+                    new MarkerOptions()
+                            .position(activityLocation)
+                            .title(title));
+        }
 
         // Use a custom info window adapter to handle multiple lines of text in the
         // info window contents.

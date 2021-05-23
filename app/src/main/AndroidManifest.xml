@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="pt.vow">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -40,7 +41,7 @@
             android:name=".ui.enroll.EnrollActivity"
             android:label="@string/title_enroll_activity" />
         <activity
-            android:name=".MainPagePerson"
+            android:name=".ui.getActivities.MainPagePerson"
             android:label="@string/title_activity_main_person" />
         <activity
             android:name=".MainPage"
