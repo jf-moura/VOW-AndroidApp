@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +17,6 @@ import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentFeedBinding;
 import pt.vow.ui.VOW;
-import pt.vow.ui.getActivities.ActivitiesRegisteredView;
 import pt.vow.ui.getActivities.GetActivitiesViewModel;
 
 public class FeedFragment extends Fragment {

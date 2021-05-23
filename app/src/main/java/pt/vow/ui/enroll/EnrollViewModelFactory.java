@@ -9,7 +9,6 @@ import java.util.concurrent.Executor;
 import pt.vow.data.enrollActivity.EnrollDataSource;
 import pt.vow.data.enrollActivity.EnrollRepository;
 
-
 public class EnrollViewModelFactory implements ViewModelProvider.Factory{
     private Executor executor;
 

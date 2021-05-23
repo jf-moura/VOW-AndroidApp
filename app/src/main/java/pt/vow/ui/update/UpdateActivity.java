@@ -88,9 +88,6 @@ public class UpdateActivity extends AppCompatActivity {
                     Intent intent = new Intent(mActivity, ProfileFragment.class);
                     startActivity(intent);
                 }
-
-                //Complete and destroy login activity once successful
-                //finish();
             }
         });
 

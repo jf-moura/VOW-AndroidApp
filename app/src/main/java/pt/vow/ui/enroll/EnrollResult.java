@@ -2,7 +2,6 @@ package pt.vow.ui.enroll;
 
 import androidx.annotation.Nullable;
 
-import pt.vow.ui.enroll.EnrolledActivityView;
 
 public class EnrollResult {
     @Nullable

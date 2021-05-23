@@ -11,9 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
 
-/**
- * Class that handles authentication w/ login credentials and retrieves user information.
- */
 public class LoginDataSource {
 
     private ApiLogin service;

@@ -10,7 +10,6 @@ public class EnrollRepository {
 
     private EnrolledActivity enroll;
 
-    // private constructor : singleton access
     private EnrollRepository(EnrollDataSource dataSource) {
         this.dataSource = dataSource;
     }
@@ -24,8 +23,6 @@ public class EnrollRepository {
 
     private void setEnrollInActivity(EnrolledActivity enroll) {
         this.enroll = enroll;
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
     }
 
     public Result<EnrolledActivity> enrollInActivity(String username, String tokenID, String activityOwner, String activityID) {

@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mActivity = this;
-        // The Application is necessary to extract the executor service. It can be c
+
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(LoginViewModel.class);
 
@@ -71,14 +71,8 @@ public class LoginActivity extends AppCompatActivity {
                 if (loginResult.getSuccess() != null) {
                     updateUiWithUser(loginResult.getSuccess());
                     setResult(Activity.RESULT_OK);
-                    /*String userName = loginResult.getSuccess().getDisplayName();
-                    Intent intent = new Intent(mActivity, MainPage.class);
-                    startActivity(intent);*/
                     finish();
                 }
-
-                //Complete and destroy login activity once successful
-                //finish();
             }
         });
 

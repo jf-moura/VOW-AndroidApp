@@ -37,7 +37,6 @@ public class NewActivityViewModel extends ViewModel {
             public void run() {
                 Result<RegisteredActivity> result = newActivityRepository.registerActivity(username, tokenID, name, address, coordinates, time, participantNum, durationInMinutes);
                 if (result instanceof Result.Success) {
-                    RegisteredActivity data = ((Result.Success<RegisteredActivity>) result).getData();
                     newActResult.postValue(new NewActivityResult(new RegisteredActivityView()));
                 } else {
                     newActResult.postValue(new NewActivityResult(R.string.register_failed));

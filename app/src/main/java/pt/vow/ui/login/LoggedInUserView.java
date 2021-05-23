@@ -9,7 +9,6 @@ public class LoggedInUserView implements Serializable {
     private long role;
     private String tokenID;
     private String username;
-    //... other data fields that may be accessible to the UI
 
     LoggedInUserView(long role, String username, String tokenID) {
         this.role = role;

@@ -15,8 +15,6 @@ import pt.vow.data.login.LoginRepository;
  */
 public class LoginViewModelFactory implements ViewModelProvider.Factory {
 
-
-    // We need this to access the Executor Service created at the LoginApp
     private Executor executor;
 
     public LoginViewModelFactory(Executor executor) {

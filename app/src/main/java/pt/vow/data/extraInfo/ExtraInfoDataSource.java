@@ -1,15 +1,5 @@
 package pt.vow.data.extraInfo;
 
-import java.io.IOException;
-
-import pt.vow.data.Result;
-import pt.vow.data.model.AddExtraInfo;
-import pt.vow.data.model.AddedExtraInfo;
-import pt.vow.data.model.RegisteredUser;
-import pt.vow.data.model.UserRegistrationEntity;
-import pt.vow.data.register.ApiCreateAcc;
-import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

@@ -18,11 +18,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import pt.vow.R;
+import pt.vow.ui.login.LoginActivity;
 
 public class ExtraInfoActivity extends AppCompatActivity {
 
     private ImageView imageView;
     private Button imageBttn;
+    private Button nextBttn;
+    private ExtraInfoActivity mActivity;
     private int IMG_REQUEST = 21;
     private Bitmap bitmap;
 
@@ -31,8 +34,11 @@ public class ExtraInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_extra_info);
 
+        mActivity = this;
+
         imageView = findViewById(R.id.imageView);
         imageBttn = findViewById(R.id.imageBttn);
+        nextBttn = findViewById(R.id.finishBttn);
 
         imageBttn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -42,6 +48,14 @@ public class ExtraInfoActivity extends AppCompatActivity {
                 intent.setAction(intent.ACTION_GET_CONTENT);
 
                 startActivityForResult(intent, IMG_REQUEST);
+            }
+        });
+
+        nextBttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mActivity, LoginActivity.class);
+                startActivity(intent);
             }
         });
     }

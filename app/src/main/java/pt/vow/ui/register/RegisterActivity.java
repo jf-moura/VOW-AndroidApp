@@ -124,9 +124,6 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
                     }
                 }
-
-                //Complete and destroy login activity once successful
-                //finish();
             }
         });
 

@@ -11,7 +11,6 @@ public class RegisterRepository {
 
     private RegisteredUser user = null;
 
-    // private constructor : singleton access
     private RegisterRepository(RegisterDataSource dataSource) {
         this.dataSource = dataSource;
     }
@@ -34,8 +33,6 @@ public class RegisterRepository {
 
     private void setRegisteredUser(RegisteredUser user) {
         this.user = user;
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
     }
 
     public Result<RegisteredUser> registerEntity(String name, String username, String email, String password, String phoneNumber, String website) {

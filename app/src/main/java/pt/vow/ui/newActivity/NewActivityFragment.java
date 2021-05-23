@@ -113,9 +113,6 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                     registerActivitySuccess(newActResult.getSuccess());
                     getActivity().setResult(Activity.RESULT_OK);
                 }
-
-                //Complete and destroy login activity once successful
-                //finish();
             }
         });
 
@@ -184,7 +181,6 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
     private void showDatePickerDialog() {
         Calendar cal = Calendar.getInstance();
-        Date currentTime = Calendar.getInstance().getTime();
 
         new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -196,8 +192,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                         cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         cal.set(Calendar.MINUTE, minute);
 
-                        // TODO: timezone
-                        //timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
+                        // TODO: timezone does not yet change due to winter/summer time
                         date = new String().concat(String.valueOf(dayOfMonth)).concat("/")
                                 .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
                                         .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
@@ -216,7 +211,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     }
 
     private void showRegisterFailed(@StringRes Integer errorString) {
-        //Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
     @Override

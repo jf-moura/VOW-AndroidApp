@@ -51,9 +51,9 @@ public class UpdateViewModel extends ViewModel {
         else if (!isPasswordValid(password))
             updateFormState.setValue(new UpdateFormState(null, R.string.invalid_incorrect_password, null, null, null));
         else if (!isPasswordValid(newPassword))
-            updateFormState.setValue(new UpdateFormState(null, null, null, R.string.invalid_password, null));
+            updateFormState.setValue(new UpdateFormState(null, null,  R.string.invalid_password, null,null));
         else if (!isConfirmPasswordValid(newPassword, confirmPassword))
-            updateFormState.setValue(new UpdateFormState(null, null, R.string.invalid_password_confirmation,  null, null));
+            updateFormState.setValue(new UpdateFormState(null, null, null, R.string.invalid_password_confirmation, null));
         else if (!isPhoneNumberValid(phoneNumber))
             updateFormState.setValue(new UpdateFormState(null, null, null, null, R.string.invalid_phone_number));
         else

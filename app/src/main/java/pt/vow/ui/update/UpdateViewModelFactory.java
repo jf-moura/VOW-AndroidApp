@@ -10,7 +10,7 @@ import pt.vow.data.update.UpdateDataSource;
 import pt.vow.data.update.UpdateRepository;
 
 public class UpdateViewModelFactory implements ViewModelProvider.Factory {
-    // We need this to access the Executor Service created at the LoginApp
+
     private Executor executor;
 
     public UpdateViewModelFactory(Executor executor) {

@@ -2,10 +2,10 @@
     <string name="app_name">VOW</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">password</string>
+    <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome!"</string>
+    <string name="welcome">Welcome</string>
     <string name="invalid_name">Not a valid name.</string>
     <string name="invalid_username">Not a valid username.</string>
     <string name="invalid_email">Not a valid email address.</string>
@@ -13,12 +13,12 @@
     <string name="invalid_password_confirmation">Must be equal to password.</string>
     <string name="invalid_phone_number">Not a valid phone number.</string>
     <string name="invalid_website">Not a valid website.</string>
-    <string name="login_failed">"Login failed"</string>
-    <string name="register_failed">"Register failed"</string>
+    <string name="login_failed">Login failed</string>
+    <string name="register_failed">Register failed</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
 
     <!-- Strings related to register -->
-    <string name="register_success">"Registered with success!"</string>
+    <string name="register_success">Registered with success</string>
 
     <string name="option_get_place">Get place</string>
 
@@ -37,8 +37,6 @@
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
-    <string name="hello_world">Hello Square World!</string>
-    <string name="title_activity_maps">Map</string>
     <string name="title_activity_main_page">Main Activity</string>
     <string name="title_new_activity">New Activity</string>
     <string name="title_map">Map</string>
@@ -47,7 +45,7 @@
     <string name="invalid_time">Not a valid day/time</string>
     <string name="invalid_participant_num">Not a valid number of participants.</string>
     <string name="invalid_duration">Not a valid duration.</string>
-    <string name="activity_success">Activity Created!</string>
+    <string name="activity_success">Activity created</string>
     <string name="title_activity_main_person">MainActivity</string>
     <string name="title_calendar">Calendar</string>
     <string name="update_failed">Update failed</string>

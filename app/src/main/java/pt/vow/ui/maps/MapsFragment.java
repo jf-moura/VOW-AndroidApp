@@ -14,8 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -25,7 +23,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -55,14 +52,8 @@ import java.util.List;
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentMapsBinding;
-import pt.vow.test.MapWrapperLayout;
-import pt.vow.test.OnInfoWindowElemTouchListener;
-import pt.vow.ui.VOW;
 import pt.vow.ui.enroll.EnrollActivity;
-import pt.vow.ui.frontPage.FrontPageActivity;
-import pt.vow.ui.getActivities.ActivitiesRegisteredView;
 import pt.vow.ui.getActivities.GetActivitiesViewModel;
-import pt.vow.ui.login.LoggedInUserView;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
@@ -105,8 +96,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private TextView infoTitle, infoOwner;
     private Button infoButtonViewActivity;
     private OnInfoWindowElemTouchListener infoButtonListener;
-    private ActivitiesRegisteredView aRView;
-
 
     public MapsFragment() {
     }
@@ -119,17 +108,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             activitiesList = list;
         });
         View v = inflater.inflate(R.layout.fragment_maps, container, false);
-        // [START_EXCLUDE silent]
-        // [START maps_current_place_on_create_save_instance_state]
-        // Retrieve location and camera position from saved instance state.
+
+
         if (savedInstanceState != null) {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
-
-        //SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        // mapFragment.getMapAsync(this);
-        //mapsViewModel = new ViewModelProvider(this).get(MapsViewModel.class);
 
         //MARKER WITH BUTTON
         final SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -141,8 +125,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         // 20 - offset between the default InfoWindow bottom edge and it's content bottom edge
         mapWrapperLayout.init(mMap, getPixelsFromDp(getActivity(), 39 + 20));
 
-        // We want to reuse the info window for all the markers,
-        // so let's create only one class member instance
         this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_infowindow, null);
 
         this.infoTitle = (TextView) infoWindow.findViewById(R.id.nameTxt);
@@ -150,31 +132,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         infoButtonViewActivity = (Button) infoWindow.findViewById(R.id.btnViewActivity);
 
-        // Setting custom OnTouchListener which deals with the pressed state
-        // so it shows up
-        infoButtonListener = new OnInfoWindowElemTouchListener(infoButtonViewActivity,
+        /*infoButtonListener = new OnInfoWindowElemTouchListener(infoButtonViewActivity,
                 getActivity().getResources().getDrawable(R.drawable.ic_launcher_background, getActivity().getTheme()),
                 getActivity().getResources().getDrawable(R.drawable.ic_launcher_background, getActivity().getTheme())) {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
-                // Here we can perform some action triggered after clicking the button
                 Toast.makeText(getActivity(), "click on button View Activity", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), FrontPageActivity.class);
                 //     intent.putExtra("ActivityInfo", v);
                 startActivity(intent);
             }
         };
-        this.infoButtonViewActivity.setOnTouchListener(infoButtonListener);
-
-
-        infoWindow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity().getApplicationContext(), "click on infowindow", Toast.LENGTH_LONG).show();
-
-            }
-        });
-        //[END MARKER WITH BUTTON]
+        this.infoButtonViewActivity.setOnTouchListener(infoButtonListener);*/
 
         // Construct a PlacesClient
         Places.initialize(getActivity().getApplicationContext(), getString(R.string.google_maps_key));
@@ -182,6 +151,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         // Construct a FusedLocationProviderClient.
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
         return v;
     }
 
@@ -450,47 +420,30 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                             .title(title));
         }
 
-        // Use a custom info window adapter to handle multiple lines of text in the
-        // info window contents.
         this.mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             @Override
-            // Return null here, so that getInfoContents() is called next.
             public View getInfoWindow(Marker arg0) {
                 return null;
             }
 
             @Override
             public View getInfoContents(Marker marker) {
-                // Inflate the layouts for the info window, title and snippet.
-              /* View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contens,
-                        (FrameLayout) getView().findViewById(R.id.map), false);
-
-
-                TextView title = infoWindow.findViewById(R.id.title);
-                title.setText(marker.getTitle());
-                TextView snippet = infoWindow.findViewById(R.id.snippet);
-                snippet.setText(marker.getSnippet());
-                return infoWindow;*/
                 String str = marker.getTitle();
                 final String[] str2 = str.split("_");
                 infoTitle.setText("Title: " + str2[0]);
                 infoOwner.setText("Owner: " + str2[1]);
                 infoButtonListener.setMarker(marker);
 
-                // We must call this to set the current marker and infoWindow references
-                // to the MapWrapperLayout
                 mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
                 return infoWindow;
             }
         });
 
         mMap.setOnInfoWindowClickListener(this::onInfoWindowClick);
-        // [END map_current_place_set_info_window_adapter]
 
         // Prompt the user for permission.
         getLocationPermission();
-        // [END_EXCLUDE]
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -503,7 +456,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(getActivity().getApplicationContext(), "Info window", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getActivity(), EnrollActivity.class);
-        intent.putExtra("ActivityInfo", aRView);
+        //intent.putExtra("ActivityInfo", String.valueOf(marker));
         startActivity(intent);
     }
 

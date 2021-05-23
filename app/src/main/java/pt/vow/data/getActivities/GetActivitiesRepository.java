@@ -9,11 +9,8 @@ public class GetActivitiesRepository {
 
     private GetActivitiesDataSource dataSource;
 
-    // If user credentials will be cached in local storage, it is recommended it be encrypted
-    // @see https://developer.android.com/training/articles/keystore
     private ActivitiesRegisteredView activities = null;
 
-    // private constructor : singleton access
     private GetActivitiesRepository(GetActivitiesDataSource dataSource) {
         this.dataSource = dataSource;
     }

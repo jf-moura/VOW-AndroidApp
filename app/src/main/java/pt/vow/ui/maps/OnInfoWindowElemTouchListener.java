@@ -1,4 +1,4 @@
-package pt.vow.test;
+package pt.vow.ui.maps;
 
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -82,9 +82,6 @@ public abstract class OnInfoWindowElemTouchListener implements OnTouchListener {
         }
     };
 
-    /**
-     * This is called after a successful click
-     */
     protected abstract void onClickConfirmed(View v, Marker marker);
 }
 

@@ -1,17 +1,11 @@
 package pt.vow.ui.extraInfo;
 
-import android.util.Patterns;
-import android.webkit.URLUtil;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.concurrent.Executor;
 
-import pt.vow.R;
-import pt.vow.data.Result;
 import pt.vow.data.extraInfo.ExtraInfoRepository;
-import pt.vow.data.model.AddedExtraInfo;
 
 public class ExtraInfoViewModel {
     private MutableLiveData<ExtraInfoFormState> extraInfoFormState = new MutableLiveData<>();

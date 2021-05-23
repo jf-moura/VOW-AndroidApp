@@ -7,7 +7,6 @@ import java.util.concurrent.Executors;
 
 public class VOW extends Application {
 
-    // Create a Executor Service with a fixed number of threads
     private ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     public ExecutorService getExecutorService() {

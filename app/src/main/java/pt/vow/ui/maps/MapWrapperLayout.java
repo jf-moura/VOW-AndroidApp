@@ -1,4 +1,4 @@
-package pt.vow.test;
+package pt.vow.ui.maps;
 
 
 import android.content.Context;
