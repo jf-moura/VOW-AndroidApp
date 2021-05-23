@@ -1,7 +1,6 @@
 package pt.vow.ui.register;
 
 import android.util.Patterns;
-import android.webkit.URLUtil;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -146,7 +145,7 @@ public class RegisterViewModel extends ViewModel {
     // A placeholder website check
     // TODO: check if site exists
     private boolean isWebsiteValid(String website) {
-        return website != null && !website.trim().isEmpty() && URLUtil.isValidUrl(website);
+        return website != null && !website.trim().isEmpty();
 
     }
 

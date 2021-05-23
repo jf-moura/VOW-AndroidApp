@@ -41,14 +41,6 @@ public class ProfileFragment extends Fragment {
         settingsButton = root.findViewById(R.id.settingBttn);
         logoutButton = root.findViewById(R.id.logoutButton);
 
-        final TextView textView = binding.textProfile;
-        profileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){

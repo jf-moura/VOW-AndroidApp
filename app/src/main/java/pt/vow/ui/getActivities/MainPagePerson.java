@@ -42,7 +42,7 @@ public class MainPagePerson extends AppCompatActivity {
 
         activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
 
-        activitiesViewModel.getActivitiesResult().observe(this, new Observer<GetActivitiesResult>() {
+        activitiesViewModel.getActivitiesResult().observeForever(new Observer<GetActivitiesResult>() {
             @Override
             public void onChanged(@Nullable GetActivitiesResult getActivitiesResult) {
                 if (getActivitiesResult == null) {

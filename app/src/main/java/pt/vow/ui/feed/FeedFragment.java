@@ -43,9 +43,11 @@ public class FeedFragment extends Fragment {
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
 
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), activitiesList);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if (activitiesList != null) {
+            RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), activitiesList);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        }
 
 
         return root;

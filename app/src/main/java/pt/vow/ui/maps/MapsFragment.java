@@ -404,20 +404,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        for (Activity a : activitiesList) {
-            String[] latlng = a.getCoordinates().split(",");
-            final double lat = Double.parseDouble(latlng[0]);
-            final double lng = Double.parseDouble(latlng[1]);
-            final LatLng activityLocation = new LatLng(lat, lng);
+        if (activitiesList != null) {
+            for (Activity a : activitiesList) {
+                String[] latlng = a.getCoordinates().split(",");
+                final double lat = Double.parseDouble(latlng[0]);
+                final double lng = Double.parseDouble(latlng[1]);
+                final LatLng activityLocation = new LatLng(lat, lng);
 
-            // infoTitle.setText(a.getName());
-            // infoOwner.setText(a.getOwner());
-            String title = a.getName() + "_" + a.getOwner();
+                // infoTitle.setText(a.getName());
+                // infoOwner.setText(a.getOwner());
+                String title = a.getName() + "_" + a.getOwner();
 
-            Marker act = mMap.addMarker(
-                    new MarkerOptions()
-                            .position(activityLocation)
-                            .title(title));
+                Marker act = mMap.addMarker(
+                        new MarkerOptions()
+                                .position(activityLocation)
+                                .title(title));
+            }
         }
 
         this.mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
