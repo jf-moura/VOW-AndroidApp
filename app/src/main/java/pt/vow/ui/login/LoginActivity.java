@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import pt.vow.MainPagePerson;
+import pt.vow.ui.getActivities.MainPagePerson;
 import pt.vow.MainPage;
 import pt.vow.ui.VOW;
 import pt.vow.R;

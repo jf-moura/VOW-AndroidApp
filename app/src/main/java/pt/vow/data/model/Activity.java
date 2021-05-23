@@ -13,7 +13,7 @@ public class Activity implements Serializable {
     String participantNum;
     String durationInMinutes;
 
-    public void Activity(String owner, String id, String name, String address, String coordinates, String time, String participantNum, String durationInMinutes) {
+    public Activity(String owner, String id, String name, String address, String coordinates, String time, String participantNum, String durationInMinutes) {
         this.owner = owner;
         this.id = id;
         this.name = name;

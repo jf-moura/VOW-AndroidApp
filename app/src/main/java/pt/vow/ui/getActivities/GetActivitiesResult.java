@@ -1,4 +1,4 @@
-package pt.vow.ui.maps;
+package pt.vow.ui.getActivities;
 
 import androidx.annotation.Nullable;
 

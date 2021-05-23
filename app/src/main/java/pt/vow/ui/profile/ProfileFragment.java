@@ -19,7 +19,6 @@ import pt.vow.R;
 
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.frontPage.FrontPageActivity;
-import pt.vow.ui.newActivity.NewActivityFragment;
 import pt.vow.ui.update.UpdateActivity;
 
 public class ProfileFragment extends Fragment {

@@ -25,8 +25,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -41,7 +39,7 @@ import pt.vow.ui.login.LoggedInUserView;
 public class NewActivityFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private EditText editTextName, editTextAddress, editTextPartNum;
-    private LatLng latLng;
+    private String latLng;
     private String date;
     private String timeZone;
     private String durationInMinutes;
@@ -72,12 +70,11 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         Calendar currentDate = Calendar.getInstance();
         timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
 
-        String curdate = new String().concat(String.valueOf(currentDate.get(Calendar.DAY_OF_MONTH))).concat("/")
+        // TODO: verify date is after curDate
+        String curDate = new String().concat(String.valueOf(currentDate.get(Calendar.DAY_OF_MONTH))).concat("/")
                 .concat(String.valueOf(currentDate.get(Calendar.MONTH) + 1)).concat("/").concat(String.valueOf(currentDate.get(Calendar.YEAR))).concat(" ")
                 .concat(String.valueOf(currentDate.get(Calendar.HOUR_OF_DAY))).concat(":").concat(String.valueOf(currentDate.get(Calendar.MINUTE)))
                 .concat(" ").concat(timeZone);
-
-        Toast.makeText(getActivity().getApplicationContext(), curdate, Toast.LENGTH_LONG).show();
 
         final Button confirmButton = root.findViewById(R.id.bttnSaveChanges);
 
@@ -140,7 +137,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                         List<Address> addresses = geocoder.getFromLocationName(editTextAddress.getText().toString(), 1);
                         if (addresses.size() > 0) {
                             Address address = addresses.get(0);
-                            latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                            latLng = new String().concat(address.getLatitude() + "," + address.getLongitude());
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -178,7 +175,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onClick(View v) {
                 newActivityFragment.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                        editTextAddress.getText().toString(), latLng.toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
+                        editTextAddress.getText().toString(), latLng, date, editTextPartNum.getText().toString(), durationInMinutes);
             }
         });
 

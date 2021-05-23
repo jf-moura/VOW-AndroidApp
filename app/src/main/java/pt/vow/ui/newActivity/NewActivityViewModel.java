@@ -54,9 +54,9 @@ public class NewActivityViewModel extends ViewModel {
         else if (!isTimeValid(time))
             newActFormState.setValue(new NewActivityFormState(null, null, R.string.invalid_time, null, null, null));
         else if (!isParticipantNumValid(participantNum))
-            newActFormState.setValue(new NewActivityFormState(null, null, null, R.string.invalid_participant_num, null, null));
+            newActFormState.setValue(new NewActivityFormState(null, null, null, null, R.string.invalid_participant_num, null));
         else if (!isDurationInMinutesValid(durationInMinutes))
-            newActFormState.setValue(new NewActivityFormState(null, null, null, null, R.string.invalid_duration, null));
+            newActFormState.setValue(new NewActivityFormState(null, null, null, null, null, R.string.invalid_duration));
         else
             newActFormState.setValue(new NewActivityFormState(true));
     }

@@ -56,5 +56,6 @@
     <string name="get_activities_failed">Couldn\'t obtain activities registered.</string>
     <string name="enroll_failed">Enroll in activity failed.</string>
     <string name="title_enroll_activity">Enroll In Activity</string>
+    <string name="title_feed">Home</string>
 
 </resources>

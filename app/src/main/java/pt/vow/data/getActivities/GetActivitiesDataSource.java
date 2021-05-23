@@ -6,7 +6,7 @@ import java.util.List;
 import pt.vow.data.Result;
 import pt.vow.data.model.Activity;
 import pt.vow.data.model.Credentials;
-import pt.vow.ui.maps.ActivitiesRegisteredView;
+import pt.vow.ui.getActivities.ActivitiesRegisteredView;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
