@@ -18,7 +18,7 @@ public class EnrollActivity extends AppCompatActivity {
     private Button enrollButton;
     private EnrollViewModel enrollViewModel;
     private LoggedInUserView user;
-    private ActivitiesRegisteredView activity;
+    private String[] activityInfo;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +37,8 @@ public class EnrollActivity extends AppCompatActivity {
                 .get(EnrollViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
-        activity = (ActivitiesRegisteredView) getIntent().getSerializableExtra("ActivityInfo");
+        activityInfo = (String[]) getIntent().getSerializableExtra("ActivityInfo");
+
 
 
       /*  enrollViewModel.getEnrollResult().observe(this, new Observer<EnrollResult>() {

@@ -132,18 +132,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         infoButtonViewActivity = (Button) infoWindow.findViewById(R.id.btnViewActivity);
 
-        /*infoButtonListener = new OnInfoWindowElemTouchListener(infoButtonViewActivity,
+        infoButtonListener = new OnInfoWindowElemTouchListener(infoButtonViewActivity,
                 getActivity().getResources().getDrawable(R.drawable.ic_launcher_background, getActivity().getTheme()),
                 getActivity().getResources().getDrawable(R.drawable.ic_launcher_background, getActivity().getTheme())) {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
                 Toast.makeText(getActivity(), "click on button View Activity", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), FrontPageActivity.class);
+                //Intent intent = new Intent(getActivity(), FrontPageActivity.class);
                 //     intent.putExtra("ActivityInfo", v);
-                startActivity(intent);
+                //startActivity(intent);
             }
         };
-        this.infoButtonViewActivity.setOnTouchListener(infoButtonListener);*/
+        this.infoButtonViewActivity.setOnTouchListener(infoButtonListener);
 
         // Construct a PlacesClient
         Places.initialize(getActivity().getApplicationContext(), getString(R.string.google_maps_key));
