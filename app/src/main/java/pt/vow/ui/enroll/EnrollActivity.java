@@ -1,10 +1,16 @@
 package pt.vow.ui.enroll;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import pt.vow.R;
@@ -19,6 +25,7 @@ public class EnrollActivity extends AppCompatActivity {
     private EnrollViewModel enrollViewModel;
     private LoggedInUserView user;
     private String[] activityInfo;
+    private String activityInfoTitle;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,11 +44,18 @@ public class EnrollActivity extends AppCompatActivity {
                 .get(EnrollViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
-        activityInfo = (String[]) getIntent().getSerializableExtra("ActivityInfo");
+        activityInfoTitle = (String) getIntent().getSerializableExtra("ActivityInfo");
 
+        activityInfo = activityInfoTitle.split("_");
 
+        textViewActName.setText("Activity Name: " + activityInfo[0]);
+        textViewActOwner.setText("Entity: " + activityInfo[1]);
+        textViewAddress.setText("Address: "+ activityInfo[2]);
+        textViewTime.setText("Time: " + activityInfo[3]);
+        textViewNumPart.setText("Number of Participants: " + activityInfo[4]);
+        textViewDuration.setText("Duration: " + Integer.parseInt(activityInfo[5])/60 + "h");
 
-      /*  enrollViewModel.getEnrollResult().observe(this, new Observer<EnrollResult>() {
+        enrollViewModel.getEnrollResult().observe(this, new Observer<EnrollResult>() {
 
             @Override
             public void onChanged(EnrollResult enrollResult) {
@@ -52,8 +66,8 @@ public class EnrollActivity extends AppCompatActivity {
                     showEnrollFailed(enrollResult.getError());
                 }
                 if (enrollResult.getSuccess() != null) {
-                    updateUiWithActivities(enrollResult.getSuccess());
-                    getActivity().setResult(android.app.Activity.RESULT_OK);
+                   // updateUiWithActivities(enrollResult.getSuccess());
+                    setResult(android.app.Activity.RESULT_OK);
                     // getActivity().finish();
                 }
                 //Complete and destroy login activity once successful
@@ -66,24 +80,13 @@ public class EnrollActivity extends AppCompatActivity {
             }
         });
 
-        TextWatcher afterTextChangedListener = new TextWatcher() {
+        enrollButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
+            public void onClick(View v) {
+                enrollViewModel.enrollInActivity(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
+                Toast.makeText(getApplicationContext(), "Joined Activity!", Toast.LENGTH_SHORT).show();
+                enrollButton.setEnabled(false);
             }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                    enrollViewModel.enrollInActivity(textV.getText().toString(),
-                            editTextUsername.getText().toString(), editTextEmail.getText().toString(),
-                            editTextPassword.getText().toString());
-
-            }
-        };*/
+        });
     }
 }

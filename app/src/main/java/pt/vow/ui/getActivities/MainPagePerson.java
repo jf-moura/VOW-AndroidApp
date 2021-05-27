@@ -1,6 +1,5 @@
 package pt.vow.ui.getActivities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -19,7 +18,6 @@ import androidx.navigation.ui.NavigationUI;
 import pt.vow.R;
 import pt.vow.ui.VOW;
 import pt.vow.databinding.ActivityMainPagePersonBinding;
-import pt.vow.ui.feed.FeedFragment;
 import pt.vow.ui.login.LoggedInUserView;
 
 public class MainPagePerson extends AppCompatActivity {

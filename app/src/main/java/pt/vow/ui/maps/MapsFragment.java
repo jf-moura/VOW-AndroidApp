@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,17 +16,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.location.Location;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,6 +49,9 @@ import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 
 import java.util.Arrays;
@@ -54,6 +62,9 @@ import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentMapsBinding;
 import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.getActivities.GetActivitiesViewModel;
+import pt.vow.ui.login.LoggedInUserView;
+
+import static android.app.Activity.RESULT_OK;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
@@ -97,6 +108,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private Button infoButtonViewActivity;
     private OnInfoWindowElemTouchListener infoButtonListener;
 
+    private LoggedInUserView user;
+
+    private TextView searchView;
+
     public MapsFragment() {
     }
 
@@ -108,6 +123,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             activitiesList = list;
         });
         View v = inflater.inflate(R.layout.fragment_maps, container, false);
+
+        user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
 
         if (savedInstanceState != null) {
@@ -138,9 +155,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
                 Toast.makeText(getActivity(), "click on button View Activity", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(getActivity(), FrontPageActivity.class);
-                //     intent.putExtra("ActivityInfo", v);
-                //startActivity(intent);
+
             }
         };
         this.infoButtonViewActivity.setOnTouchListener(infoButtonListener);
@@ -152,8 +167,27 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         // Construct a FusedLocationProviderClient.
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
+        searchView = v.findViewById(R.id.search_location);
+
+
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Set the fields to specify which types of place data to
+                // return after the user has made a selection.
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+
+                // Start the autocomplete intent.
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                        .build(getActivity());
+                startActivityForResult(intent, 100);
+            }
+        });
+
+
         return v;
     }
+
 
     //MARKER WITH BUTTON
     public static int getPixelsFromDp(Context context, float dp) {
@@ -413,7 +447,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
                 // infoTitle.setText(a.getName());
                 // infoOwner.setText(a.getOwner());
-                String title = a.getName() + "_" + a.getOwner();
+                String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum() + "_" + a.getDurationInMinutes() + "_" + a.getId();
 
                 Marker act = mMap.addMarker(
                         new MarkerOptions()
@@ -455,10 +489,29 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            Place pl = Autocomplete.getPlaceFromIntent(data);
+            Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());
+            searchView.setText(pl.getAddress());
+
+            mMap.clear();
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(pl.getLatLng()));
+
+        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+
+            Status status = Autocomplete.getStatusFromIntent(data);
+            Log.i(TAG, status.getStatusMessage());
+        }
+    }
+
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(getActivity().getApplicationContext(), "Info window", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getActivity(), EnrollActivity.class);
-        //intent.putExtra("ActivityInfo", String.valueOf(marker));
+        intent.putExtra("ActivityInfo", marker.getTitle());
+        intent.putExtra("UserLogged", user);
         startActivity(intent);
     }
 
