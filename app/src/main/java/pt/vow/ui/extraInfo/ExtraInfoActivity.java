@@ -55,6 +55,36 @@ public class ExtraInfoActivity extends AppCompatActivity {
             }
         });
 
+        checkBoxAnimals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
+        checkBoxNature.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
+        checkBoxHealth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
+        checkBoxHouseBuilding.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
+        checkBoxElderly.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
         imageBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
