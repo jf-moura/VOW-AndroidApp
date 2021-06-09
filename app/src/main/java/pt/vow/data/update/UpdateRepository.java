@@ -29,8 +29,8 @@ public class UpdateRepository {
         this.user = user;
     }
 
-    public Result<RegisteredUser> update(String name, String password, String newPassword, String phoneNumber) {
-        Result<RegisteredUser> result = dataSource.update(name, password, newPassword, phoneNumber);
+    public Result<RegisteredUser> update(String username, String tokenID, String name, String password, String phoneNumber, String dateBirth, String website) {
+        Result<RegisteredUser> result = dataSource.update(username, tokenID, name, password, phoneNumber, dateBirth, website);
         if (result instanceof Result.Success) {
             setUpdatedUser(((Result.Success<RegisteredUser>) result).getData());
         }

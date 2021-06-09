@@ -31,11 +31,11 @@ public class UpdateViewModel extends ViewModel {
         return updateResult;
     }
 
-    public void update(String name, String password, String newPassword, String phoneNumber) {
+    public void update(String username, String tokenID, String name, String password, String phoneNumber, String dateBirth, String website) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredUser> result = updateRepository.update(name, password, newPassword, phoneNumber);
+                Result<RegisteredUser> result = updateRepository.update(username, tokenID, name, password, phoneNumber, dateBirth, website);
                 if (result instanceof Result.Success) {
                     updateResult.postValue(new UpdateResult(new UpdatedUserView(name)));
                 } else {

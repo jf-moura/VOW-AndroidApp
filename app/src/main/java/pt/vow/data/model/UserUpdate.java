@@ -1,20 +1,22 @@
 package pt.vow.data.model;
 
-public class UserRegistrationPerson {
+public class UserUpdate {
     String name;
     String username;
-    String email;
+    String tokenID;
     String password;
     String phoneNumber;
     String dateBirth;
+    String website;
 
-    public UserRegistrationPerson(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
+    public UserUpdate(String username, String tokenID, String name, String password, String phoneNumber, String dateBirth, String website) {
         this.name = name;
         this.username = username;
-        this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.dateBirth = dateBirth;
+        this.website = website;
+        this.tokenID=tokenID;
     }
 
     public String getName() {
@@ -25,8 +27,8 @@ public class UserRegistrationPerson {
         return username;
     }
 
-    public String getEmail() {
-        return email;
+    public String getTokenID() {
+        return tokenID;
     }
 
     public String getPassword() {
@@ -41,6 +43,5 @@ public class UserRegistrationPerson {
         return dateBirth;
     }
 
+    public String getWebsite(){return website;}
 }
-
-

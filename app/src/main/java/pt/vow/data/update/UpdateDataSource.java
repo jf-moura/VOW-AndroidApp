@@ -5,6 +5,7 @@ import java.io.IOException;
 import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredUser;
 import pt.vow.data.model.UserRegistrationPerson;
+import pt.vow.data.model.UserUpdate;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -22,9 +23,9 @@ public class UpdateDataSource {
         this.service = retrofit.create(ApiUpdateUser.class);
     }
 
-    public Result<RegisteredUser> update(String name, String password, String newPassword, String phoneNumber) {
+    public Result<RegisteredUser> update(String username, String tokenID, String name, String password, String phoneNumber, String dateBirth, String website) {
 
-        Call<Void> updateCall = service.updateUser(new UserRegistrationPerson(name, null, null, password, newPassword, phoneNumber));
+        Call<Void> updateCall = service.updateUser(new UserUpdate(username, tokenID, name, password, phoneNumber, dateBirth, website));
         try {
             Response<Void> response = updateCall.execute();
             if (response.isSuccessful()) {

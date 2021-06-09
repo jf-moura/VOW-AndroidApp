@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import pt.vow.ui.login.LoginActivity;
 public class ExtraInfoActivity extends AppCompatActivity {
 
     private ImageView imageView;
+    private CheckBox checkBoxChildren, checkBoxHouseBuilding, checkBoxNature, checkBoxHealth, checkBoxElderly, checkBoxAnimals;
     private Button imageBttn;
     private Button nextBttn;
     private ExtraInfoActivity mActivity;
@@ -40,7 +42,20 @@ public class ExtraInfoActivity extends AppCompatActivity {
         imageBttn = findViewById(R.id.imageBttn);
         nextBttn = findViewById(R.id.finishBttn);
 
-        imageBttn.setOnClickListener(new View.OnClickListener(){
+        checkBoxChildren = findViewById(R.id.checkBoxChildren);
+        checkBoxAnimals = findViewById(R.id.checkBoxAnimals);
+        checkBoxNature = findViewById(R.id.checkBoxNature);
+        checkBoxHealth = findViewById(R.id.checkBoxHealth);
+        checkBoxHouseBuilding = findViewById(R.id.checkBoxHouseBuilding);
+        checkBoxElderly = findViewById(R.id.checkBoxElderly);
+
+        checkBoxChildren.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
+        imageBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -58,6 +73,7 @@ public class ExtraInfoActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
 
     private void uploadImage() {
@@ -67,6 +83,76 @@ public class ExtraInfoActivity extends AppCompatActivity {
         String encodedImage = Base64.encodeToString(imageInByte, Base64.DEFAULT);
 
         Toast.makeText(this, encodedImage, Toast.LENGTH_SHORT).show();
+    }
+
+    public void itemClickedExtraInfo(View v) {
+        switch (v.getId()) {
+            case R.id.checkBoxChildren:
+                if (checkBoxChildren.isChecked()) {
+                    checkBoxAnimals.setEnabled(false);
+                    checkBoxElderly.setEnabled(false);
+                    checkBoxHealth.setEnabled(false);
+                    checkBoxHouseBuilding.setEnabled(false);
+                    checkBoxNature.setEnabled(false);
+                    Toast.makeText(this,
+                            "Checked", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.checkBoxAnimals:
+                if (checkBoxAnimals.isChecked()) {
+                    checkBoxChildren.setEnabled(false);
+                    checkBoxElderly.setEnabled(false);
+                    checkBoxHealth.setEnabled(false);
+                    checkBoxHouseBuilding.setEnabled(false);
+                    checkBoxNature.setEnabled(false);
+                }
+                break;
+            case R.id.checkBoxElderly:
+                if (checkBoxElderly.isChecked()) {
+                    checkBoxAnimals.setEnabled(false);
+                    checkBoxChildren.setEnabled(false);
+                    checkBoxHealth.setEnabled(false);
+                    checkBoxHouseBuilding.setEnabled(false);
+                    checkBoxNature.setEnabled(false);
+                }
+                break;
+            case R.id.checkBoxHealth:
+                if (checkBoxHealth.isChecked()) {
+                    checkBoxAnimals.setEnabled(false);
+                    checkBoxElderly.setEnabled(false);
+                    checkBoxChildren.setEnabled(false);
+                    checkBoxHouseBuilding.setEnabled(false);
+                    checkBoxNature.setEnabled(false);
+                }
+                break;
+            case R.id.checkBoxHouseBuilding:
+                if (checkBoxHouseBuilding.isChecked()) {
+                    checkBoxAnimals.setEnabled(false);
+                    checkBoxElderly.setEnabled(false);
+                    checkBoxHealth.setEnabled(false);
+                    checkBoxChildren.setEnabled(false);
+                    checkBoxNature.setEnabled(false);
+                }
+                break;
+            case R.id.checkBoxNature:
+                if (checkBoxNature.isChecked()) {
+                    checkBoxAnimals.setEnabled(false);
+                    checkBoxElderly.setEnabled(false);
+                    checkBoxHealth.setEnabled(false);
+                    checkBoxHouseBuilding.setEnabled(false);
+                    checkBoxChildren.setEnabled(false);
+                }
+                break;
+            default: {
+                checkBoxNature.setEnabled(true);
+                checkBoxAnimals.setEnabled(true);
+                checkBoxElderly.setEnabled(true);
+                checkBoxHealth.setEnabled(true);
+                checkBoxHouseBuilding.setEnabled(true);
+                checkBoxChildren.setEnabled(true);
+            }
+            break;
+        }
     }
 
     @Override

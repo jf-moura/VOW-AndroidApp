@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +25,9 @@ public class FrontPageActivity extends AppCompatActivity {
         registerChooseAct = this;
         final Button loginBttn = findViewById(R.id.loginBttn);
         final Button createAccBttn = findViewById(R.id.createAccBttn);
+        final TextView textViewInfoSite = findViewById(R.id.textViewInfoSite);
+
+
 
         loginBttn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,5 +44,6 @@ public class FrontPageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
 }

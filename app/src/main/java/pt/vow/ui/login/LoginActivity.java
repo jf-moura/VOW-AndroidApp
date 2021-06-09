@@ -2,6 +2,7 @@ package pt.vow.ui.login;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +10,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.imageview.ShapeableImageView;
+
 import pt.vow.ui.getActivities.MainPagePerson;
 import pt.vow.MainPage;
 import pt.vow.ui.VOW;
@@ -28,6 +33,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
     private LoginActivity mActivity;
+    private SharedPreferences loginPreferences;
+    private SharedPreferences.Editor loginPrefsEditor;
+    private boolean saveLogin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +50,18 @@ public class LoginActivity extends AppCompatActivity {
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
+        final CheckBox rememberMe = findViewById(R.id.checkBoxRemember);
+
+        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        loginPrefsEditor = loginPreferences.edit();
+
+        saveLogin = loginPreferences.getBoolean("saveLogin", false);
+        if (saveLogin == true) {
+            usernameEditText.setText(loginPreferences.getString("username", ""));
+            passwordEditText.setText(loginPreferences.getString("password", ""));
+            rememberMe.setChecked(true);
+            loginButton.setEnabled(true);
+        }
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
@@ -109,9 +129,23 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
-            }
+
+                    String username = usernameEditText.getText().toString();
+                    String password = passwordEditText.getText().toString();
+
+                    if (rememberMe.isChecked()) {
+                        loginPrefsEditor.putBoolean("saveLogin", true);
+                        loginPrefsEditor.putString("username", username);
+                        loginPrefsEditor.putString("password", password);
+                        loginPrefsEditor.commit();
+                    } else {
+                        loginPrefsEditor.clear();
+                        loginPrefsEditor.commit();
+                    }
+                    loginViewModel.login(usernameEditText.getText().toString(),
+                            passwordEditText.getText().toString());
+                }
+
         });
     }
 
@@ -123,8 +157,7 @@ public class LoginActivity extends AppCompatActivity {
         if (model.getRole() == 0) {
             intent = new Intent(mActivity, MainPagePerson.class);
             intent.putExtra("UserLogged", model);
-        }
-        else {
+        } else {
             intent = new Intent(mActivity, MainPage.class);
             intent.putExtra("UserLogged", model);
         }

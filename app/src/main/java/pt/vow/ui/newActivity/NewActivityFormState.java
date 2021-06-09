@@ -15,10 +15,13 @@ public class NewActivityFormState {
     private Integer participantNumError;
     @Nullable
     private Integer durationError;
+    @Nullable
+    private Integer typeError;
 
     private boolean isDataValid;
 
-    NewActivityFormState(@Nullable Integer nameError, @Nullable Integer addressError, @Nullable Integer dateError, @Nullable Integer timeError, @Nullable Integer participantNumError, @Nullable Integer durationError) {
+    NewActivityFormState(@Nullable Integer nameError, @Nullable Integer addressError, @Nullable Integer dateError, @Nullable Integer timeError, @Nullable
+            Integer typeError, @Nullable Integer participantNumError, @Nullable Integer durationError) {
         this.nameError = nameError;
         this.addressError = addressError;
         this.dateError = dateError;
@@ -26,6 +29,7 @@ public class NewActivityFormState {
         this.participantNumError = participantNumError;
         this.durationError = durationError;
         this.isDataValid = false;
+        this.typeError = typeError;
     }
 
     NewActivityFormState(boolean isDataValid) {
@@ -36,6 +40,7 @@ public class NewActivityFormState {
         this.participantNumError = null;
         this.durationError = null;
         this.isDataValid = isDataValid;
+        this.typeError = null;
     }
 
     @Nullable
@@ -64,9 +69,16 @@ public class NewActivityFormState {
     }
 
     @Nullable
-    Integer getDurationError() { return durationError; }
+    Integer getDurationError() {
+        return durationError;
+    }
 
     boolean isDataValid() {
         return isDataValid;
+    }
+
+    @Nullable
+    Integer getTypeError() {
+        return typeError;
     }
 }

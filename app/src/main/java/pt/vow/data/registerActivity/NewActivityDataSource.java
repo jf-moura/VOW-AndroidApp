@@ -23,9 +23,9 @@ public class NewActivityDataSource {
         this.service = retrofit.create(ApiCreateActivity.class);
     }
 
-    public Result<RegisteredActivity> registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String participantNum, String durationInMinutes) {
+    public Result<RegisteredActivity> registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes) {
 
-        Call<Void> activityRegistrationCall = service.createActivity(new ActivityRegistration(username, tokenID, name, address, coordinates, time, participantNum, durationInMinutes));
+        Call<Void> activityRegistrationCall = service.createActivity(new ActivityRegistration(username, tokenID, name, address, coordinates, time, type, participantNum, durationInMinutes));
         try {
             Response<Void> response = activityRegistrationCall.execute();
             if (response.isSuccessful()) {

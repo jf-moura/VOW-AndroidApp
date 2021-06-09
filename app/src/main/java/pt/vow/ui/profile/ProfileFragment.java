@@ -17,8 +17,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import pt.vow.R;
 
+import pt.vow.data.model.LoggedInUser;
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.frontPage.FrontPageActivity;
+import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.update.UpdateActivity;
 
 public class ProfileFragment extends Fragment {
@@ -29,6 +31,8 @@ public class ProfileFragment extends Fragment {
     private ProfileViewModel profileViewModel;
     private FragmentProfileBinding binding;
 
+    private LoggedInUserView user;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -38,6 +42,8 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
+
         settingsButton = root.findViewById(R.id.settingBttn);
         logoutButton = root.findViewById(R.id.logoutButton);
 
@@ -45,6 +51,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(getActivity(), UpdateActivity.class);
+                intent.putExtra("UserLogged", user);
                 startActivity(intent);
             }
         });

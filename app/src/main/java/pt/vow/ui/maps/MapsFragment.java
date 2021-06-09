@@ -55,6 +55,8 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import pt.vow.R;
@@ -433,6 +435,48 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         binding = null;
     }
 
+    private int monthToInteger(String month) {
+        int result = 0;
+        switch (month) {
+            case "January":
+                result = 1;
+                break;
+            case "February":
+                result = 2;
+                break;
+            case "March":
+                result = 3;
+                break;
+            case "April":
+                result = 4;
+                break;
+            case "May":
+                result = 5;
+                break;
+            case "June":
+                result = 6;
+                break;
+            case "July":
+                result = 7;
+                break;
+            case "August":
+                result = 8;
+                break;
+            case "September":
+                result = 9;
+                break;
+            case "October":
+                result = 10;
+                break;
+            case "November":
+                result = 11;
+                break;
+            case "December":
+                result = 12;
+                break;
+        }
+        return result;
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -440,13 +484,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         if (activitiesList != null) {
             for (Activity a : activitiesList) {
+
+                //TODO: check if activities are all for the future.
+               /* String[] time = a.getTime().split(" ");
+                String timeMonth = time[0];
+                int currTimeM = Calendar.getInstance().get(Calendar.MONTH);
+                int auxTimeMonth = this.monthToInteger(timeMonth);*/
+
                 String[] latlng = a.getCoordinates().split(",");
                 final double lat = Double.parseDouble(latlng[0]);
                 final double lng = Double.parseDouble(latlng[1]);
                 final LatLng activityLocation = new LatLng(lat, lng);
 
-                // infoTitle.setText(a.getName());
-                // infoOwner.setText(a.getOwner());
                 String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum() + "_" + a.getDurationInMinutes() + "_" + a.getId();
 
                 Marker act = mMap.addMarker(
@@ -491,7 +540,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == RESULT_OK) {
             Place pl = Autocomplete.getPlaceFromIntent(data);
             Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());

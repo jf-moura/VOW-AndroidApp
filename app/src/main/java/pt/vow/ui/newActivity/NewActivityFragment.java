@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -27,7 +28,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -48,6 +48,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     private FragmentNewActivityBinding binding;
     private LoggedInUserView user;
     private Geocoder geocoder;
+    private String type;
+    private RadioGroup rg;
 
     private static final String TAG = NewActivityFragment.class.getSimpleName();
 
@@ -63,6 +65,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         editTextName = root.findViewById(R.id.editTextNameAct);
         editTextAddress = root.findViewById(R.id.editTextAddress);
         editTextPartNum = root.findViewById(R.id.editTextParticipantNum);
+
 
         TimePicker durationPicker=(TimePicker)root.findViewById(R.id.durationPicker);
         durationPicker.setIs24HourView(true);
@@ -141,7 +144,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                     }
                 }
                 newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                            editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
+                            editTextAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
             }
         };
 
@@ -172,7 +175,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onClick(View v) {
                 newActivityFragment.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                        editTextAddress.getText().toString(), latLng, date, editTextPartNum.getText().toString(), durationInMinutes);
+                        editTextAddress.getText().toString(), latLng, date,type, editTextPartNum.getText().toString(), durationInMinutes);
             }
         });
 
@@ -198,7 +201,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                                         .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
 
                         newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                                editTextAddress.getText().toString(), date, editTextPartNum.getText().toString(), durationInMinutes);
+                                editTextAddress.getText().toString(), date, type,editTextPartNum.getText().toString(), durationInMinutes);
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();}
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();

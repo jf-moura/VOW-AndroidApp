@@ -2,7 +2,7 @@
     <string name="app_name">VOW</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
+    <string name="prompt_password">password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">Welcome</string>
@@ -55,5 +55,6 @@
     <string name="enroll_failed">Enroll in activity failed.</string>
     <string name="title_enroll_activity">Enroll In Activity</string>
     <string name="title_feed">Home</string>
+    <string name="invalid_type">Not a valid type</string>
 
 </resources>

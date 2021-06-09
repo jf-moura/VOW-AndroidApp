@@ -31,11 +31,11 @@ public class NewActivityViewModel extends ViewModel {
         return newActResult;
     }
 
-    public void registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String participantNum, String durationInMinutes) {
+    public void registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredActivity> result = newActivityRepository.registerActivity(username, tokenID, name, address, coordinates, time, participantNum, durationInMinutes);
+                Result<RegisteredActivity> result = newActivityRepository.registerActivity(username, tokenID, name, address, coordinates, time,type, participantNum, durationInMinutes);
                 if (result instanceof Result.Success) {
                     newActResult.postValue(new NewActivityResult(new RegisteredActivityView()));
                 } else {
@@ -45,17 +45,19 @@ public class NewActivityViewModel extends ViewModel {
         });
     }
 
-    public void newActivityDataChanged(String name, String address, String time, String participantNum, String durationInMinutes) {
+    public void newActivityDataChanged(String name, String address, String time, String participantNum, String durationInMinutes, String type) {
         if (!isNameValid(name))
-            newActFormState.setValue(new NewActivityFormState(R.string.invalid_name, null, null, null, null, null));
+            newActFormState.setValue(new NewActivityFormState(R.string.invalid_name, null, null, null, null, null, null));
         else if (!isAddressValid(address))
-            newActFormState.setValue(new NewActivityFormState(null, R.string.invalid_address, null, null, null, null));
+            newActFormState.setValue(new NewActivityFormState(null, R.string.invalid_address, null, null, null, null, null));
         else if (!isTimeValid(time))
-            newActFormState.setValue(new NewActivityFormState(null, null, R.string.invalid_time, null, null, null));
+            newActFormState.setValue(new NewActivityFormState(null, null, R.string.invalid_time, null, null, null, null));
         else if (!isParticipantNumValid(participantNum))
-            newActFormState.setValue(new NewActivityFormState(null, null, null, null, R.string.invalid_participant_num, null));
+            newActFormState.setValue(new NewActivityFormState(null, null, null, null, R.string.invalid_participant_num, null, null));
         else if (!isDurationInMinutesValid(durationInMinutes))
-            newActFormState.setValue(new NewActivityFormState(null, null, null, null, null, R.string.invalid_duration));
+            newActFormState.setValue(new NewActivityFormState(null, null, null, null, null, R.string.invalid_duration, null));
+        else if (!isTypeValid(type))
+            newActFormState.setValue(new NewActivityFormState(null, null, null, null,  R.string.invalid_type,null, null));
         else
             newActFormState.setValue(new NewActivityFormState(true));
     }
@@ -85,6 +87,10 @@ public class NewActivityViewModel extends ViewModel {
         if (participantNum != null)
             return  !participantNum.trim().isEmpty() && participantNum.compareTo("0") >= 1;
         return true;
+    }
+    // A placeholder type validation check
+    private boolean isTypeValid(String type) {
+        return type != null;
     }
 
 }

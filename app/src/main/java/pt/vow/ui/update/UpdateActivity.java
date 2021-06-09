@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -18,12 +19,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import pt.vow.R;
 import pt.vow.ui.VOW;
+import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.profile.ProfileFragment;
 
 public class UpdateActivity extends AppCompatActivity {
     private EditText editTextName, editTextEntWebsite, editTextPassword, editTextConfirmation, editTextNewPassword, editTextPhoneNumber;
+    private TextView textViewWebsiteSett;
     private UpdateActivity mActivity;
     private UpdateViewModel updateViewModel;
+    private LoggedInUserView user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +36,21 @@ public class UpdateActivity extends AppCompatActivity {
 
         mActivity = this;
 
+        user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
+
         editTextName = findViewById(R.id.editTextName);
-        //editTextEntWebsite = findViewById(R.id.entitySite);
+
+        editTextEntWebsite = findViewById(R.id.editTextWebsiteSett);
+
         editTextPassword = findViewById(R.id.editTextPassword);
         editTextNewPassword = findViewById(R.id.editTextNewPassword);
         editTextConfirmation = findViewById(R.id.editTextConfirmPassword);
         editTextPhoneNumber = findViewById(R.id.editTextPhone);
+
+        if (user.getRole() == 1) {
+            editTextEntWebsite.setVisibility(View.VISIBLE);
+            textViewWebsiteSett.setVisibility(View.VISIBLE);
+        }
 
         // TODO: Interests
 
@@ -84,9 +97,6 @@ public class UpdateActivity extends AppCompatActivity {
                 if (updateResult.getSuccess() != null) {
                     updateUserSuccess(updateResult.getSuccess());
                     setResult(Activity.RESULT_OK);
-
-                    Intent intent = new Intent(mActivity, ProfileFragment.class);
-                    startActivity(intent);
                 }
             }
         });
@@ -104,9 +114,9 @@ public class UpdateActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                    updateViewModel.updateDataChanged(editTextName.getText().toString(),
-                            editTextPassword.getText().toString(), editTextNewPassword.getText().toString(),
-                            editTextConfirmation.getText().toString(), editTextPhoneNumber.getText().toString());
+                updateViewModel.updateDataChanged(editTextName.getText().toString(),
+                        editTextPassword.getText().toString(), editTextNewPassword.getText().toString(),
+                        editTextConfirmation.getText().toString(), editTextPhoneNumber.getText().toString());
             }
         };
 
@@ -119,19 +129,26 @@ public class UpdateActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    updateViewModel.update(editTextName.getText().toString(), editTextPassword.getText().toString(),
-                            editTextNewPassword.getText().toString(), editTextPhoneNumber.getText().toString());
+
+                if (user.getRole() == 0) { //person
+                    updateViewModel.update(user.getUsername(), user.getTokenID(), editTextName.getText().toString(), editTextPassword.getText().toString(),
+                             editTextPhoneNumber.getText().toString(), "", "");
+                } else
+                    updateViewModel.update(user.getUsername(), user.getTokenID(), editTextName.getText().toString(), editTextPassword.getText().toString(),
+                             editTextPhoneNumber.getText().toString(),"", editTextEntWebsite.getText().toString());
             }
         });
     }
 
     private void updateUserSuccess(UpdatedUserView model) {
         String success = getString(R.string.update_success) + " " + model.getName();
-        // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), success, Toast.LENGTH_LONG).show();
     }
 
     private void showUpdateFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    public void itemClicked(View view) {
     }
 }
