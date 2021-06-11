@@ -7,31 +7,17 @@
     tools:context=".ui.newActivity.NewActivityFragment">
 
     <TextView
-        android:id="@+id/textViewTittle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="56dp"
-        android:layout_marginEnd="56dp"
-        android:text="Create Your Activity"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/textViewNameAct"
         android:layout_width="99dp"
         android:layout_height="50dp"
         android:layout_above="@+id/textViewAddress"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="32dp"
         android:gravity="center"
         android:text="Activity Name: "
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTittle" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewAddress"
@@ -73,18 +59,18 @@
         app:layout_constraintStart_toStartOf="@+id/textViewParticipantNum"
         app:layout_constraintTop_toBottomOf="@+id/textViewParticipantNum" />
 
+
     <EditText
         android:id="@+id/editTextNameAct"
         android:layout_width="212dp"
         android:layout_height="48dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="48dp"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTittle" />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editTextAddress"
@@ -118,11 +104,12 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="52dp"
         android:text="Save changes"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/tableRow2"
-        app:layout_constraintStart_toStartOf="@+id/tableRow2" />
+        app:layout_constraintEnd_toEndOf="@+id/group2"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="@+id/group2" />
 
     <Button
         android:id="@+id/bttnDate"
@@ -152,11 +139,12 @@
         app:layout_constraintStart_toStartOf="@+id/editTextParticipantNum"
         app:layout_constraintTop_toBottomOf="@+id/editTextParticipantNum" />
 
-    <TableRow
-        android:id="@+id/tableRow"
+    <RadioGroup
+        android:id="@+id/group1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="52dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@+id/bttnDate"
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toStartOf="@+id/bttnDate"
@@ -186,15 +174,19 @@
             android:text="Nature"
             tools:layout_editor_absoluteX="18dp"
             tools:layout_editor_absoluteY="516dp" />
-    </TableRow>
 
-    <TableRow
-        android:id="@+id/tableRow2"
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/group2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/tableRow"
-        app:layout_constraintStart_toStartOf="@+id/tableRow"
-        app:layout_constraintTop_toBottomOf="@+id/tableRow">
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/group1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/group1"
+        app:layout_constraintTop_toBottomOf="@+id/group1">
 
         <RadioButton
             android:id="@+id/radioHouseBuilding"
@@ -215,22 +207,22 @@
 
         <RadioButton
             android:id="@+id/radioAnimals"
-            android:layout_width="146dp"
+            android:layout_width="142dp"
             android:layout_height="match_parent"
             android:text="Animals"
             tools:layout_editor_absoluteX="18dp"
             tools:layout_editor_absoluteY="516dp" />
-    </TableRow>
+    </RadioGroup>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="Type:"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="@+id/bttnDate"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.02"
         app:layout_constraintStart_toStartOf="@+id/bttnDate"
         app:layout_constraintTop_toBottomOf="@+id/bttnDate" />
 

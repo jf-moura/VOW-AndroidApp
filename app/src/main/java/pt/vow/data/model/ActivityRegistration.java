@@ -12,7 +12,7 @@ public class ActivityRegistration {
     String durationInMinutes;
     String type;
 
-    public ActivityRegistration(String username, String tokenID, String name, String address, String coordinates, String time, String participantNum, String durationInMinutes, String type) {
+    public ActivityRegistration(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes) {
         this.username = username;
         this.tokenID = tokenID;
         this.name = name;

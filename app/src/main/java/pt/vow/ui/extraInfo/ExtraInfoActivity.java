@@ -52,6 +52,13 @@ public class ExtraInfoActivity extends AppCompatActivity {
         checkBoxChildren.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(checkBoxChildren.isChecked()) {
+                    checkBoxAnimals.setEnabled(false);
+                    checkBoxElderly.setEnabled(false);
+                    checkBoxHealth.setEnabled(false);
+                    checkBoxHouseBuilding.setEnabled(false);
+                    checkBoxNature.setEnabled(false);
+                }
             }
         });
 

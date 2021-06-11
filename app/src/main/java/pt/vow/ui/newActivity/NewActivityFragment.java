@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -49,7 +50,16 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     private LoggedInUserView user;
     private Geocoder geocoder;
     private String type;
-    private RadioGroup rg;
+    private RadioGroup rg1, rg2;
+    private RadioButton rbNature, rbChildren, rbHealth, rbHouseBuilding, rbElderly, rbAnimals;
+
+    private static final int RB1_ID = 1;//animals radio button id
+    private static final int RB2_ID = 2;//children radio button id
+    private static final int RB3_ID = 3;//health radio button id
+    private static final int RB4_ID = 4;//nature radio button id
+    private static final int RB5_ID = 5;//houseBuilding radio button id
+    private static final int RB6_ID = 6;//elderly radio button id
+
 
     private static final String TAG = NewActivityFragment.class.getSimpleName();
 
@@ -62,12 +72,28 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
         geocoder = new Geocoder(getActivity());
 
+        type = "";
+
         editTextName = root.findViewById(R.id.editTextNameAct);
         editTextAddress = root.findViewById(R.id.editTextAddress);
         editTextPartNum = root.findViewById(R.id.editTextParticipantNum);
 
+        /*rbAnimals.setId(RB1_ID);
+        rbChildren.setId(RB2_ID);
+        rbHealth.setId(RB3_ID);
+        rbNature.setId(RB4_ID);
+        rbHouseBuilding.setId(RB5_ID);
+        rbElderly.setId(RB6_ID);*/
 
-        TimePicker durationPicker=(TimePicker)root.findViewById(R.id.durationPicker);
+        rg1 = (RadioGroup) root.findViewById(R.id.group1);
+        rg2 = (RadioGroup) root.findViewById(R.id.group2);
+        rg1.clearCheck(); // this is so we can start fresh, with no selection on both RadioGroups
+        rg2.clearCheck();
+        rg1.setOnCheckedChangeListener(listener1);
+        rg2.setOnCheckedChangeListener(listener2);
+
+
+        TimePicker durationPicker = (TimePicker) root.findViewById(R.id.durationPicker);
         durationPicker.setIs24HourView(true);
 
         Calendar currentDate = Calendar.getInstance();
@@ -144,7 +170,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                     }
                 }
                 newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                            editTextAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                        editTextAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
             }
         };
 
@@ -175,7 +201,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onClick(View v) {
                 newActivityFragment.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                        editTextAddress.getText().toString(), latLng, date,type, editTextPartNum.getText().toString(), durationInMinutes);
+                        editTextAddress.getText().toString(), latLng, date, type, editTextPartNum.getText().toString(), durationInMinutes);
             }
         });
 
@@ -198,12 +224,13 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                         // TODO: timezone does not yet change due to winter/summer time
                         date = new String().concat(String.valueOf(dayOfMonth)).concat("/")
                                 .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
-                                        .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
+                                .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
 
                         newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                                editTextAddress.getText().toString(), date, type,editTextPartNum.getText().toString(), durationInMinutes);
+                                editTextAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
                     }
-                }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();}
+                }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
+            }
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
     }
 
@@ -230,6 +257,59 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    private RadioGroup.OnCheckedChangeListener listener1 = new RadioGroup.OnCheckedChangeListener() {
+
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            if (checkedId != -1) {
+                rg2.setOnCheckedChangeListener(null); // remove the listener before clearing so we don't throw that stackoverflow exception
+                rg2.clearCheck(); // clear the second RadioGroup
+                rg2.setOnCheckedChangeListener(listener2); //reset the listener
+                updateType();
+            }
+        }
+    };
+
+    private RadioGroup.OnCheckedChangeListener listener2 = new RadioGroup.OnCheckedChangeListener() {
+
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            if (checkedId != -1) {
+                rg1.setOnCheckedChangeListener(null);
+                rg1.clearCheck();
+                rg1.setOnCheckedChangeListener(listener1);
+                updateType();
+            }
+        }
+    };
+
+    private void updateType(){
+        int chkId1 = rg1.getCheckedRadioButtonId();
+        int chkId2 = rg2.getCheckedRadioButtonId();
+        int realCheck = chkId1 == -1 ? chkId2 : chkId1;
+        switch (realCheck) {
+            case R.id.radioAnimals:
+                type = "animals";
+                break;
+            case R.id.radioChildren:
+                type = "children";
+                break;
+            case R.id.radioHealth:
+                type = "health";
+                break;
+            case R.id.radioNature:
+                type = "nature";
+                break;
+            case R.id.radioHouseBuilding:
+                type = "houseBuilding";
+                break;
+            case R.id.radioElderly:
+                type = "elderly";
+                break;
+        }
 
     }
 }
