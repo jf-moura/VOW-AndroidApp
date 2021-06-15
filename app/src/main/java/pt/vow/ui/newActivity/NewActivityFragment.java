@@ -3,11 +3,13 @@ package pt.vow.ui.newActivity;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -27,7 +30,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -39,7 +50,8 @@ import pt.vow.ui.login.LoggedInUserView;
 
 public class NewActivityFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    private EditText editTextName, editTextAddress, editTextPartNum;
+    private EditText editTextName, editTextPartNum;
+    private TextView textAddress;
     private String latLng;
     private String date;
     private String timeZone;
@@ -75,7 +87,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         type = "";
 
         editTextName = root.findViewById(R.id.editTextNameAct);
-        editTextAddress = root.findViewById(R.id.editTextAddress);
+        textAddress = root.findViewById(R.id.editTextAddress);
         editTextPartNum = root.findViewById(R.id.editTextParticipantNum);
 
         /*rbAnimals.setId(RB1_ID);
@@ -120,9 +132,6 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                 if (newActivityFormState.getNameError() != null) {
                     editTextName.setError(getString(newActivityFormState.getNameError()));
                 }
-                if (newActivityFormState.getAddressError() != null) {
-                    editTextAddress.setError(getString(newActivityFormState.getAddressError()));
-                }
                 if (newActivityFormState.getParticipantNumError() != null) {
                     editTextPartNum.setError(getString(newActivityFormState.getParticipantNumError()));
                 }
@@ -158,9 +167,9 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!editTextAddress.getText().toString().isEmpty()) {
+                if (!textAddress.getText().toString().isEmpty()) {
                     try {
-                        List<Address> addresses = geocoder.getFromLocationName(editTextAddress.getText().toString(), 1);
+                        List<Address> addresses = geocoder.getFromLocationName(textAddress.getText().toString(), 1);
                         if (addresses.size() > 0) {
                             Address address = addresses.get(0);
                             latLng = new String().concat(address.getLatitude() + "," + address.getLongitude());
@@ -170,12 +179,12 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                     }
                 }
                 newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                        editTextAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                        textAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
             }
         };
 
         editTextName.addTextChangedListener(afterTextChangedListener);
-        editTextAddress.addTextChangedListener(afterTextChangedListener);
+        textAddress.addTextChangedListener(afterTextChangedListener);
         editTextPartNum.addTextChangedListener(afterTextChangedListener);
 
         durationPicker.setOnTimeChangedListener(
@@ -196,12 +205,27 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             }
         });
 
+        textAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Places.initialize(getActivity().getApplicationContext(), getString(R.string.google_maps_key));
+                // Set the fields to specify which types of place data to
+                // return after the user has made a selection.
+                List<Place.Field> fields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.NAME);
+
+                // Start the autocomplete intent.
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                        .build(getActivity());
+                startActivityForResult(intent, 100);
+            }
+        });
+
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 newActivityFragment.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                        editTextAddress.getText().toString(), latLng, date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                        textAddress.getText().toString(), latLng, date, type, editTextPartNum.getText().toString(), durationInMinutes);
             }
         });
 
@@ -227,7 +251,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                                 .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
 
                         newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                                editTextAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                                textAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
             }
@@ -238,6 +262,19 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         String success = getString(R.string.activity_success);
         // TODO : initiate successful logged in experience
         Toast.makeText(getActivity().getApplicationContext(), success, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == AutocompleteActivity.RESULT_OK) {
+            Place pl = Autocomplete.getPlaceFromIntent(data);
+            Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());
+            textAddress.setText(pl.getAddress());
+        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+            Status status = Autocomplete.getStatusFromIntent(data);
+            Log.i(TAG, status.getStatusMessage());
+        }
     }
 
     private void showRegisterFailed(@StringRes Integer errorString) {

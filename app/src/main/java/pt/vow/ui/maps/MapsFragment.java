@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +21,6 @@ import androidx.fragment.app.Fragment;
 
 import android.location.Location;
 import android.widget.Button;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -177,7 +174,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             public void onClick(View v) {
                 // Set the fields to specify which types of place data to
                 // return after the user has made a selection.
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                List<Place.Field> fields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.ID, Place.Field.NAME);
 
                 // Start the autocomplete intent.
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
@@ -232,8 +229,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         if (locationPermissionGranted) {
             // Use fields to define the data types to return.
-            List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS,
-                    Place.Field.LAT_LNG);
+            List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.ID, Place.Field.NAME);
+
 
             // Use the builder to create a FindCurrentPlaceRequest.
             FindCurrentPlaceRequest request =
@@ -541,14 +538,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && resultCode == RESULT_OK) {
-            Place pl = Autocomplete.getPlaceFromIntent(data);
-            Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());
-            searchView.setText(pl.getAddress());
+        if (requestCode == 100 && resultCode == AutocompleteActivity.RESULT_OK) {
+                Place pl = Autocomplete.getPlaceFromIntent(data);
+                Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());
+                searchView.setText(pl.getAddress());
 
-            mMap.clear();
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(pl.getLatLng()));
-
+                mMap.clear();
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(pl.getLatLng()));
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
 
             Status status = Autocomplete.getStatusFromIntent(data);
