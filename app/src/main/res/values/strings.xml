@@ -27,8 +27,8 @@
     <string name="pick_place">Choose a place</string>
 
     <string-array name="typeUser">
-        <item>Entity</item>
-        <item>Person</item>
+        <item>Organization</item>
+        <item>Volunteer</item>
     </string-array>
 
     <string name="action_settings">Settings</string>

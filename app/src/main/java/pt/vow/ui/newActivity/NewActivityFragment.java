@@ -90,13 +90,6 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         textAddress = root.findViewById(R.id.editTextAddress);
         editTextPartNum = root.findViewById(R.id.editTextParticipantNum);
 
-        /*rbAnimals.setId(RB1_ID);
-        rbChildren.setId(RB2_ID);
-        rbHealth.setId(RB3_ID);
-        rbNature.setId(RB4_ID);
-        rbHouseBuilding.setId(RB5_ID);
-        rbElderly.setId(RB6_ID);*/
-
         rg1 = (RadioGroup) root.findViewById(R.id.group1);
         rg2 = (RadioGroup) root.findViewById(R.id.group2);
         rg1.clearCheck(); // this is so we can start fresh, with no selection on both RadioGroups
@@ -107,6 +100,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
         TimePicker durationPicker = (TimePicker) root.findViewById(R.id.durationPicker);
         durationPicker.setIs24HourView(true);
+        durationPicker.setHour(0);
+        durationPicker.setMinute(0);
 
         Calendar currentDate = Calendar.getInstance();
         timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);

@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredUser;
-import pt.vow.data.model.UserRegistrationEntity;
-import pt.vow.data.model.UserRegistrationPerson;
+import pt.vow.data.model.UserRegistrationOrganization;
+import pt.vow.data.model.UserRegistrationVolunteer;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -24,9 +24,9 @@ public class RegisterDataSource {
         this.service = retrofit.create(ApiCreateAcc.class);
     }
 
-    public Result<RegisteredUser> registerEntity(String name, String username, String email, String password, String phoneNumber, String website) {
+    public Result<RegisteredUser> registerOrganization(String name, String username, String email, String password, String phoneNumber, String website) {
 
-        Call<Void> userRegistrationCall = service.createUserEntity(new UserRegistrationEntity(name, username, email, password, phoneNumber, website));
+        Call<Void> userRegistrationCall = service.createUserOrganization(new UserRegistrationOrganization(name, username, email, password, phoneNumber, website));
         try {
             Response<Void> response = userRegistrationCall.execute();
             if (response.isSuccessful()) {
@@ -38,9 +38,9 @@ public class RegisterDataSource {
         }
     }
 
-    public Result<RegisteredUser> registerPerson(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
+    public Result<RegisteredUser> registerVolunteer(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
 
-        Call<Void> userRegistrationCall = service.createUserPerson(new UserRegistrationPerson(name, username, email, password, phoneNumber, dateBirth));
+        Call<Void> userRegistrationCall = service.createUserVolunteer(new UserRegistrationVolunteer(name, username, email, password, phoneNumber, dateBirth));
         try {
             Response<Void> response = userRegistrationCall.execute();
             if (response.isSuccessful()) {

@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredUser;
-import pt.vow.data.model.UserRegistrationPerson;
 import pt.vow.data.model.UserUpdate;
 import retrofit2.Call;
 import retrofit2.Response;

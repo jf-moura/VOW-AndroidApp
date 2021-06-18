@@ -45,7 +45,7 @@ public class NewActivityViewModel extends ViewModel {
         });
     }
 
-    public void newActivityDataChanged(String name, String address, String time, String participantNum, String durationInMinutes, String type) {
+    public void newActivityDataChanged(String name, String address, String time, String type, String participantNum, String durationInMinutes) {
         if (!isNameValid(name))
             newActFormState.setValue(new NewActivityFormState(R.string.invalid_name, null, null, null, null, null, null));
         else if (!isAddressValid(address))

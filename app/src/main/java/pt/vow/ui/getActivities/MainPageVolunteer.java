@@ -20,7 +20,7 @@ import pt.vow.ui.VOW;
 import pt.vow.databinding.ActivityMainPagePersonBinding;
 import pt.vow.ui.login.LoggedInUserView;
 
-public class MainPagePerson extends AppCompatActivity {
+public class MainPageVolunteer extends AppCompatActivity {
 
     private ActivityMainPagePersonBinding binding;
     private LoggedInUserView user;

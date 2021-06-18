@@ -34,11 +34,11 @@ public class RegisterViewModel extends ViewModel {
         return registerResult;
     }
 
-    public void registerEntity(String name, String username, String email, String password, String phoneNumber, String website) {
+    public void registerOrganization(String name, String username, String email, String password, String phoneNumber, String website) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredUser> result = registerRepository.registerEntity(name, username, email, password, phoneNumber, website);
+                Result<RegisteredUser> result = registerRepository.registerOrganization(name, username, email, password, phoneNumber, website);
                 if (result instanceof Result.Success) {
                     RegisteredUser data = ((Result.Success<RegisteredUser>) result).getData();
                     registerResult.postValue(new RegisterResult(new RegisteredUserView(data.getDisplayName())));
@@ -53,7 +53,7 @@ public class RegisterViewModel extends ViewModel {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredUser> result = registerRepository.registerPerson(name, username, email, password, phoneNumber, dateBirth);
+                Result<RegisteredUser> result = registerRepository.registerVolunteer(name, username, email, password, phoneNumber, dateBirth);
                 if (result instanceof Result.Success) {
                     RegisteredUser data = ((Result.Success<RegisteredUser>) result).getData();
                     registerResult.postValue(new RegisterResult(new RegisteredUserView(data.getDisplayName())));
@@ -64,7 +64,7 @@ public class RegisterViewModel extends ViewModel {
         });
     }
 
-    public void registerDataChangedEntity(String name, String username, String email, String password, String confirmPassword, String phoneNumber, String website) {
+    public void registerDataChangedOrganization(String name, String username, String email, String password, String confirmPassword, String phoneNumber, String website) {
         if (!isNameValid(name))
             registerFormState.setValue(new RegisterFormState(R.string.invalid_name, null, null, null, null, null, null));
         else if (!isUserNameValid(username))

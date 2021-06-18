@@ -22,13 +22,13 @@ import java.io.IOException;
 import pt.vow.R;
 import pt.vow.ui.login.LoginActivity;
 
-public class ExtraInfoEntityActivity  extends AppCompatActivity {
+public class ExtraInfoOrganizationActivity extends AppCompatActivity {
 
     private ImageView imageView;
     private CheckBox checkBoxChildren, checkBoxHouseBuilding, checkBoxNature, checkBoxHealth, checkBoxElderly, checkBoxAnimals;
     private Button imageBttn;
     private Button nextBttn;
-    private ExtraInfoEntityActivity mActivity;
+    private ExtraInfoOrganizationActivity mActivity;
     private int IMG_REQUEST = 21;
     private Bitmap bitmap;
 

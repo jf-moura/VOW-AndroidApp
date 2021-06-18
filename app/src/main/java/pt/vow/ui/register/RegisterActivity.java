@@ -24,14 +24,14 @@ import android.widget.Toast;
 import pt.vow.R;
 import pt.vow.ui.VOW;
 import pt.vow.ui.extraInfo.ExtraInfoActivity;
-import pt.vow.ui.extraInfo.ExtraInfoEntityActivity;
+import pt.vow.ui.extraInfo.ExtraInfoOrganizationActivity;
 
 public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private EditText editTextEmail, editTextName, editTextEntWebsite, editTextPassword, editTextConfirmation, editTextUsername, editTextPhoneNumber;
+    private EditText editTextEmail, editTextName, editTextOrgWebsite, editTextPassword, editTextConfirmation, editTextUsername, editTextPhoneNumber;
     private DatePicker datePickerDateBirth;
     private TextView textViewDateBirth;
-    private boolean isEntity;
+    private boolean isOrganization;
     private RegisterActivity extraInfoActP;
     private RegisterViewModel registerViewModel;
     private String date;
@@ -41,18 +41,20 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        isEntity = true;
+        isOrganization = true;
         extraInfoActP = this;
 
         editTextEmail = findViewById(R.id.emailAddress);
         editTextUsername = findViewById(R.id.username);
         editTextName = findViewById(R.id.name);
-        editTextEntWebsite = findViewById(R.id.entitySite);
+        editTextOrgWebsite = findViewById(R.id.organizationSite);
         datePickerDateBirth = findViewById(R.id.dateBirth);
         editTextPassword = findViewById(R.id.password);
         editTextConfirmation = findViewById(R.id.passwordConfirmation);
         editTextPhoneNumber = findViewById(R.id.phoneNumber);
         textViewDateBirth = findViewById(R.id.textViewDateBirth);
+
+
 
         date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
                 .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
@@ -92,12 +94,12 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 if (newActivityFormState.getPasswordConfirmationError() != null) {
                     editTextConfirmation.setError(getString(newActivityFormState.getPasswordConfirmationError()));
                 }
-                if (isEntity) {
+                if (isOrganization) {
                     if (newActivityFormState.getPhoneNumberError() != null) {
                         editTextPhoneNumber.setError(getString(newActivityFormState.getPhoneNumberError()));
                     }
                     if (newActivityFormState.getWebsiteError() != null) {
-                        editTextEntWebsite.setError(getString(newActivityFormState.getWebsiteError()));
+                        editTextOrgWebsite.setError(getString(newActivityFormState.getWebsiteError()));
                     }
                 }
             }
@@ -115,8 +117,8 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 if (registerResult.getSuccess() != null) {
                     registerUserSuccess(registerResult.getSuccess());
                     setResult(Activity.RESULT_OK);
-                    if (isEntity) {
-                        Intent intent = new Intent(extraInfoActP, ExtraInfoEntityActivity.class);
+                    if (isOrganization) {
+                        Intent intent = new Intent(extraInfoActP, ExtraInfoOrganizationActivity.class);
                         startActivity(intent);
                     } else {
                         Intent intent = new Intent(extraInfoActP, ExtraInfoActivity.class);
@@ -140,11 +142,11 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (isEntity)
-                    registerViewModel.registerDataChangedEntity(editTextName.getText().toString(),
+                if (isOrganization)
+                    registerViewModel.registerDataChangedOrganization(editTextName.getText().toString(),
                             editTextUsername.getText().toString(), editTextEmail.getText().toString(),
                             editTextPassword.getText().toString(), editTextConfirmation.getText().toString(),
-                            editTextPhoneNumber.getText().toString(), editTextEntWebsite.getText().toString());
+                            editTextPhoneNumber.getText().toString(), editTextOrgWebsite.getText().toString());
                 else {
                     registerViewModel.registerDataChangedPerson(editTextName.getText().toString(),
                             editTextUsername.getText().toString(), editTextEmail.getText().toString(),
@@ -159,7 +161,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         editTextPassword.addTextChangedListener(afterTextChangedListener);
         editTextConfirmation.addTextChangedListener(afterTextChangedListener);
         editTextPhoneNumber.addTextChangedListener(afterTextChangedListener);
-        editTextEntWebsite.addTextChangedListener(afterTextChangedListener);
+        editTextOrgWebsite.addTextChangedListener(afterTextChangedListener);
         datePickerDateBirth.init( datePickerDateBirth.getYear(), datePickerDateBirth.getMonth(), datePickerDateBirth.getDayOfMonth(),
                 new DatePicker.OnDateChangedListener() {
             @Override
@@ -173,10 +175,10 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isEntity)
-                    registerViewModel.registerEntity(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
+                if (isOrganization)
+                    registerViewModel.registerOrganization(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
                             editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
-                            editTextEntWebsite.getText().toString());
+                            editTextOrgWebsite.getText().toString());
                 else
                     registerViewModel.registerPerson(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
                             editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(), date);
@@ -201,17 +203,17 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
         switch (position) {
             case 0:
-                editTextEntWebsite.setVisibility(view.VISIBLE);
+                editTextOrgWebsite.setVisibility(view.VISIBLE);
                 datePickerDateBirth.setVisibility(view.GONE);
                 textViewDateBirth.setVisibility(view.GONE);
-                isEntity = true;
+                isOrganization = true;
                 break;
 
             case 1:
-                editTextEntWebsite.setVisibility(view.GONE);
+                editTextOrgWebsite.setVisibility(view.GONE);
                 datePickerDateBirth.setVisibility(view.VISIBLE);
                 textViewDateBirth.setVisibility(view.VISIBLE);
-                isEntity = false;
+                isOrganization = false;
                 break;
         }
     }

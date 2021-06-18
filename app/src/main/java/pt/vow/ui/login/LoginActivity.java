@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,9 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.imageview.ShapeableImageView;
-
-import pt.vow.ui.getActivities.MainPagePerson;
+import pt.vow.ui.getActivities.MainPageVolunteer;
 import pt.vow.MainPage;
 import pt.vow.ui.VOW;
 import pt.vow.R;
@@ -155,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
         Intent intent;
         if (model.getRole() == 0) {
-            intent = new Intent(mActivity, MainPagePerson.class);
+            intent = new Intent(mActivity, MainPageVolunteer.class);
             intent.putExtra("UserLogged", model);
         } else {
             intent = new Intent(mActivity, MainPage.class);

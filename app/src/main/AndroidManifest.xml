@@ -41,7 +41,7 @@
             android:name=".ui.enroll.EnrollActivity"
             android:label="@string/title_enroll_activity" />
         <activity
-            android:name=".ui.getActivities.MainPagePerson"
+            android:name=".ui.getActivities.MainPageVolunteer"
             android:label="@string/title_activity_main_person" />
         <activity
             android:name=".MainPage"
@@ -53,7 +53,7 @@
             android:name=".ui.extraInfo.ExtraInfoActivity"
             android:label="Register" />
         <activity
-            android:name=".ui.extraInfo.ExtraInfoEntityActivity"
+            android:name=".ui.extraInfo.ExtraInfoOrganizationActivity"
             android:label="Register" />
         <activity
             android:name=".ui.register.RegisterActivity"

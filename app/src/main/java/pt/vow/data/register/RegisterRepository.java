@@ -35,16 +35,16 @@ public class RegisterRepository {
         this.user = user;
     }
 
-    public Result<RegisteredUser> registerEntity(String name, String username, String email, String password, String phoneNumber, String website) {
-        Result<RegisteredUser> result = dataSource.registerEntity(name, username, email, password, phoneNumber, website);
+    public Result<RegisteredUser> registerOrganization(String name, String username, String email, String password, String phoneNumber, String website) {
+        Result<RegisteredUser> result = dataSource.registerOrganization(name, username, email, password, phoneNumber, website);
         if (result instanceof Result.Success) {
             setRegisteredUser(((Result.Success<RegisteredUser>) result).getData());
         }
         return result;
     }
 
-    public Result<RegisteredUser> registerPerson(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
-        Result<RegisteredUser> result = dataSource.registerPerson(name, username, email, password, phoneNumber, dateBirth);
+    public Result<RegisteredUser> registerVolunteer(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
+        Result<RegisteredUser> result = dataSource.registerVolunteer(name, username, email, password, phoneNumber, dateBirth);
         if (result instanceof Result.Success) {
             setRegisteredUser(((Result.Success<RegisteredUser>) result).getData());
         }

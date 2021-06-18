@@ -3,7 +3,7 @@ package pt.vow.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UserRegistrationEntity {
+public class UserRegistrationOrganization {
 
     String name;
     String username;
@@ -12,7 +12,7 @@ public class UserRegistrationEntity {
     String phoneNumber;
     String website;
 
-    public UserRegistrationEntity(String name, String username, String email, String password, String phoneNumber, String website) {
+    public UserRegistrationOrganization(String name, String username, String email, String password, String phoneNumber, String website) {
         this.name = name;
         this.username = username;
         this.email = email;

@@ -30,8 +30,8 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/bg_search_view"
             android:drawableLeft="@drawable/ic_baseline_search_24"
-            android:padding="12dp"
             android:elevation="5dp"
+            android:padding="12dp"
             android:queryHint="Search..." />-
 
     </pt.vow.ui.maps.MapWrapperLayout>

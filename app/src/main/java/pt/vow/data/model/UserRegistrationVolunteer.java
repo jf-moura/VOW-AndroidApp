@@ -1,6 +1,6 @@
 package pt.vow.data.model;
 
-public class UserRegistrationPerson {
+public class UserRegistrationVolunteer {
     String name;
     String username;
     String email;
@@ -8,7 +8,7 @@ public class UserRegistrationPerson {
     String phoneNumber;
     String dateBirth;
 
-    public UserRegistrationPerson(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
+    public UserRegistrationVolunteer(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
         this.name = name;
         this.username = username;
         this.email = email;
