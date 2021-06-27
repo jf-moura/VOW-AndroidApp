@@ -4,4 +4,12 @@
     <style name ="RoundedSquare">
         <item name="cornerSize">15%</item>
     </style>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"/>
+
+    
+    <style name="AppTheme.customPop">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
 </resources>

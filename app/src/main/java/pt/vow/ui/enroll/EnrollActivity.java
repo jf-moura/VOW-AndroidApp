@@ -1,5 +1,6 @@
 package pt.vow.ui.enroll;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -83,6 +84,11 @@ public class EnrollActivity extends AppCompatActivity {
         enrollButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intentPop = new Intent(EnrollActivity.this, Pop.class);
+                intentPop.putExtra("title", textViewActName.getText().toString());
+                intentPop.putExtra("location", textViewAddress.getText().toString());
+                intentPop.putExtra("time", textViewTime.getText().toString());
+                startActivity(intentPop);
                 enrollViewModel.enrollInActivity(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
                 Toast.makeText(getApplicationContext(), "Joined Activity!", Toast.LENGTH_SHORT).show();
                 enrollButton.setEnabled(false);

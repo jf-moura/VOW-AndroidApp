@@ -52,6 +52,8 @@
         <activity
             android:name=".ui.extraInfo.ExtraInfoActivity"
             android:label="Register" />
+        <activity android:name=".ui.enroll.Pop"
+            android:theme="@style/AppTheme.customPop"/>
         <activity
             android:name=".ui.extraInfo.ExtraInfoOrganizationActivity"
             android:label="Register" />

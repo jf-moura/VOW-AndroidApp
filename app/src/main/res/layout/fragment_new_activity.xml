@@ -122,11 +122,15 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="20dp"
-        android:text="Select Date"
+        android:drawableLeft="@drawable/ic_baseline_calendar_today_24"
+        android:text="Date"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorLink="#53BCBE"
         app:layout_constraintBottom_toTopOf="@+id/bttnSaveChanges"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDuration"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        app:rippleColor="#FF5722" />
 
 
     <TimePicker
