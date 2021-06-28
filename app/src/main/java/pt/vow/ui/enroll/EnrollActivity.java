@@ -54,7 +54,7 @@ public class EnrollActivity extends AppCompatActivity {
         textViewAddress.setText("Address: "+ activityInfo[2]);
         textViewTime.setText("Time: " + activityInfo[3]);
         textViewNumPart.setText("Number of Participants: " + activityInfo[4]);
-        textViewDuration.setText("Duration: " + Integer.parseInt(activityInfo[5])/60 + "h");
+        textViewDuration.setText("Duration: " + Integer.parseInt(activityInfo[5])/60 + "h" + Integer.parseInt(activityInfo[5])%60);
 
         enrollViewModel.getEnrollResult().observe(this, new Observer<EnrollResult>() {
 
@@ -85,9 +85,10 @@ public class EnrollActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intentPop = new Intent(EnrollActivity.this, Pop.class);
-                intentPop.putExtra("title", textViewActName.getText().toString());
-                intentPop.putExtra("location", textViewAddress.getText().toString());
-                intentPop.putExtra("time", textViewTime.getText().toString());
+                intentPop.putExtra("title", activityInfo[0]);
+                intentPop.putExtra("location", activityInfo[2]);
+                intentPop.putExtra("time", activityInfo[3]);
+                intentPop.putExtra("duration", Integer.parseInt(activityInfo[5])/60 + ":" + Integer.parseInt(activityInfo[5])%60);
                 startActivity(intentPop);
                 enrollViewModel.enrollInActivity(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
                 Toast.makeText(getApplicationContext(), "Joined Activity!", Toast.LENGTH_SHORT).show();

@@ -39,7 +39,13 @@
 
         <activity
             android:name=".ui.enroll.EnrollActivity"
-            android:label="@string/title_enroll_activity" />
+            android:label="@string/title_enroll_activity">
+            <intent-filter>
+                <action android:name="android.intent.action.INSERT" />
+                <data android:mimeType="vnd.android.cursor.dir/event" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.getActivities.MainPageVolunteer"
             android:label="@string/title_activity_main_person" />
