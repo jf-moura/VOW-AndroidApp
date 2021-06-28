@@ -24,15 +24,15 @@
             android:id="@+id/search_location"
             android:layout_width="388dp"
             android:layout_height="44dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="80dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/bg_search_view"
             android:drawableLeft="@drawable/ic_baseline_search_24"
             android:elevation="5dp"
             android:padding="12dp"
-            android:queryHint="Search..." />-
+            android:queryHint="Search..." />
 
     </pt.vow.ui.maps.MapWrapperLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
