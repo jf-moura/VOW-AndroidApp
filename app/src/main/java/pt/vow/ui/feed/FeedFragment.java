@@ -1,11 +1,9 @@
 package pt.vow.ui.feed;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -13,17 +11,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
+import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentFeedBinding;
 import pt.vow.ui.VOW;
-import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.getActivities.GetActivitiesViewModel;
-import pt.vow.ui.login.LoggedInUserView;
 
 public class FeedFragment extends Fragment {
 
@@ -32,7 +28,6 @@ public class FeedFragment extends Fragment {
     private GetActivitiesViewModel activitiesViewModel;
     private FeedViewModel feedViewModel;
     private FragmentFeedBinding binding;
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,12 +46,22 @@ public class FeedFragment extends Fragment {
         recyclerView = root.findViewById(R.id.activities_recycler_view);
 
         if (activitiesList != null) {
+            List<Activity> aux = new LinkedList<>();
+            for (Activity a : activitiesList) {
+                Calendar currentTime = Calendar.getInstance();
 
-            for(Activity a : activitiesList){
+                String[] dateTime = a.getTime().split(" ");
+                String[] hours = dateTime[3].split(":");
 
+                Calendar beginTime = Calendar.getInstance();
+                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length()-1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+                long startMillis = beginTime.getTimeInMillis();
+                if (startMillis > currentTime.getTimeInMillis()) {
+                    aux.add(a);
+                }
             }
 
-            RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), activitiesList);
+            RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         }
@@ -70,4 +75,46 @@ public class FeedFragment extends Fragment {
         binding = null;
     }
 
+    private int monthToIntegerShort(String month) {
+        int result = 0;
+        switch (month) {
+            case "Jan":
+                result = 0;
+                break;
+            case "Fev":
+                result = 1;
+                break;
+            case "Mar":
+                result = 2;
+                break;
+            case "Apr":
+                result = 3;
+                break;
+            case "May":
+                result = 4;
+                break;
+            case "Jun":
+                result = 5;
+                break;
+            case "Jul":
+                result = 6;
+                break;
+            case "Aug":
+                result = 7;
+                break;
+            case "Sep":
+                result = 8;
+                break;
+            case "Oct":
+                result = 9;
+                break;
+            case "Nov":
+                result = 10;
+                break;
+            case "Dec":
+                result = 11;
+                break;
+        }
+        return result;
+    }
 }
