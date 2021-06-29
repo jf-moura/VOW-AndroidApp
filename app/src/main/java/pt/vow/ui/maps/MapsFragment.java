@@ -613,7 +613,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         Toast.makeText(getActivity().getApplicationContext(), "Info window", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getActivity(), EnrollActivity.class);
         intent.putExtra("ActivityInfo", marker.getTitle());
-        intent.putExtra("UserLogged", user);
         startActivity(intent);
     }
 
