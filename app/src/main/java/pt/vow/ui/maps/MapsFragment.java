@@ -526,6 +526,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (activitiesList != null) {
             for (Activity a : activitiesList) {
 
+                //TODO: check if activities are all for the future.
+               /* String[] time = a.getTime().split(" ");
+                String timeMonth = time[0];
+                int currTimeM = Calendar.getInstance().get(Calendar.MONTH);
+                int auxTimeMonth = this.monthToInteger(timeMonth);*/
+
                 Calendar currentTime = Calendar.getInstance();
 
                 String[] dateTime = a.getTime().split(" ");
@@ -604,8 +610,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(getActivity().getApplicationContext(), "Info window", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getActivity(), EnrollActivity.class);
         intent.putExtra("ActivityInfo", marker.getTitle());
+        intent.putExtra("UserLogged", user);
         startActivity(intent);
     }
 
