@@ -51,6 +51,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -474,6 +475,49 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
         return result;
     }
+    private int monthToIntegerShort(String month) {
+        int result = 0;
+        switch (month) {
+            case "Jan":
+                result = 0;
+                break;
+            case "Fev":
+                result = 1;
+                break;
+            case "Mar":
+                result = 2;
+                break;
+            case "Apr":
+                result = 3;
+                break;
+            case "May":
+                result = 4;
+                break;
+            case "Jun":
+                result = 5;
+                break;
+            case "Jul":
+                result = 6;
+                break;
+            case "Aug":
+                result = 7;
+                break;
+            case "Sep":
+                result = 8;
+                break;
+            case "Oct":
+                result = 9;
+                break;
+            case "Nov":
+                result = 10;
+                break;
+            case "Dec":
+                result = 11;
+                break;
+        }
+        return result;
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -482,25 +526,32 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (activitiesList != null) {
             for (Activity a : activitiesList) {
 
-                //TODO: check if activities are all for the future.
-               /* String[] time = a.getTime().split(" ");
-                String timeMonth = time[0];
-                int currTimeM = Calendar.getInstance().get(Calendar.MONTH);
-                int auxTimeMonth = this.monthToInteger(timeMonth);*/
+                Calendar currentTime = Calendar.getInstance();
 
-                String[] latlng = a.getCoordinates().split(",");
-                final double lat = Double.parseDouble(latlng[0]);
-                final double lng = Double.parseDouble(latlng[1]);
-                final LatLng activityLocation = new LatLng(lat, lng);
+                String[] dateTime = a.getTime().split(" ");
+                String[] hours = dateTime[3].split(":");
 
-                String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum() + "_" + a.getDurationInMinutes() + "_" + a.getId();
+                Calendar beginTime = Calendar.getInstance();
+                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length()-1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+                long startMillis = beginTime.getTimeInMillis();
 
-                Marker act = mMap.addMarker(
-                        new MarkerOptions()
-                                .position(activityLocation)
-                                .title(title));
+                if (startMillis > currentTime.getTimeInMillis()) {
+
+                    String[] latlng = a.getCoordinates().split(",");
+                    final double lat = Double.parseDouble(latlng[0]);
+                    final double lng = Double.parseDouble(latlng[1]);
+                    final LatLng activityLocation = new LatLng(lat, lng);
+
+                    String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum() + "_" + a.getDurationInMinutes() + "_" + a.getId();
+
+                    Marker act = mMap.addMarker(
+                            new MarkerOptions()
+                                    .position(activityLocation)
+                                    .title(title));
+                }
             }
         }
+
 
         this.mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
@@ -539,12 +590,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == AutocompleteActivity.RESULT_OK) {
-                Place pl = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());
-                searchView.setText(pl.getAddress());
+            Place pl = Autocomplete.getPlaceFromIntent(data);
+            Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());
+            searchView.setText(pl.getAddress());
 
-                mMap.clear();
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(pl.getLatLng()));
+            mMap.clear();
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(pl.getLatLng()));
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
 
             Status status = Autocomplete.getStatusFromIntent(data);
@@ -553,10 +604,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(getActivity().getApplicationContext(), "Info window", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getActivity(), EnrollActivity.class);
         intent.putExtra("ActivityInfo", marker.getTitle());
-        intent.putExtra("UserLogged", user);
         startActivity(intent);
     }
 
