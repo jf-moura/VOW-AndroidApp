@@ -5,7 +5,8 @@ import java.util.List;
 
 import pt.vow.data.Result;
 import pt.vow.data.model.Activity;
-import pt.vow.data.model.Credentials;
+import pt.vow.data.model.ActivityCredentials;
+import pt.vow.data.model.UserCredentials;
 import pt.vow.ui.getActivities.ActivitiesRegisteredView;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -26,7 +27,7 @@ public class GetActivitiesDataSource {
     }
 
     public Result<ActivitiesRegisteredView> getActivities(String username, String tokenID) {
-        Call<List<Activity>> getActivitiesCall = service.getActivities(new Credentials(username, tokenID));
+        Call<List<Activity>> getActivitiesCall = service.getActivities(new ActivityCredentials(username, tokenID));
         try {
             Response<List<Activity>> response = getActivitiesCall.execute();
             if (response.isSuccessful()) {
@@ -35,7 +36,7 @@ public class GetActivitiesDataSource {
             }
             return new Result.Error(new Exception(response.errorBody().toString()));
         } catch (IOException e) {
-            return new Result.Error(new IOException("Error registering", e));
+            return new Result.Error(new IOException("Error getting activities", e));
         }
     }
 

@@ -28,6 +28,7 @@ public class GetActivitiesViewModel extends ViewModel {
         return getActivitiesResult;
     }
 
+
     public void getActivities(String username, String tokenID) {
         executor.execute(new Runnable() {
             @Override

@@ -37,4 +37,5 @@ public class GetActivitiesRepository {
         }
         return result;
     }
+
 }

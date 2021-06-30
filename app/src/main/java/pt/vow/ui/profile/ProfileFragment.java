@@ -10,27 +10,25 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 
 import pt.vow.R;
 
+import pt.vow.data.getActivitiesByUser.GetActivitiesByUserDataSource;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.VOW;
-import pt.vow.ui.feed.FeedViewModel;
-import pt.vow.ui.feed.FeedViewModelFactory;
-import pt.vow.ui.feed.RecyclerViewAdapter;
 import pt.vow.ui.frontPage.FrontPageActivity;
-import pt.vow.ui.getActivities.GetActivitiesViewModel;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.update.UpdateActivity;
 
@@ -41,15 +39,13 @@ public class ProfileFragment extends Fragment {
     private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout;
 
     private ProfileViewModel profileViewModel;
+    private RecyclerView recyclerView;
     private FragmentProfileBinding binding;
+    private List<Activity> activitiesList;
 
     private LoggedInUserView user;
     private DrawerLayout drawerLayout;
-    private RecyclerView recyclerView;
-    private List<Activity> activitiesList;
-    private GetActivitiesViewModel activitiesViewModel;
-    private FeedViewModel feedViewModel;
-
+    private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -58,11 +54,45 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        profileViewModel =
-            new ViewModelProvider(this).get(ProfileViewModel.class);
-
-
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(GetActivitiesByUserViewModel.class);
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
+
+        recyclerView = root.findViewById(R.id.activities_recycler_view_profile);
+
+        getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
+        getActivitiesByUserViewModel.getActivitiesResult().observeForever(new Observer<GetActivitiesByUserResult>() {
+            @Override
+            public void onChanged(@Nullable GetActivitiesByUserResult getActivitiesResult) {
+                if (getActivitiesResult == null) {
+                    return;
+                }
+                if (getActivitiesResult.getError() != null) {
+                    showGetActivitiesFailed(getActivitiesResult.getError());
+                }
+                if (getActivitiesResult.getSuccess() != null) {
+                    getActivitiesByUserViewModel.getActivitiesList().observe(getActivity(), list -> {
+                        activitiesList = list;
+                    });
+                    if (activitiesList != null) {
+                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesList);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    }
+                    getActivity().setResult(android.app.Activity.RESULT_OK);
+                }
+            }
+        });
+
+        getActivitiesByUserViewModel.getActivitiesList().observe(getActivity(), list -> {
+            activitiesList = list;
+        });
+        if (activitiesList != null) {
+            ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesList);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        }
 
         drawerLayout = root.findViewById(R.id.drawerLayout);
         menuImageView = root.findViewById(R.id.menuImageView);
@@ -164,5 +194,9 @@ public class ProfileFragment extends Fragment {
                 break;
         }
         return result;
+    }
+
+    private void showGetActivitiesFailed(@StringRes Integer errorString) {
+        Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 }

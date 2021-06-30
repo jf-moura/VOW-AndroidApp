@@ -1,7 +1,9 @@
 package pt.vow.ui.feed;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,6 +22,8 @@ import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentFeedBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.getActivities.GetActivitiesViewModel;
+import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.maps.MapsFragment;
 
 public class FeedFragment extends Fragment {
 
@@ -27,6 +31,7 @@ public class FeedFragment extends Fragment {
     private List<Activity> activitiesList;
     private GetActivitiesViewModel activitiesViewModel;
     private FeedViewModel feedViewModel;
+    private LoggedInUserView user;
     private FragmentFeedBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -42,6 +47,7 @@ public class FeedFragment extends Fragment {
 
         feedViewModel = new ViewModelProvider(this, new FeedViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(FeedViewModel.class);
+        user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
 
@@ -61,7 +67,7 @@ public class FeedFragment extends Fragment {
                 }
             }
 
-            RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux);
+            RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux, user);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         }
@@ -73,6 +79,22 @@ public class FeedFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.map_feed:
+                Intent intent = new Intent(getActivity(), MapsFragment.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     private int monthToIntegerShort(String month) {

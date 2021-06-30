@@ -1,10 +1,10 @@
 package pt.vow.data.model;
 
-public class Credentials {
+public class ActivityCredentials {
     String username;
     String tokenID;
 
-    public Credentials(String username, String tokenID) {
+    public ActivityCredentials(String username, String tokenID) {
         this.username = username;
         this.tokenID = tokenID;
     }

@@ -85,15 +85,16 @@ public class EnrollActivity extends AppCompatActivity {
         enrollButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                enrollViewModel.enrollInActivity(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
+                Toast.makeText(getApplicationContext(), "Joined Activity!", Toast.LENGTH_SHORT).show();
+                enrollButton.setEnabled(false);
+                // TODO: Falta ver os erros
                 Intent intentPop = new Intent(EnrollActivity.this, Pop.class);
                 intentPop.putExtra("title", activityInfo[0]);
                 intentPop.putExtra("location", activityInfo[2]);
                 intentPop.putExtra("time", activityInfo[3]);
                 intentPop.putExtra("duration", Integer.parseInt(activityInfo[5])/60 + ":" + Integer.parseInt(activityInfo[5])%60);
                 startActivity(intentPop);
-                enrollViewModel.enrollInActivity(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
-                Toast.makeText(getApplicationContext(), "Joined Activity!", Toast.LENGTH_SHORT).show();
-                enrollButton.setEnabled(false);
             }
         });
     }

@@ -612,6 +612,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(getActivity().getApplicationContext(), "Info window", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getActivity(), EnrollActivity.class);
+        intent.putExtra("UserLogged", user);
         intent.putExtra("ActivityInfo", marker.getTitle());
         startActivity(intent);
     }
