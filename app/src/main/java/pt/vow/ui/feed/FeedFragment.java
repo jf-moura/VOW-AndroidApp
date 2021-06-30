@@ -6,9 +6,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +37,7 @@ public class FeedFragment extends Fragment {
     private FeedViewModel feedViewModel;
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
+    private ImageView mapImageView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +55,7 @@ public class FeedFragment extends Fragment {
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
+        mapImageView = root.findViewById(R.id.mapImageView);
 
         if (activitiesList != null) {
             List<Activity> aux = new LinkedList<>();
@@ -71,6 +77,13 @@ public class FeedFragment extends Fragment {
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         }
+
+        mapImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               //TODO go to map
+            }
+        });
 
         return root;
     }
