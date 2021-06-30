@@ -56,5 +56,7 @@
     <string name="title_enroll_activity">Enroll In Activity</string>
     <string name="title_feed">Home</string>
     <string name="invalid_type">Not a valid type</string>
+    <string name="title_stats">Statistics</string>
+    <string name="title_logout">Logout</string>
 
 </resources>

@@ -46,6 +46,7 @@ public class UpdateActivity extends AppCompatActivity {
         editTextNewPassword = findViewById(R.id.editTextNewPassword);
         editTextConfirmation = findViewById(R.id.editTextConfirmPassword);
         editTextPhoneNumber = findViewById(R.id.editTextPhone);
+        textViewWebsiteSett = findViewById(R.id.textViewWebsiteSett);
 
         if (user.getRole() == 1) {
             editTextEntWebsite.setVisibility(View.VISIBLE);

@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,13 +27,15 @@ import pt.vow.ui.update.UpdateActivity;
 
 public class ProfileFragment extends Fragment {
 
-    private ImageButton settingsButton;
-    private Button logoutButton;
+
+    private ImageView menuImageView, menuImageViewClose;
+    private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout;
 
     private ProfileViewModel profileViewModel;
     private FragmentProfileBinding binding;
 
     private LoggedInUserView user;
+    private DrawerLayout drawerLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,19 +48,42 @@ public class ProfileFragment extends Fragment {
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
-        settingsButton = root.findViewById(R.id.settingBttn);
-        logoutButton = root.findViewById(R.id.logoutButton);
+        drawerLayout = root.findViewById(R.id.drawerLayout);
+        menuImageView = root.findViewById(R.id.menuImageView);
+        settingsLinearLayout = root.findViewById(R.id.settingsLinearLayout);
+        statsLinearLayout = root.findViewById(R.id.statsLinearLayout);
+        logoutLinearLayout = root.findViewById(R.id.logoutLinearLayout);
+        menuImageViewClose = root.findViewById(R.id.menuImageViewClose);
 
-        settingsButton.setOnClickListener(new View.OnClickListener() {
+
+        menuImageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
+                openDrawer(drawerLayout);
+            }
+        });
+        menuImageViewClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(drawerLayout.isDrawerOpen(GravityCompat.START))
+                    drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
+        settingsLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), UpdateActivity.class);
                 intent.putExtra("UserLogged", user);
                 startActivity(intent);
             }
         });
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
+        statsLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Statistics", Toast.LENGTH_SHORT).show();
+            }
+        });
+        logoutLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), FrontPageActivity.class);
@@ -66,6 +93,10 @@ public class ProfileFragment extends Fragment {
         });
 
         return root;
+    }
+
+    private static void openDrawer(DrawerLayout drawerLayout) {
+        drawerLayout.openDrawer(GravityCompat.START);
     }
 
 
