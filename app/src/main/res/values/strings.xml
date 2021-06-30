@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">VOW</string>
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
+    <string name="prompt_email">email</string>
     <string name="prompt_password">password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -58,5 +58,55 @@
     <string name="invalid_type">Not a valid type</string>
     <string name="title_stats">Statistics</string>
     <string name="title_logout">Logout</string>
+    <string name="duration">Duration:</string>
+    <string name="number_participants">Participants number:</string>
+    <string name="time">Time:</string>
+    <string name="join">Join</string>
+    <string name="activity_name">Activity name:</string>
+    <string name="organization">Organization:</string>
+    <string name="address">Address:</string>
+    <string name="upload_image">Upload profile image:</string>
+    <string name="select_image">Select Image</string>
+    <string name="select_interests">Select your interests:</string>
+    <string name="children">children</string>
+    <string name="animals">animals</string>
+    <string name="nature">nature</string>
+    <string name="elderly">elderly</string>
+    <string name="health">health</string>
+    <string name="house_building">house building</string>
+    <string name="finish">Finish</string>
+    <string name="login">Login</string>
+    <string name="create_account">Create Account</string>
+    <string name="learn_more">Learn more about us</string>
+    <string name="remember_me">Remember Me</string>
+    <!--register-->
+    <string name="name">name</string>
+    <string name="username">username</string>
+    <string name="confirm_password">confirm password</string>
+    <string name="phone_number">phone number</string>
+    <string name="website">website</string>
+    <string name="date_birth">Date Birth</string>
+    <string name="next">Next</string>
+    <!--settings-->
+    <string name="prompt_name">"Name: "</string>
+    <string name="prompt_password2">Password:</string>
+    <string name="prompt_website">Website:</string>
+    <string name="prompt_phone_number">Phone Number:</string>
+    <string name="save_changes">Save changes</string>
+    <string name="interests">Interests:</string>
+    <string name="new_password">New Password:</string>
+    <!--info window-->
+    <string name="activity_title">Activity title</string>
+    <string name="organization_activity">Activities Organization</string>
+    <string name="view_activity">View Activity</string>
+    <!--new activity-->
+    <string name="activity_duration">Activity Duration :</string>
+    <string name="hint_address">street, number, postal code</string>
+    <string name="date">Date</string>
+    <string name="type">Type:</string>
+    <!--pop window-->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="add_calendar">Add to Google Calendar?</string>
 
 </resources>

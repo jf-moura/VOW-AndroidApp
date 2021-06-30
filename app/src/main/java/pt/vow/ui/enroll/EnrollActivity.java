@@ -49,7 +49,8 @@ public class EnrollActivity extends AppCompatActivity {
 
         activityInfo = activityInfoTitle.split("_");
 
-        textViewActName.setText("Activity Name: " + activityInfo[0]);
+
+        textViewActName.setText(getResources().getString(R.string.activity_name) + activityInfo[0]);
         textViewActOwner.setText("Entity: " + activityInfo[1]);
         textViewAddress.setText("Address: "+ activityInfo[2]);
         textViewTime.setText("Time: " + activityInfo[3]);

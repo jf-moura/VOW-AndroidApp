@@ -37,7 +37,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="name"
+                android:hint="@string/name"
                 android:inputType="textPersonName"
                 android:visibility="visible"
                 tools:visibility="visible" />
@@ -48,7 +48,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="username"
+                android:hint="@string/username"
                 android:inputType="textPersonName"
                 android:visibility="visible"
                 tools:visibility="visible" />
@@ -59,7 +59,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="email"
+                android:hint="@string/prompt_email"
                 android:inputType="textEmailAddress"
                 android:visibility="visible"
                 tools:visibility="visible" />
@@ -71,7 +71,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="password"
+                android:hint="@string/prompt_password"
                 android:inputType="textPassword"
                 android:visibility="visible"
                 tools:visibility="visible" />
@@ -82,7 +82,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="confirm password"
+                android:hint="@string/confirm_password"
                 android:inputType="textPassword"
                 android:visibility="visible"
                 tools:visibility="visible" />
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="phone number"
+                android:hint="@string/phone_number"
                 android:inputType="phone"
                 android:visibility="visible"
                 tools:visibility="visible" />
@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="website"
+                android:hint="@string/website"
                 android:inputType="textUri"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -114,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Date Birth"
+                android:text="@string/date_birth"
                 android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
@@ -132,7 +132,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="80dp"
-                android:text="Next"
+                android:text="@string/next"
                 android:enabled="false"
                 tools:visibility="visible" />
 

@@ -12,7 +12,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="Name: "
+        android:text="@string/prompt_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,7 +23,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="15dp"
         android:gravity="center"
-        android:text="Password:"
+        android:text="@string/prompt_password2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -33,7 +33,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="15dp"
         android:gravity="center"
-        android:text="Website:"
+        android:text="@string/prompt_website"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/textView9"
         app:layout_constraintHorizontal_bias="0.0"
@@ -47,7 +47,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="15dp"
         android:gravity="center"
-        android:text="Phone Number:"
+        android:text="@string/prompt_phone_number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
@@ -104,7 +104,7 @@
         android:layout_marginStart="131dp"
         android:layout_marginEnd="132dp"
         android:layout_marginBottom="10dp"
-        android:text="Save changes"
+        android:text="@string/save_changes"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -117,7 +117,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="40dp"
         android:gravity="center"
-        android:text="children"
+        android:text="@string/children"
         android:onClick="itemClicked"
         app:layout_constraintBottom_toTopOf="@+id/bttnSaveChanges"
         app:layout_constraintStart_toStartOf="parent"
@@ -131,7 +131,7 @@
         android:layout_marginEnd="36dp"
         android:gravity="center"
         android:onClick="itemClicked"
-        android:text="animals"
+        android:text="@string/animals"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
@@ -142,19 +142,19 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="36dp"
         android:gravity="center"
-        android:text="nature"
+        android:text="@string/nature"
         android:onClick="itemClicked"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkBoxAnimalsFrag" />
 
     <CheckBox
-        android:id="@+id/checkBoxElderyFrag"
+        android:id="@+id/checkBoxElderlyFrag"
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="eldery"
+        android:text="@string/elderly"
         android:onClick="itemClicked"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -167,7 +167,7 @@
         android:layout_marginEnd="36dp"
         android:layout_marginBottom="40dp"
         android:gravity="center"
-        android:text="health"
+        android:text="@string/health"
         android:onClick="itemClicked"
         app:layout_constraintBottom_toTopOf="@+id/bttnSaveChanges"
         app:layout_constraintEnd_toEndOf="parent"
@@ -180,10 +180,10 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="house building"
+        android:text="@string/house_building"
         android:onClick="itemClicked"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBoxElderyFrag" />
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxElderlyFrag" />
 
 
     <TextView
@@ -193,7 +193,7 @@
         android:layout_marginStart="40dp"
         android:layout_marginTop="68dp"
         android:gravity="center"
-        android:text="Interests:"
+        android:text="@string/interests"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -206,7 +206,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="15dp"
         android:gravity="center"
-        android:text="New Password:"
+        android:text="@string/new_password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -239,7 +239,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="15dp"
         android:gravity="center"
-        android:text="Confirm Password:"
+        android:text="@string/confirm_password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNewPass" />
 

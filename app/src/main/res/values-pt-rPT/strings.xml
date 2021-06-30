@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VOW</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">email</string>
+    <string name="prompt_password">password</string>
+    <string name="action_sign_in">Iniciar sessão ou registar.</string>
+    <string name="action_sign_in_short">Iniciar sessão</string>
+    <string name="welcome">Bem vindo/a</string>
+    <string name="invalid_name">Nome inválido.</string>
+    <string name="invalid_username">Nome de utilizador inválido.</string>
+    <string name="invalid_email">Endereço de email inválido.</string>
+    <string name="invalid_password">Password precisa de ter pelo menos 4 caracteres.</string>
+    <string name="invalid_password_confirmation">Tem de ser igual à password.</string>
+    <string name="invalid_phone_number">Número de telemovel inválido.</string>
+    <string name="invalid_website">Website inválido.</string>
+    <string name="login_failed">Login falhou.</string>
+    <string name="register_failed">Registo falhou.</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+
+    <!-- Strings related to register -->
+    <string name="register_success">Registou-se com sucesso.</string>
+
+    <string name="option_get_place">Get place</string>
+
+    <string name="default_info_title">Default Location</string>
+    <string name="default_info_snippet">Nenhum local encontrado porque as permissões de localização estão desativadas.</string>
+    <string name="pick_place">Escolha um sítio.</string>
+
+    <string-array name="typeUser">
+        <item>Organização</item>
+        <item>Voluntário</item>
+    </string-array>
+
+    <string name="action_settings">Definições</string>
+    <string name="title_activity_extra_info">ExtraInfoActivity</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="title_activity_main_page">Main Activity</string>
+    <string name="title_new_activity">Nova Atividade</string>
+    <string name="title_map">Mapa</string>
+    <string name="title_profile">Perfil</string>
+    <string name="invalid_address">Morada inválida.</string>
+    <string name="invalid_time">Dia/hora inválidos.</string>
+    <string name="invalid_participant_num">Número de participantes inválido.</string>
+    <string name="invalid_duration">Duração inválida.</string>
+    <string name="activity_success">Atividade criada.</string>
+    <string name="title_activity_main_person">MainActivity</string>
+    <string name="title_calendar">Calendário</string>
+    <string name="update_failed">Atualização falhou.</string>
+    <string name="invalid_incorrect_password">Password incorreta.</string>
+    <string name="update_success">Informações atualizadas com sucesso.</string>
+    <string name="get_activities_failed">Couldn\'t obtain activities registered.</string>
+    <string name="enroll_failed">Não se conseguiu juntar a uma atividade.</string>
+    <string name="title_enroll_activity">Juntar-se a uma atividade</string>
+    <string name="title_feed">Home</string>
+    <string name="invalid_type">Tipo inválido.</string>
+    <string name="title_stats">Estatísticas</string>
+    <string name="title_logout">Logout</string>
+    <string name="duration">Duração:</string>
+    <string name="number_participants">Número de Participantes:</string>
+    <string name="time">Hora:</string>
+    <string name="join">Juntar-se</string>
+    <string name="activity_name">Nome da Atividade: </string>
+    <string name="organization">Organização:</string>
+    <string name="address">Morada:</string>
+    <!--extra info-->
+    <string name="upload_image">Upload foto de perfil:</string>
+    <string name="select_image">Selecionar imagem</string>
+    <string name="select_interests">Escolha os seus interesses:</string>
+    <string name="children">crianças</string>
+    <string name="animals">animais</string>
+    <string name="nature">natureza</string>
+    <string name="elderly">idosos</string>
+    <string name="health">saúde</string>
+    <string name="house_building">contrução de casas</string>
+    <string name="finish">Terminar</string>
+    <!--front page-->
+    <string name="login">Login</string>
+    <string name="create_account">Criar Conta</string>
+    <string name="learn_more">Saiba mais sobre nós</string>
+
+    <string name="remember_me">Relembra-me</string>
+
+    <!--register-->
+    <string name="name">nome</string>
+    <string name="username">username</string>
+    <string name="confirm_password">confirmar password</string>
+    <string name="phone_number">número de telemovel</string>
+    <string name="website">website</string>
+    <string name="date_birth">Data de nascimento</string>
+    <string name="next">Próximo</string>
+    <!--settings-->
+    <string name="prompt_name">"Nome: "</string>
+    <string name="prompt_password2">Password:</string>
+    <string name="prompt_website">Website:</string>
+    <string name="prompt_phone_number">Número de telemovel:</string>
+    <string name="save_changes">Guardar alterações</string>
+    <string name="interests">Interesses:</string>
+    <string name="new_password">Nova Password:</string>
+    <!--info window-->
+    <string name="activity_title">Título da Atividade</string>
+    <string name="organization_activity">Organização da atividade</string>
+    <string name="view_activity">Ver Atividade</string>
+    <!--new activity-->
+    <string name="activity_duration">Duração da Atividade :</string>
+    <string name="hint_address">rua, número, código postal</string>
+    <string name="date">Data</string>
+    <string name="type">Tipo:</string>
+    <!--pop window-->
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="add_calendar">Adicionar ao calendário da  Google?</string>
+
+</resources>

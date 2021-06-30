@@ -31,7 +31,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text="Titulo da Atividade"
+                    android:text="@string/activity_title"
                     android:textColor="#000000"
                     android:textSize="10dip" />
 
@@ -48,7 +48,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text="Entidade da Atividade"
+                    android:text="@string/organization_activity"
                     android:textColor="#000000"
                     android:textSize="10dip" />
 
@@ -61,6 +61,6 @@
             android:layout_width="110dip"
             android:layout_height="60dip"
             android:background="@drawable/ic_launcher_background"
-            android:text="View Activity" />
+            android:text="@string/view_activity" />
 
 </LinearLayout>
