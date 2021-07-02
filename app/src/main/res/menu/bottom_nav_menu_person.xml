@@ -9,9 +9,9 @@
         android:icon="@drawable/ic_map_black_24dp"
         android:title="@string/title_map" />
     <item
-        android:id="@+id/navigation_calendar"
-        android:icon="@drawable/ic_baseline_calendar_today_24"
-        android:title="@string/title_calendar" />
+        android:id="@+id/navigation_podium"
+        android:icon="@drawable/ic_trophy"
+        android:title="@string/title_podium" />
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_profile_black_24dp"

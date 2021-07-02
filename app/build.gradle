@@ -29,6 +29,11 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+    }
+
 }
 
 dependencies {
@@ -55,4 +60,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     compileOnly 'com.google.android.wearable:wearable:2.6.0'
     implementation 'com.github.sundeepk:compact-calendar-view:3.0.0'
+
+    implementation 'com.google.cloud:google-cloud-storage:1.117.1'
 }

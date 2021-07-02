@@ -21,12 +21,12 @@
 
             <ImageView
                 android:id="@+id/mapImageView"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_gravity="right"
                 android:scaleType="fitXY"
                 android:padding="12dp"
-                android:src="@drawable/ic_baseline_location_on_24" />
+                android:src="@drawable/ic_compass" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/activities_recycler_view"

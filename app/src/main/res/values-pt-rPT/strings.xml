@@ -62,7 +62,7 @@
     <string name="duration">Duração: </string>
     <string name="number_participants">Número de Participantes: </string>
     <string name="time">Hora: </string>
-    <string name="join">Juntar-se</string>
+    <string name="join">Inscrever-se</string>
     <string name="activity_name">Nome da Atividade: </string>
     <string name="organization">Organização: </string>
     <string name="address">Morada: </string>
@@ -113,7 +113,13 @@
     <string name="yes">Sim</string>
     <string name="no">Não</string>
     <string name="add_calendar">Adicionar ao calendário da  Google?</string>
+    <string name="title_podium">Pódio</string>
+    <string name="first_place">1º Lugar</string>
+    <string name="second_place">2º Lugar</string>
+    <string name="third_place">3º Lugar</string>
 
-    <string name="unjoin">Cancelar</string>
+    <string name="unjoin">Desinscrever-se</string>
+    <string name="save">Salvar</string>
+
 
 </resources>

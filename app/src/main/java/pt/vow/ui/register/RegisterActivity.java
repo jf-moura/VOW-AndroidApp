@@ -119,9 +119,11 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                     setResult(Activity.RESULT_OK);
                     if (isOrganization) {
                         Intent intent = new Intent(extraInfoActP, ExtraInfoOrganizationActivity.class);
+                        intent.putExtra("LoggedUser", editTextUsername.getText().toString());
                         startActivity(intent);
                     } else {
                         Intent intent = new Intent(extraInfoActP, ExtraInfoActivity.class);
+                        intent.putExtra("LoggedUser", editTextUsername.getText().toString());
                         startActivity(intent);
 
                     }

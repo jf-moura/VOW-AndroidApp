@@ -40,12 +40,13 @@ public class EnrollActivity extends AppCompatActivity {
     private List<Activity> activitiesList;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private Activity aux;
+    private EnrollActivity mActivity;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enroll);
 
-        //aux = null;
+        mActivity = this;
 
         textViewActName = findViewById(R.id.textViewActName);
         textViewActOwner = findViewById(R.id.textViewActOwner);
@@ -79,21 +80,33 @@ public class EnrollActivity extends AppCompatActivity {
         textViewDuration.setText(getResources().getString(R.string.duration) + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60);
 
         getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
-
-        getActivitiesByUserViewModel.getActivitiesList().observe(this, list -> {
-            activitiesList = list;
-        });
-
-        if (activitiesList != null) {
-            for (Activity a : activitiesList) {
-                if (a.getId().equals(activityInfo[6])) {
-                    aux = a;
+        getActivitiesByUserViewModel.getActivitiesResult().observeForever(new Observer<GetActivitiesByUserResult>() {
+            @Override
+            public void onChanged(@Nullable GetActivitiesByUserResult getActivitiesResult) {
+                if (getActivitiesResult == null) {
+                    return;
+                }
+                if (getActivitiesResult.getError() != null) {
+                    showGetActivitiesFailed(getActivitiesResult.getError());
+                }
+                if (getActivitiesResult.getSuccess() != null) {
+                    getActivitiesByUserViewModel.getActivitiesList().observe(mActivity, list -> {
+                        activitiesList = list;
+                    });
+                    if (activitiesList != null) {
+                        for (Activity a : activitiesList) {
+                            if (a.getId().equals(activityInfo[6])) {
+                                aux = a;
+                            }
+                        }
+                    }
+                    if (aux != null) { //it means that user already joined the activity
+                        enrollButton.setText(getResources().getString(R.string.unjoin));
+                    }
+                    setResult(android.app.Activity.RESULT_OK);
                 }
             }
-        }
-        if (aux != null) { //it means that user already joined the activity
-            enrollButton.setText(getResources().getString(R.string.unjoin));
-        }
+        });
 
         enrollViewModel.getEnrollResult().observe(this, new Observer<EnrollResult>() {
 
@@ -119,8 +132,6 @@ public class EnrollActivity extends AppCompatActivity {
 
             }
         });
-
-
 
         enrollButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,8 +159,9 @@ public class EnrollActivity extends AppCompatActivity {
             }
         });
 
+    }
 
-    }private void showGetActivitiesFailed(@StringRes Integer errorString) {
+    private void showGetActivitiesFailed(@StringRes Integer errorString) {
         Toast.makeText(this.getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 }

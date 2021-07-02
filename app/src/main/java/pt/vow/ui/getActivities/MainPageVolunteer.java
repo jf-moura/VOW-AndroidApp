@@ -58,7 +58,7 @@ public class MainPageVolunteer extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_feed,
-                R.id.navigation_map, R.id.navigation_calendar, R.id.navigation_profile)
+                R.id.navigation_map, R.id.navigation_podium, R.id.navigation_profile)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main_page_person);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);

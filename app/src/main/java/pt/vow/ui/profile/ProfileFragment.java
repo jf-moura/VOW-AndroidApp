@@ -85,15 +85,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        getActivitiesByUserViewModel.getActivitiesList().observe(getActivity(), list -> {
-            activitiesList = list;
-        });
-        if (activitiesList != null) {
-            ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesList);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        }
-
         drawerLayout = root.findViewById(R.id.drawerLayout);
         menuImageView = root.findViewById(R.id.menuImageView);
         settingsLinearLayout = root.findViewById(R.id.settingsLinearLayout);
