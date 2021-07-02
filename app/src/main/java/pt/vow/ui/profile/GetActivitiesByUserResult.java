@@ -17,12 +17,12 @@ public class GetActivitiesByUserResult {
     }
 
     @Nullable
-    ActivitiesByUserRegisteredView getSuccess() {
+    public ActivitiesByUserRegisteredView getSuccess() {
         return success;
     }
 
     @Nullable
-    Integer getError() {
+    public Integer getError() {
         return error;
     }
 }

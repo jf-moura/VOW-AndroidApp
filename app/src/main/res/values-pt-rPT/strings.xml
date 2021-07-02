@@ -59,13 +59,13 @@
     <string name="invalid_type">Tipo inválido.</string>
     <string name="title_stats">Estatísticas</string>
     <string name="title_logout">Logout</string>
-    <string name="duration">Duração:</string>
-    <string name="number_participants">Número de Participantes:</string>
-    <string name="time">Hora:</string>
+    <string name="duration">Duração: </string>
+    <string name="number_participants">Número de Participantes: </string>
+    <string name="time">Hora: </string>
     <string name="join">Juntar-se</string>
     <string name="activity_name">Nome da Atividade: </string>
-    <string name="organization">Organização:</string>
-    <string name="address">Morada:</string>
+    <string name="organization">Organização: </string>
+    <string name="address">Morada: </string>
     <!--extra info-->
     <string name="upload_image">Upload foto de perfil:</string>
     <string name="select_image">Selecionar imagem</string>
@@ -113,5 +113,7 @@
     <string name="yes">Sim</string>
     <string name="no">Não</string>
     <string name="add_calendar">Adicionar ao calendário da  Google?</string>
+
+    <string name="unjoin">Cancelar</string>
 
 </resources>

@@ -43,5 +43,4 @@ public class EnrollViewModel extends ViewModel {
         });
     }
 
-
 }

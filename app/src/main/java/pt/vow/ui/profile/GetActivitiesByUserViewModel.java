@@ -23,7 +23,7 @@ public class GetActivitiesByUserViewModel extends ViewModel {
         this.executor = executor;
     }
 
-    LiveData<GetActivitiesByUserResult> getActivitiesResult() {
+    public LiveData<GetActivitiesByUserResult> getActivitiesResult() {
         return getActivitiesResult;
     }
 
@@ -43,7 +43,7 @@ public class GetActivitiesByUserViewModel extends ViewModel {
         });
     }
 
-    LiveData<List<Activity>> getActivitiesList() {
+    public LiveData<List<Activity>> getActivitiesList() {
         return activities;
     }
 }
