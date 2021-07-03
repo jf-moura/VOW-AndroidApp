@@ -1,16 +1,22 @@
 package pt.vow.ui.profile;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -20,28 +26,37 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import pt.vow.R;
 
-import pt.vow.data.getActivitiesByUser.GetActivitiesByUserDataSource;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.VOW;
+import pt.vow.ui.extraInfo.UploadImageViewModel;
+import pt.vow.ui.extraInfo.UploadImageViewModelFactory;
 import pt.vow.ui.frontPage.FrontPageActivity;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.update.UpdateActivity;
 
 public class ProfileFragment extends Fragment {
-
+    private static final int IMG_REQUEST = 21;
+    private static final int RESULT_OK = -1;
 
     private ImageView menuImageView, menuImageViewClose;
+    private ImageButton profileImage;
     private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout;
 
     private ProfileViewModel profileViewModel;
     private RecyclerView recyclerView;
     private FragmentProfileBinding binding;
     private List<Activity> activitiesList;
+
+    private Uri imageUri;
+    private Bitmap bitmap;
+    private UploadImageViewModel uploadImageViewModel;
 
     private LoggedInUserView user;
     private DrawerLayout drawerLayout;
@@ -57,9 +72,13 @@ public class ProfileFragment extends Fragment {
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetActivitiesByUserViewModel.class);
+        uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(UploadImageViewModel.class);
+
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         recyclerView = root.findViewById(R.id.activities_recycler_view_profile);
+        profileImage = root.findViewById(R.id.profileImage);
 
         getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getActivitiesByUserViewModel.getActivitiesResult().observeForever(new Observer<GetActivitiesByUserResult>() {
@@ -128,6 +147,16 @@ public class ProfileFragment extends Fragment {
                 getActivity().finish();
             }
         });
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(intent.ACTION_GET_CONTENT);
+
+                startActivityForResult(Intent.createChooser(intent, "Select Image"), IMG_REQUEST);
+            }
+        });
 
 
         return root;
@@ -144,47 +173,33 @@ public class ProfileFragment extends Fragment {
         binding = null;
     }
 
-    private int monthToIntegerShort(String month) {
-        int result = 0;
-        switch (month) {
-            case "Jan":
-                result = 0;
-                break;
-            case "Fev":
-                result = 1;
-                break;
-            case "Mar":
-                result = 2;
-                break;
-            case "Apr":
-                result = 3;
-                break;
-            case "May":
-                result = 4;
-                break;
-            case "Jun":
-                result = 5;
-                break;
-            case "Jul":
-                result = 6;
-                break;
-            case "Aug":
-                result = 7;
-                break;
-            case "Sep":
-                result = 8;
-                break;
-            case "Oct":
-                result = 9;
-                break;
-            case "Nov":
-                result = 10;
-                break;
-            case "Dec":
-                result = 11;
-                break;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMG_REQUEST && resultCode == RESULT_OK && data != null) {
+            imageUri = data.getData();
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                profileImage.setImageBitmap(bitmap);
+                uploadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return result;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void uploadImage(String projectId, String bucketName, String objectName) throws IOException {
+        if (imageUri != null) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            byte[] imageInByte = out.toByteArray();
+            out.close();
+            uploadImageViewModel.uploadImage(projectId, bucketName, objectName, imageInByte);
+        }
     }
 
     private void showGetActivitiesFailed(@StringRes Integer errorString) {

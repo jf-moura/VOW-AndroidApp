@@ -1,29 +1,28 @@
 package pt.vow.ui.podium;
 
-import android.content.Context;
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.github.sundeepk.compactcalendarview.domain.Event;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import pt.vow.R;
 import pt.vow.databinding.FragmentPodiumBinding;
+import pt.vow.ui.VOW;
+import pt.vow.ui.getActivities.DownloadImageViewModel;
+import pt.vow.ui.getActivities.DownloadImageViewModelFactory;
+import pt.vow.ui.getActivities.GetImageResult;
+import pt.vow.ui.login.LoggedInUserView;
 
 public class PodiumFragment extends Fragment {
 
@@ -41,7 +40,6 @@ public class PodiumFragment extends Fragment {
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setTitle(null);
-
 
         return root;
     }

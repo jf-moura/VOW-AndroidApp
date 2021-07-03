@@ -3,6 +3,7 @@ package pt.vow.ui.extraInfo;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,16 +26,21 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import pt.vow.R;
+import pt.vow.ui.VOW;
+import pt.vow.ui.getActivities.GetActivitiesViewModel;
+import pt.vow.ui.getActivities.GetActivitiesViewModelFactory;
 import pt.vow.ui.login.LoginActivity;
 
 public class ExtraInfoActivity extends AppCompatActivity {
@@ -44,9 +50,11 @@ public class ExtraInfoActivity extends AppCompatActivity {
     private Button imageBttn, saveImgBttn;
     private Button nextBttn;
     private ExtraInfoActivity mActivity;
-    private int IMG_REQUEST = 21;
+    private static final int IMG_REQUEST = 21;
     private String username;
     private Uri imageUri;
+    private Bitmap bitmap;
+    private UploadImageViewModel uploadImageViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +62,8 @@ public class ExtraInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_extra_info);
 
         mActivity = this;
+        uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(UploadImageViewModel.class);
 
         username = (String) getIntent().getSerializableExtra("LoggedUser");
 
@@ -128,7 +138,7 @@ public class ExtraInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    uploadImage("vow-project-311114", "vow_profile_pictures", "manu", imageUri);
+                    uploadImage("vow-project-311114", "vow_profile_pictures", username);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -223,112 +233,27 @@ public class ExtraInfoActivity extends AppCompatActivity {
             imageUri = data.getData();
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                 imageView.setImageBitmap(bitmap);
                 imageBttn.setEnabled(false);
                 saveImgBttn.setEnabled(true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            /*private void uploadImage() throws IOException {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, out);
-            byte[] imageInByte = out.toByteArray();
-            String encodedImage = Base64.encodeToString(imageInByte, Base64.DEFAULT);
-            }*/
-
-            /*String path = getPathFromUri(this, uri);
-            String name = getFileName(uri);
-
-            try {
-                uploadImage(path, name);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
-                imageView.setImageBitmap(bitmap);
-
-                // The ID of your GCP project
-                String projectId = "vow-project-311114";
-
-                // The ID of your GCS bucket
-                String bucketName = "vow_profile_pictures";
-
-                // The ID of your GCS object
-                String objectName = username;
-
-
-                Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
-                BlobId blobId = BlobId.of(bucketName, objectName);
-                BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    storage.create(blobInfo, Files.readAllBytes((Path) imageView));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void uploadImage(String projectId, String bucketName, String objectName, Uri uri) throws IOException {
+    private void uploadImage(String projectId, String bucketName, String objectName) throws IOException {
         if (imageUri != null) {
-            Storage storage = StorageOptions.getDefaultInstance().getService();
-            BlobId blobId = BlobId.of(bucketName, objectName);
-            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-            storage.create(blobInfo, Files.readAllBytes(Paths.get(String.valueOf(uri))));
-            System.out.println("File "  + " uploaded to bucket " + bucketName + " as " + objectName);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            byte[] imageInByte = out.toByteArray();
+            out.close();
+            uploadImageViewModel.uploadImage(projectId, bucketName, objectName, imageInByte);
         }
-
-
-        /*FileOutputStream fos = openFileOutput(name, MODE_APPEND);
-
-        File file = new File(path);
-
-        byte[] bytes = getBytesFromFile(file);
-
-        fos.write(bytes);
-        fos.close();*/
+        saveImgBttn.setEnabled(false);
     }
 
-    /*private byte[] getBytesFromFile(File file) throws IOException {
-        byte[] data = FileUtils.readFileToByteArray(file);
-        return data;
-    }*/
-
-    /*private String getPathFromUri(Context context, Uri uri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
-
-        if (cursor != null) {
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(columnIndex);
-        }
-        return null;
-    }*/
-
-    /*private String getFileName(Uri uri) {
-        String result = null;
-        if (uri.getScheme().equals("content")) {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            try {
-                if (cursor != null && cursor.moveToFirst())
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-            } finally {
-                cursor.close();
-            }
-        }
-
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1)
-                result = result.substring((cut + 1));
-        }
-        return result;
-    }*/
 
 }

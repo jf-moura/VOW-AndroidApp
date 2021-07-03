@@ -114,5 +114,6 @@
     <string name="first_place">1st Place</string>
     <string name="second_place">2nd Place</string>
     <string name="third_place">3rd Place</string>
+    <string name="image_download_failed">Image couldn\'t be downloaded</string>
 
 </resources>
