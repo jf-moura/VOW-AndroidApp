@@ -100,6 +100,7 @@
     <string name="save_changes">Guardar alterações</string>
     <string name="interests">Interesses:</string>
     <string name="new_password">Nova Password:</string>
+    <string name="confirm_password_update">Confirme Password: </string>
     <!--info window-->
     <string name="activity_title">Título da Atividade</string>
     <string name="organization_activity">Organização da atividade</string>
@@ -117,9 +118,19 @@
     <string name="first_place">1º Lugar</string>
     <string name="second_place">2º Lugar</string>
     <string name="third_place">3º Lugar</string>
-
     <string name="unjoin">Desinscrever-se</string>
     <string name="save">Salvar</string>
+
+    <string name="rating">Pontuação: </string>
+    <string name="add_comment">Adiciona um comentário...</string>
+    <string name="post">Publica</string>
+    <string name="submit">Submete</string>
+    <string name="image_download_failed">Não foi possível realizar o download da imagem</string>
+
+    <!--Notification-->
+    <string name="channel_name">Nome do canal</string>
+    <string name="channel_description">Descripção do canal</string>
+    <string name="message_notification">Pontua a tua atividade </string>
 
 
 </resources>

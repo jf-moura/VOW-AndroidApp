@@ -112,6 +112,19 @@ public class ProfileFragment extends Fragment {
                         ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesList);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        /* for(Activity a : activitiesList){
+                            Calendar currentTime = Calendar.getInstance();
+
+                            String[] dateTime = a.getTime().split(" ");
+                            String[] hours = dateTime[3].split(":");
+
+                            Calendar beginTime = Calendar.getInstance();
+                            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length()-1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+                            long startMillis = beginTime.getTimeInMillis();
+                            if(startMillis <= currentTime.getTimeInMillis()){
+                               triggerNotification(a.getName());
+                            }
+                        }*/
                     }
                     getActivity().setResult(android.app.Activity.RESULT_OK);
                 }

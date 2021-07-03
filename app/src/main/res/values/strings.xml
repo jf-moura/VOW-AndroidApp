@@ -120,6 +120,7 @@
     <string name="add_comment">Add a comment...</string>
     <string name="post">post</string>
     <string name="submit">Submit</string>
+    <string name="image_download_failed">Image download failed</string>
 
     <!--Notification-->
     <string name="channel_name">channel name</string>
