@@ -120,6 +120,7 @@
 
     <string name="unjoin">Desinscrever-se</string>
     <string name="save">Salvar</string>
+    <string name="image_download_failed">Não foi possível transferir imagem</string>
 
 
 </resources>

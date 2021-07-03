@@ -38,6 +38,7 @@ import pt.vow.ui.VOW;
 import pt.vow.ui.extraInfo.UploadImageViewModel;
 import pt.vow.ui.extraInfo.UploadImageViewModelFactory;
 import pt.vow.ui.frontPage.FrontPageActivity;
+import pt.vow.ui.getActivities.GetActivitiesViewModel;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.update.UpdateActivity;
 
@@ -72,8 +73,8 @@ public class ProfileFragment extends Fragment {
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetActivitiesByUserViewModel.class);
-        uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
-                .get(UploadImageViewModel.class);
+        uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService())).get(UploadImageViewModel.class);
+
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 

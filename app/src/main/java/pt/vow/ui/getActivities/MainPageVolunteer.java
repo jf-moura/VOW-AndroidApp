@@ -51,7 +51,6 @@ public class MainPageVolunteer extends AppCompatActivity {
                 .get(DownloadImageViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
-        //profileIcon = findViewById(R.id.navigation_profile);
 
         activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
 
