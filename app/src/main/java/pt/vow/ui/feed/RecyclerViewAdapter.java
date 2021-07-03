@@ -2,6 +2,7 @@ package pt.vow.ui.feed;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,10 +40,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.activityName.setText("Name: " + activityList.get(position).getName());
-        holder.owner.setText("Organization: " + activityList.get(position).getOwner());
-        holder.time.setText("Date: " + activityList.get(position).getTime());
-        holder.duration.setText("Duration: " + activityList.get(position).getDurationInMinutes() + " minutes");
+
+        holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) +" "+ activityList.get(position).getName());
+        holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) +" "+ activityList.get(position).getOwner());
+        holder.time.setText(holder.itemView.getContext().getString(R.string.date)+" "+ activityList.get(position).getTime());
+        holder.duration.setText(holder.itemView.getContext().getString(R.string.duration)+" " + activityList.get(position).getDurationInMinutes() + " minutes");
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

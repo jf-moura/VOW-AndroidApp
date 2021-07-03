@@ -72,12 +72,12 @@ public class EnrollActivity extends AppCompatActivity {
         activityInfo = activityInfoTitle.split("_");
 
 
-        textViewActName.setText(getResources().getString(R.string.activity_name) + activityInfo[0]);
-        textViewActOwner.setText(getResources().getString(R.string.organization) + activityInfo[1]);
-        textViewAddress.setText(getResources().getString(R.string.address) + activityInfo[2]);
-        textViewTime.setText(getResources().getString(R.string.time) + activityInfo[3]);
-        textViewNumPart.setText(getResources().getString(R.string.number_participants) + activityInfo[4]);
-        textViewDuration.setText(getResources().getString(R.string.duration) + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60);
+        textViewActName.setText(getResources().getString(R.string.activity_name) +" "+ activityInfo[0]);
+        textViewActOwner.setText(getResources().getString(R.string.organization) +" "+ activityInfo[1]);
+        textViewAddress.setText(getResources().getString(R.string.address) +" "+ activityInfo[2]);
+        textViewTime.setText(getResources().getString(R.string.time) +" "+ activityInfo[3]);
+        textViewNumPart.setText(getResources().getString(R.string.number_participants) +" "+ activityInfo[4]);
+        textViewDuration.setText(getResources().getString(R.string.duration) +" "+ Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60);
 
         getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getActivitiesByUserViewModel.getActivitiesResult().observeForever(new Observer<GetActivitiesByUserResult>() {

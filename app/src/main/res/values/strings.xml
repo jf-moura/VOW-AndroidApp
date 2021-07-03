@@ -89,12 +89,14 @@
     <string name="next">Next</string>
     <!--settings-->
     <string name="prompt_name">"Name: "</string>
-    <string name="prompt_password2">Password:</string>
-    <string name="prompt_website">Website:</string>
-    <string name="prompt_phone_number">Phone Number:</string>
+    <string name="prompt_password2">Password: </string>
+    <string name="prompt_website">Website: </string>
+    <string name="prompt_phone_number">Phone Number: </string>
     <string name="save_changes">Save changes</string>
-    <string name="interests">Interests:</string>
-    <string name="new_password">New Password:</string>
+    <string name="interests">Interests: </string>
+    <string name="new_password">New Password: </string>
+    <string name="confirm_password_update">Confirm Password: </string>
+
     <!--info window-->
     <string name="activity_title">Activity title</string>
     <string name="organization_activity">Activities Organization</string>
@@ -114,5 +116,14 @@
     <string name="first_place">1st Place</string>
     <string name="second_place">2nd Place</string>
     <string name="third_place">3rd Place</string>
+    <string name="rating">Rating: </string>
+    <string name="add_comment">Add a comment...</string>
+    <string name="post">post</string>
+    <string name="submit">Submit</string>
+
+    <!--Notification-->
+    <string name="channel_name">channel name</string>
+    <string name="channel_description">channel description</string>
+    <string name="message_notification">Rate your last activity </string>
 
 </resources>

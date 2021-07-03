@@ -94,18 +94,19 @@
     <string name="next">Próximo</string>
     <!--settings-->
     <string name="prompt_name">"Nome: "</string>
-    <string name="prompt_password2">Password:</string>
-    <string name="prompt_website">Website:</string>
-    <string name="prompt_phone_number">Número de telemovel:</string>
+    <string name="prompt_password2">Password: </string>
+    <string name="prompt_website">Website: </string>
+    <string name="prompt_phone_number">Número de telemovel: </string>
     <string name="save_changes">Guardar alterações</string>
     <string name="interests">Interesses:</string>
-    <string name="new_password">Nova Password:</string>
+    <string name="new_password">Nova Password: </string>
+    <string name="confirm_password_update">Confirmar Password: </string>
     <!--info window-->
     <string name="activity_title">Título da Atividade</string>
     <string name="organization_activity">Organização da atividade</string>
     <string name="view_activity">Ver Atividade</string>
     <!--new activity-->
-    <string name="activity_duration">Duração da Atividade :</string>
+    <string name="activity_duration">Duração da Atividade: </string>
     <string name="hint_address">rua, número, código postal</string>
     <string name="date">Data</string>
     <string name="type">Tipo:</string>
@@ -120,6 +121,15 @@
 
     <string name="unjoin">Desinscrever-se</string>
     <string name="save">Salvar</string>
+    <!--Activity Info-->
+    <string name="rating">Pontuação: </string>
+    <string name="add_comment">Comentar...</string>
+    <string name="post">post</string>
+    <string name="submit">Submeter</string>
 
+    <!--Notification-->
+    <string name="channel_name">channel name</string>
+    <string name="channel_description">channel description</string>
+    <string name="message_notification">Avalia a tua última atividade!</string>
 
 </resources>

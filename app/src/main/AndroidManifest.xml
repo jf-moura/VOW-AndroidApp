@@ -59,13 +59,14 @@
             android:name=".ui.extraInfo.ExtraInfoActivity"
             android:label="Register">
 
-
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
+        <activity android:name=".ui.activityInfo.ActivityInfo"
+           />
         <activity android:name=".ui.enroll.Pop"
             android:theme="@style/AppTheme.customPop" />
         <activity

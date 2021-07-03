@@ -14,6 +14,7 @@ import java.util.List;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
+import pt.vow.ui.activityInfo.ActivityInfo;
 import pt.vow.ui.enroll.EnrollActivity;
 
 public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecyclerViewAdapter.ViewHolder> {
@@ -36,14 +37,15 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.activityName.setText("Name: " + activityList.get(position).getName());
-            holder.owner.setText("Organization: " + activityList.get(position).getOwner());
+            holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) +" "+ activityList.get(position).getName());
+            holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) +" "+ activityList.get(position).getOwner());
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String activity = activityList.get(position).getName() + "_" + activityList.get(position).getOwner() + "_" + activityList.get(position).getAddress() + "_" + activityList.get(position).getTime() + "_" + activityList.get(position).getParticipantNum() + "_" + activityList.get(position).getDurationInMinutes() + "_" + activityList.get(position).getId();
-                    Intent intent = new Intent(context, EnrollActivity.class);
+                    //Intent intent = new Intent(context, EnrollActivity.class);
+                    Intent intent = new Intent(context, ActivityInfo.class);
                     intent.putExtra("ActivityInfo", activity);
                     context.startActivity(intent);
                 }
