@@ -19,7 +19,7 @@
     <string name="title_activity_scrolling">ScrollingActivity</string>
 
     <!-- Strings related to register -->
-    <string name="register_success">Registou-se com sucesso.</string>
+    <string name="register_success">Registou-se com sucesso </string>
 
     <string name="option_get_place">Get place</string>
 
@@ -131,6 +131,11 @@
     <string name="channel_name">Nome do canal</string>
     <string name="channel_description">Descripção do canal</string>
     <string name="message_notification">Pontua a tua atividade </string>
+
+    <string name="my_activities">As minhas atividades:</string>
+    <string name="no_activities_available">Nenhuma atividade disponível!</string>
+    <string name="activities">Atividades:</string>
+    <string name="logout_failed">Logout falhou</string>
 
 
 </resources>

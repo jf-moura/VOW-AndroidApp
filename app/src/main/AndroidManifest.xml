@@ -68,6 +68,9 @@
             android:name=".ui.register.RegisterActivity"
             android:label="Register" />
         <activity
+            android:name=".ui.activityInfo.ActivityInfo"
+            android:label="Info" />
+        <activity
             android:name=".ui.login.LoginActivity"
             android:label="Login" />
         <activity

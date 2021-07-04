@@ -2,6 +2,7 @@ package pt.vow.data.login;
 
 import pt.vow.data.Result;
 import pt.vow.data.model.LoggedInUser;
+import pt.vow.data.model.LoggedOutUser;
 
 public class LoginRepository {
 
@@ -26,10 +27,6 @@ public class LoginRepository {
         return user != null;
     }
 
-    public void logout() {
-        user = null;
-        dataSource.logout();
-    }
 
     private void setLoggedInUser(LoggedInUser user) {
         this.user = user;
@@ -44,4 +41,6 @@ public class LoginRepository {
         }
         return result;
     }
+
+
 }

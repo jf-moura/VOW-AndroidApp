@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +19,10 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import pt.vow.MainPage;
 import pt.vow.R;
+import pt.vow.ui.getActivities.MainPageVolunteer;
+import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.login.LoginActivity;
 import pt.vow.ui.profile.ProfileFragment;
 import pt.vow.ui.register.RegisterActivity;
@@ -30,6 +34,12 @@ public class FrontPageActivity extends AppCompatActivity {
     private FrontPageActivity registerChooseAct;
     private Button loginBttn, createAccBttn, notificationBttn;
     private int notificationId;
+
+    private SharedPreferences loginPreferences;
+
+    private boolean saveLogin, saveLogin2, saveLoginExtra;
+    private String username, tokenId;
+    private Long role;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +54,35 @@ public class FrontPageActivity extends AppCompatActivity {
 
         notificationId = 0;
         createNotificationChannel();
+
+        loginPreferences = getApplicationContext().getSharedPreferences("loginPrefs", MODE_PRIVATE);
+
+        Boolean test = (Boolean) getIntent().getSerializableExtra("test");
+        if(test == null){
+            test = true;
+        }
+
+        saveLogin = loginPreferences.getBoolean("saveLogin", false);
+        saveLogin2 = loginPreferences.getBoolean("saveLogin2", true);
+
+        if(username==null) {
+            username = loginPreferences.getString("username", "username");
+            role = loginPreferences.getLong("role", 1);
+            tokenId = loginPreferences.getString("tokenId", "tokenId");
+        }
+
+       /* if (saveLogin && test) {
+            Intent intent;
+            LoggedInUserView user = new LoggedInUserView(role, username, tokenId);
+            if (role == 0) { //volunteer
+                intent = new Intent(loginAct, MainPageVolunteer.class);
+                intent.putExtra("UserLogged", user);
+            } else { //organization
+                intent = new Intent(loginAct, MainPage.class);
+                intent.putExtra("UserLogged", user);
+            }
+            startActivity(intent);
+        }*/
 
         loginBttn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,22 +108,6 @@ public class FrontPageActivity extends AppCompatActivity {
         });
 
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            final boolean fromNotification = extras.getBoolean("NOTIFICATION");
-            if (fromNotification) {
-                ProfileFragment fragment = new ProfileFragment();
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.front_page, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        }
-    }
 
     private void triggerNotification() {
         // Create an explicit intent for an Activity in your app
@@ -96,7 +119,7 @@ public class FrontPageActivity extends AppCompatActivity {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.icon_foreground)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.ic_compass))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_compass))
                 .setContentTitle("Rate your Activity")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
@@ -122,5 +145,26 @@ public class FrontPageActivity extends AppCompatActivity {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        savedInstanceState.putString("username", username);
+        savedInstanceState.putLong("role", role);
+        savedInstanceState.putString("tokenId", tokenId);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+        username = savedInstanceState.getString("username");
+        role = savedInstanceState.getLong("role");
+        tokenId = savedInstanceState.getString("tokenId");
     }
 }

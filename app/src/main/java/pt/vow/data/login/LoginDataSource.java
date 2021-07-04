@@ -4,6 +4,8 @@ import android.util.Patterns;
 
 import pt.vow.data.Result;
 import pt.vow.data.model.LoggedInUser;
+import pt.vow.data.model.LoggedOutUser;
+import pt.vow.data.model.LogoutCredentials;
 import pt.vow.data.model.UserAuthenticated;
 import pt.vow.data.model.UserCredentials;
 import pt.vow.data.model.UserCredentialsEmail;
@@ -46,7 +48,4 @@ public class LoginDataSource {
         }
     }
 
-    public void logout() {
-        // TODO: revoke authentication
-    }
 }

@@ -126,5 +126,9 @@
     <string name="channel_name">channel name</string>
     <string name="channel_description">channel description</string>
     <string name="message_notification">Rate your last activity </string>
+    <string name="my_activities">My Activities:</string>
+    <string name="no_activities_available">No content available!</string>
+    <string name="activities">Activities:</string>
+    <string name="logout_failed">Logout failed</string>
 
 </resources>

@@ -10,6 +10,7 @@ import pt.vow.data.login.LoginRepository;
 import pt.vow.data.Result;
 import pt.vow.data.model.LoggedInUser;
 import pt.vow.R;
+import pt.vow.data.model.LoggedOutUser;
 
 import java.util.concurrent.Executor;
 
@@ -48,6 +49,7 @@ public class LoginViewModel extends ViewModel {
             }
         });
     }
+
 
     public void loginDataChanged(String username, String password) {
         if (!isUserNameValid(username)) {

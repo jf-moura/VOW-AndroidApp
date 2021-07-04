@@ -23,6 +23,15 @@
             android:layout_marginTop="20dp"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter" />
+        <TextView
+            android:id="@+id/myActivitiesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:text="@string/my_activities"/>
+
 
     </LinearLayout>
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -35,6 +36,7 @@ public class FeedFragment extends Fragment {
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
     private ImageView mapImageView;
+    private TextView activitiesTextView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +55,11 @@ public class FeedFragment extends Fragment {
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
         mapImageView = root.findViewById(R.id.mapImageView);
+        activitiesTextView = root.findViewById(R.id.activitiesTextView);
+
+        if(activitiesList.size() == 0){
+            activitiesTextView.setText(R.string.no_activities_available);
+        }
 
         if (activitiesList != null) {
             List<Activity> aux = new LinkedList<>();
@@ -74,6 +81,7 @@ public class FeedFragment extends Fragment {
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         }
+
 
         mapImageView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -8,6 +8,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import pt.vow.R;
+import pt.vow.data.model.Activity;
 import pt.vow.ui.login.LoggedInUserView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ public class ActivityInfo extends AppCompatActivity {
     private LoggedInUserView user;
     private String activityInfoTitle;
     private String[] activityInfo;
+    private Activity activityInfoFromNotification;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,7 @@ public class ActivityInfo extends AppCompatActivity {
         editTextComment = findViewById(R.id.editTextComment);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
+       // activityInfoFromNotification = (Activity) getIntent().getSerializableExtra("Activity");
         activityInfoTitle = (String) getIntent().getSerializableExtra("ActivityInfo");
         activityInfo = activityInfoTitle.split("_");
 

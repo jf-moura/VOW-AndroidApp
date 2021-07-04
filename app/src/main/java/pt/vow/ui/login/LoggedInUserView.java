@@ -10,7 +10,7 @@ public class LoggedInUserView implements Serializable {
     private String tokenID;
     private String username;
 
-    LoggedInUserView(long role, String username, String tokenID) {
+    public LoggedInUserView(long role, String username, String tokenID) {
         this.role = role;
         this.username = username;
         this.tokenID = tokenID;

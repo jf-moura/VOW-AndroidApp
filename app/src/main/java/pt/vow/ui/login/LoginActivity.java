@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,12 +49,13 @@ public class LoginActivity extends AppCompatActivity {
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
         final CheckBox rememberMe = findViewById(R.id.checkBoxRemember);
+        final ProgressBar progressBar = findViewById(R.id.progress_bar);
 
-        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        loginPreferences = getApplicationContext().getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
 
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
-        if (saveLogin == true) {
+        if (saveLogin) {
             usernameEditText.setText(loginPreferences.getString("username", ""));
             passwordEditText.setText(loginPreferences.getString("password", ""));
             rememberMe.setChecked(true);
@@ -126,22 +128,22 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
 
-                    String username = usernameEditText.getText().toString();
-                    String password = passwordEditText.getText().toString();
+                String username = usernameEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
 
-                    if (rememberMe.isChecked()) {
-                        loginPrefsEditor.putBoolean("saveLogin", true);
-                        loginPrefsEditor.putString("username", username);
-                        loginPrefsEditor.putString("password", password);
-                        loginPrefsEditor.commit();
-                    } else {
-                        loginPrefsEditor.clear();
-                        loginPrefsEditor.commit();
-                    }
-                    loginViewModel.login(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString());
+                if (rememberMe.isChecked()) {
+                    loginPrefsEditor.putBoolean("saveLogin", true);
+                    loginPrefsEditor.putString("username", username);
+                    loginPrefsEditor.putString("password", password);
+                    loginPrefsEditor.commit();
+                } else {
+                    loginPrefsEditor.clear().commit();
                 }
+                loginViewModel.login(usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString());
+            }
 
         });
     }
@@ -151,12 +153,15 @@ public class LoginActivity extends AppCompatActivity {
         // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
         Intent intent;
+        loginPrefsEditor.putLong("role", model.getRole());
+        loginPrefsEditor.putString("tokenId", model.getTokenID());
         if (model.getRole() == 0) {
             intent = new Intent(mActivity, MainPageVolunteer.class);
             intent.putExtra("UserLogged", model);
         } else {
             intent = new Intent(mActivity, MainPage.class);
             intent.putExtra("UserLogged", model);
+
         }
         startActivity(intent);
     }

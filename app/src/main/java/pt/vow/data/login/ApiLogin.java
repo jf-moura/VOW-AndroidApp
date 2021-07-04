@@ -1,5 +1,6 @@
 package pt.vow.data.login;
 
+import pt.vow.data.model.LogoutCredentials;
 import pt.vow.data.model.UserAuthenticated;
 import pt.vow.data.model.UserCredentials;
 
@@ -14,6 +15,7 @@ public interface ApiLogin {
     Call<UserAuthenticated> authenticateUsername(@Body UserCredentials user);
     @POST("rest/login")
     Call<UserAuthenticated> authenticateUserEmail(@Body UserCredentialsEmail user);
+
 
 }
 

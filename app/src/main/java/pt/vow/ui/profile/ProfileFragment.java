@@ -4,6 +4,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -14,9 +15,11 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,11 +47,16 @@ import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.VOW;
+import pt.vow.ui.activityInfo.ActivityInfo;
 import pt.vow.ui.extraInfo.UploadImageViewModel;
 import pt.vow.ui.extraInfo.UploadImageViewModelFactory;
 import pt.vow.ui.frontPage.FrontPageActivity;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.logout.LogoutViewModel;
+import pt.vow.ui.logout.LogoutViewModelFactory;
 import pt.vow.ui.update.UpdateActivity;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class ProfileFragment extends Fragment {
     private static final int IMG_REQUEST = 21;
@@ -58,8 +66,10 @@ public class ProfileFragment extends Fragment {
     private ImageView menuImageView, menuImageViewClose;
     private ImageButton profileImage;
     private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, linearLayoutPrincipal;
+    private TextView myActivitiesTextView;
 
     private ProfileViewModel profileViewModel;
+    private LogoutViewModel logoutViewModel;
     private RecyclerView recyclerView;
     private FragmentProfileBinding binding;
     private List<Activity> activitiesList;
@@ -73,6 +83,10 @@ public class ProfileFragment extends Fragment {
     private int notificationId;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
 
+    private SharedPreferences loginPreferences;
+    private SharedPreferences.Editor loginPrefsEditor;
+    private boolean saveLogin;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onViewCreated(container, savedInstanceState);
@@ -81,18 +95,28 @@ public class ProfileFragment extends Fragment {
         View root = binding.getRoot();
 
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
         getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetActivitiesByUserViewModel.class);
+
+        logoutViewModel = new ViewModelProvider(this, new LogoutViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(LogoutViewModel.class);
+
         uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(UploadImageViewModel.class);
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
+
         recyclerView = root.findViewById(R.id.activities_recycler_view_profile);
         profileImage = root.findViewById(R.id.profileImage);
+        myActivitiesTextView = root.findViewById(R.id.myActivitiesTextView);
 
         notificationId = 0;
         createNotificationChannel();
+
+        loginPreferences = getContext().getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        loginPrefsEditor = loginPreferences.edit();
 
         getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getActivitiesByUserViewModel.getActivitiesResult().observeForever(new Observer<GetActivitiesByUserResult>() {
@@ -108,6 +132,9 @@ public class ProfileFragment extends Fragment {
                     getActivitiesByUserViewModel.getActivitiesList().observe(getActivity(), list -> {
                         activitiesList = list;
                     });
+                    if (activitiesList.size() == 0) {
+                        myActivitiesTextView.setText(R.string.no_activities_available);
+                    }
                     if (activitiesList != null) {
                         ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesList);
                         recyclerView.setAdapter(adapter);
@@ -121,11 +148,12 @@ public class ProfileFragment extends Fragment {
                             Calendar beginTime = Calendar.getInstance();
                             beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length()-1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
                             long startMillis = beginTime.getTimeInMillis();
-                            if(startMillis <= currentTime.getTimeInMillis()){
-                               triggerNotification(a.getName());
+                            if(startMillis == currentTime.getTimeInMillis()){
+                               triggerNotification(a, a.getName());
                             }
                         }*/
                     }
+
                     getActivity().setResult(android.app.Activity.RESULT_OK);
                 }
             }
@@ -148,8 +176,6 @@ public class ProfileFragment extends Fragment {
             linearLayoutPrincipal.setLayoutParams(params);
         }
 
-
-
         menuImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +185,7 @@ public class ProfileFragment extends Fragment {
         menuImageViewClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(drawerLayout.isDrawerOpen(GravityCompat.START))
+                if (drawerLayout.isDrawerOpen(GravityCompat.START))
                     drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
@@ -180,7 +206,14 @@ public class ProfileFragment extends Fragment {
         logoutLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), FrontPageActivity.class);
+                logoutViewModel.logout(user.getUsername(),
+                        user.getTokenID());
+
+                loginPrefsEditor.putBoolean("saveLogin", false);
+                Intent intent;
+                //intent = new Intent(getActivity(), LoginActivity.class);
+                intent = new Intent(getActivity(), FrontPageActivity.class);
+                intent.putExtra("test", false);
                 startActivity(intent);
                 getActivity().finish();
             }
@@ -244,10 +277,12 @@ public class ProfileFragment extends Fragment {
         Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
-    private void triggerNotification(String name) {
+    private void triggerNotification(Activity a, String name) {
         // Create an explicit intent for an Activity in your app
-        Intent intent = new Intent(getActivity(), FrontPageActivity.class);
+        Intent intent = new Intent(getActivity(), ActivityInfo.class);
         intent.putExtra("NOTIFICATION", true);
+        intent.putExtra("UserLogged", user);
+        intent.putExtra("Activity", a);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent, 0);
 
