@@ -16,10 +16,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -85,7 +87,6 @@ public class MainPageVolunteer extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-
         downloadImageViewModel.getDownloadResult().observe(this, new Observer<GetImageResult>() {
             @Override
             public void onChanged(@Nullable GetImageResult downloadResult) {
@@ -105,6 +106,7 @@ public class MainPageVolunteer extends AppCompatActivity {
                 }
             }
         });
+
     }
 
 

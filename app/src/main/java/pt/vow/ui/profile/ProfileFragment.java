@@ -15,13 +15,16 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -51,6 +54,8 @@ import pt.vow.ui.activityInfo.ActivityInfo;
 import pt.vow.ui.extraInfo.UploadImageViewModel;
 import pt.vow.ui.extraInfo.UploadImageViewModelFactory;
 import pt.vow.ui.frontPage.FrontPageActivity;
+import pt.vow.ui.getActivities.DownloadImageViewModel;
+import pt.vow.ui.getActivities.DownloadImageViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.logout.LogoutViewModel;
 import pt.vow.ui.logout.LogoutViewModelFactory;
@@ -70,12 +75,13 @@ public class ProfileFragment extends Fragment {
 
     private ProfileViewModel profileViewModel;
     private LogoutViewModel logoutViewModel;
+    private DownloadImageViewModel downloadImageViewModel;
     private RecyclerView recyclerView;
     private FragmentProfileBinding binding;
     private List<Activity> activitiesList;
 
     private Uri imageUri;
-    private Bitmap bitmap;
+    private static Bitmap bitmap;
     private UploadImageViewModel uploadImageViewModel;
 
     private LoggedInUserView user;
@@ -95,18 +101,15 @@ public class ProfileFragment extends Fragment {
         View root = binding.getRoot();
 
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-
         getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetActivitiesByUserViewModel.class);
-
         logoutViewModel = new ViewModelProvider(this, new LogoutViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(LogoutViewModel.class);
-
         uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(UploadImageViewModel.class);
+        downloadImageViewModel = new ViewModelProvider(requireActivity()).get(DownloadImageViewModel.class);
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
-
 
         recyclerView = root.findViewById(R.id.activities_recycler_view_profile);
         profileImage = root.findViewById(R.id.profileImage);
@@ -182,6 +185,7 @@ public class ProfileFragment extends Fragment {
                 openDrawer(drawerLayout);
             }
         });
+
         menuImageViewClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,6 +193,7 @@ public class ProfileFragment extends Fragment {
                     drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
+
         settingsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,12 +202,14 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
         statsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Statistics", Toast.LENGTH_SHORT).show();
             }
         });
+
         logoutLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -218,6 +225,7 @@ public class ProfileFragment extends Fragment {
                 getActivity().finish();
             }
         });
+
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -225,18 +233,18 @@ public class ProfileFragment extends Fragment {
                 intent.setType("image/*");
                 intent.setAction(intent.ACTION_GET_CONTENT);
 
-                startActivityForResult(Intent.createChooser(intent, "Select Image"), IMG_REQUEST);
+                someActivityResultLauncher.launch(intent);
             }
+        });
+
+        downloadImageViewModel.getImage().observe(getActivity(), image -> {
+            bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+            profileImage.setImageBitmap(bitmap);
         });
 
 
         return root;
     }
-
-    private static void openDrawer(DrawerLayout drawerLayout) {
-        drawerLayout.openDrawer(GravityCompat.START);
-    }
-
 
     @Override
     public void onDestroyView() {
@@ -244,23 +252,35 @@ public class ProfileFragment extends Fragment {
         binding = null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == IMG_REQUEST && resultCode == RESULT_OK && data != null) {
-            imageUri = data.getData();
-
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
-                profileImage.setImageBitmap(bitmap);
-                uploadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    private static void openDrawer(DrawerLayout drawerLayout) {
+        drawerLayout.openDrawer(GravityCompat.START);
     }
+
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        imageUri = data.getData();
+
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                            profileImage.setImageBitmap(bitmap);
+                            uploadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
+                            /*try {
+                                downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }*/
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void uploadImage(String projectId, String bucketName, String objectName) throws IOException {
