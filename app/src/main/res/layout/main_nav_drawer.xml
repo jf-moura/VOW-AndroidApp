@@ -4,16 +4,8 @@
     android:layout_height="200dp"
     android:orientation="vertical"
     android:background="@color/white"
+    android:layout_gravity="right"
     android:id="@+id/linearLayoutPrincipal">
-
-
-    <ImageView
-        android:id="@+id/menuImageViewClose"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:scaleType="fitStart"
-        android:src="@drawable/ic_baseline_menu_24" />
 
 
     <LinearLayout

@@ -12,7 +12,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -41,6 +45,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -59,6 +65,7 @@ import pt.vow.ui.getActivities.DownloadImageViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.logout.LogoutViewModel;
 import pt.vow.ui.logout.LogoutViewModelFactory;
+import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.update.UpdateActivity;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -68,7 +75,6 @@ public class ProfileFragment extends Fragment {
     private static final int RESULT_OK = -1;
     private static final String CHANNEL_ID = "012345";
 
-    private ImageView menuImageView, menuImageViewClose;
     private ImageButton profileImage;
     private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, linearLayoutPrincipal;
     private TextView myActivitiesTextView;
@@ -163,36 +169,19 @@ public class ProfileFragment extends Fragment {
         });
 
         drawerLayout = root.findViewById(R.id.drawerLayout);
-        menuImageView = root.findViewById(R.id.menuImageView);
         settingsLinearLayout = root.findViewById(R.id.settingsLinearLayout);
         statsLinearLayout = root.findViewById(R.id.statsLinearLayout);
         logoutLinearLayout = root.findViewById(R.id.logoutLinearLayout);
-        menuImageViewClose = root.findViewById(R.id.menuImageViewClose);
         linearLayoutPrincipal = root.findViewById(R.id.linearLayoutPrincipal);
 
 
         if (user.getRole() == 0) { //volunteer
             statsLinearLayout.setVisibility(LinearLayout.GONE);
             ViewGroup.LayoutParams params = linearLayoutPrincipal.getLayoutParams();
-            int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, getResources().getDisplayMetrics());
+            int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
             params.height = height;
             linearLayoutPrincipal.setLayoutParams(params);
         }
-
-        menuImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDrawer(drawerLayout);
-            }
-        });
-
-        menuImageViewClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (drawerLayout.isDrawerOpen(GravityCompat.START))
-                    drawerLayout.closeDrawer(GravityCompat.START);
-            }
-        });
 
         settingsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,8 +231,23 @@ public class ProfileFragment extends Fragment {
             profileImage.setImageBitmap(bitmap);
         });
 
-
+        setHasOptionsMenu(true);
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.menu_nav_drawer, menu);
+        super.onCreateOptionsMenu(menu, menuInflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+        if (drawerLayout.isDrawerOpen(Gravity.RIGHT))
+            drawerLayout.closeDrawer(Gravity.RIGHT);
+        else
+            openDrawer(drawerLayout);
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -253,7 +257,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private static void openDrawer(DrawerLayout drawerLayout) {
-        drawerLayout.openDrawer(GravityCompat.START);
+        drawerLayout.openDrawer(Gravity.RIGHT);
     }
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(

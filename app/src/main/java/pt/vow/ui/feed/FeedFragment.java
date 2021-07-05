@@ -2,6 +2,9 @@ package pt.vow.ui.feed;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,6 +17,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -35,7 +40,6 @@ public class FeedFragment extends Fragment {
     private FeedViewModel feedViewModel;
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
-    private ImageView mapImageView;
     private TextView activitiesTextView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -54,7 +58,6 @@ public class FeedFragment extends Fragment {
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
-        mapImageView = root.findViewById(R.id.mapImageView);
         activitiesTextView = root.findViewById(R.id.activitiesTextView);
 
         if(activitiesList.size() == 0){
@@ -82,20 +85,26 @@ public class FeedFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         }
 
-
-        mapImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment fragment = new MapsFragment();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.feedFragment, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        });
-
+        setHasOptionsMenu(true);
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater){
+        menuInflater.inflate(R.menu.menu_map, menu);
+        super.onCreateOptionsMenu(menu, menuInflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+        Fragment fragment = new MapsFragment();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.feedFragment, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        setHasOptionsMenu(false);
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
