@@ -19,7 +19,7 @@ public class GetActivitiesViewModel extends ViewModel {
     private GetActivitiesRepository activitiesInfoRepository;
     private final Executor executor;
 
-    GetActivitiesViewModel(GetActivitiesRepository activitiesInfoRepository, Executor executor) {
+    public GetActivitiesViewModel(GetActivitiesRepository activitiesInfoRepository, Executor executor) {
         this.activitiesInfoRepository = activitiesInfoRepository;
         this.executor = executor;
     }

@@ -56,11 +56,12 @@
         </LinearLayout>
     </LinearLayout>
 
-        <Button
-            android:id="@+id/btnViewActivity"
-            android:layout_width="110dip"
-            android:layout_height="60dip"
-            android:background="@drawable/ic_launcher_background"
-            android:text="@string/view_activity" />
+    <Button
+        android:id="@+id/btnViewActivity"
+        android:layout_width="110dip"
+        android:layout_height="60dip"
+        android:background="@drawable/ic_launcher_background"
+        android:text="@string/view_activity" />
+
 
 </LinearLayout>

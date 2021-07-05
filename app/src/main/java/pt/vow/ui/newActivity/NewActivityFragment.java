@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -64,6 +65,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     private String type;
     private RadioGroup rg1, rg2;
     private RadioButton rbNature, rbChildren, rbHealth, rbHouseBuilding, rbElderly, rbAnimals;
+    private ProgressBar progressBar;
 
     private static final int RB1_ID = 1;//animals radio button id
     private static final int RB2_ID = 2;//children radio button id
@@ -96,6 +98,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         rg2.clearCheck();
         rg1.setOnCheckedChangeListener(listener1);
         rg2.setOnCheckedChangeListener(listener2);
+
+        progressBar = root.findViewById(R.id.progress_bar_new_activity);
 
 
         TimePicker durationPicker = (TimePicker) root.findViewById(R.id.durationPicker);
@@ -145,6 +149,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                 if (newActResult.getSuccess() != null) {
                     registerActivitySuccess(newActResult.getSuccess());
                     getActivity().setResult(Activity.RESULT_OK);
+                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -219,8 +224,18 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 newActivityFragment.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
                         textAddress.getText().toString(), latLng, date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                editTextName.setText("");
+                editTextPartNum.setText("");
+                textAddress.setText("");
+                durationPicker.setMinute(0);
+                durationPicker.setHour(0);
+                rg1.clearCheck(); // this is so we can start fresh, with no selection on both RadioGroups
+                rg2.clearCheck();
+
+
             }
         });
 

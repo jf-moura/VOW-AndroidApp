@@ -137,5 +137,7 @@
     <string name="activities">Atividades:</string>
     <string name="logout_failed">Logout falhou</string>
 
+    <string name="directions">Direções</string>
+
 
 </resources>

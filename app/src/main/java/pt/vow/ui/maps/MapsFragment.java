@@ -1,10 +1,12 @@
 package pt.vow.ui.maps;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,9 +26,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.directions.route.AbstractRouting;
+import com.directions.route.Route;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,6 +48,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -49,12 +61,12 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.snackbar.Snackbar;
 
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import pt.vow.R;
@@ -64,7 +76,6 @@ import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.getActivities.GetActivitiesViewModel;
 import pt.vow.ui.login.LoggedInUserView;
 
-import static android.app.Activity.RESULT_OK;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
@@ -112,6 +123,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private TextView searchView;
 
+    private Polyline currentPolyline;
+    //polyline object
+    private List<Polyline> polylines = null;
+    private Boolean getDirections;
+    private FragmentActivity mActivity;
+    private View root;
+    protected String start;
+    protected String end;
+
     public MapsFragment() {
     }
 
@@ -126,9 +146,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
+        try {
+            getDirections = getArguments().getBoolean("getDirections");
+            end = getArguments().getString("destination");
+        } catch (Exception e) {
+            getDirections = false;
+        }
+        start = "";
+
 
         if (savedInstanceState != null) {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+            start = lastKnownLocation.toString();
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
@@ -146,6 +175,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         this.infoTitle = (TextView) infoWindow.findViewById(R.id.nameTxt);
         this.infoOwner = (TextView) infoWindow.findViewById(R.id.ownerTxt);
+
 
         infoButtonViewActivity = (Button) infoWindow.findViewById(R.id.btnViewActivity);
 
@@ -184,7 +214,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             }
         });
 
+        // start = "38.781824,-9.095908";
+        //end = "38.738854,-9.143224";
 
+        if (getDirections) {
+            displayTrack(start, end);
+        }
+
+        root = v;
         return v;
     }
 
@@ -475,6 +512,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
         return result;
     }
+
     private int monthToIntegerShort(String month) {
         int result = 0;
         switch (month) {
@@ -538,7 +576,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 String[] hours = dateTime[3].split(":");
 
                 Calendar beginTime = Calendar.getInstance();
-                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length()-1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
                 long startMillis = beginTime.getTimeInMillis();
 
                 if (startMillis > currentTime.getTimeInMillis()) {
@@ -617,4 +655,106 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         startActivity(intent);
     }
 
+
+    // function to find Routes.
+   /* public void findRoutes(LatLng Start, LatLng End) {
+        if (Start == null || End == null) {
+            Toast.makeText(getActivity().getApplicationContext(), "Unable to get location", Toast.LENGTH_LONG).show();
+        } else {
+
+            Routing routing = new Routing.Builder()
+                    .travelMode(AbstractRouting.TravelMode.DRIVING)
+                    .withListener(this)
+                    .alternativeRoutes(true)
+                    .waypoints(Start, End)
+                    .key(getResources().getString(R.string.google_maps_key))  //also define your api key here.
+                    .build();
+            routing.execute();
+        }
+    }
+
+    //Routing call back functions.
+    @Override
+    public void onRoutingFailure(com.directions.route.RouteException e) {
+        View parentLayout = root.findViewById(android.R.id.content);
+        Snackbar snackbar = Snackbar.make(parentLayout, e.toString(), Snackbar.LENGTH_LONG);
+        snackbar.show();
+//    Findroutes(start,end);
+    }
+
+
+    @Override
+    public void onRoutingStart() {
+        Toast.makeText(getActivity().getApplicationContext(), "Finding Route...", Toast.LENGTH_LONG).show();
+    }*/
+
+    //If Route finding success..
+   /* @Override
+    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
+
+        CameraUpdate center = CameraUpdateFactory.newLatLng(start);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+        if (polylines != null) {
+            polylines.clear();
+        }
+        PolylineOptions polyOptions = new PolylineOptions();
+        LatLng polylineStartLatLng = null;
+        LatLng polylineEndLatLng = null;
+
+
+        polylines = new ArrayList<>();
+        //add route(s) to the map using polyline
+        for (int i = 0; i < route.size(); i++) {
+
+            if (i == shortestRouteIndex) {
+                polyOptions.color(getResources().getColor(R.color.black));
+                polyOptions.width(7);
+                polyOptions.addAll(route.get(shortestRouteIndex).getPoints());
+                Polyline polyline = mMap.addPolyline(polyOptions);
+                polylineStartLatLng = polyline.getPoints().get(0);
+                int k = polyline.getPoints().size();
+                polylineEndLatLng = polyline.getPoints().get(k - 1);
+                polylines.add(polyline);
+
+            } else {
+
+            }
+
+        }
+
+        //Add Marker on route starting position
+        MarkerOptions startMarker = new MarkerOptions();
+        startMarker.position(polylineStartLatLng);
+        startMarker.title("My Location");
+        mMap.addMarker(startMarker);
+
+        //Add Marker on route ending position
+        MarkerOptions endMarker = new MarkerOptions();
+        endMarker.position(polylineEndLatLng);
+        endMarker.title("Destination");
+        mMap.addMarker(endMarker);
+    }
+
+    @Override
+    public void onRoutingCancelled() {
+        findRoutes(start, end);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        findRoutes(start, end);
+    }*/
+
+    private void displayTrack(String source, String destination) {
+        try {
+            Uri uri = Uri.parse("https://www.google.com/maps/dir/" + source + "/" + destination);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.setPackage("com.google.android.apps.maps");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getActivity().getApplicationContext(), "error", Toast.LENGTH_LONG).show();
+        }
+    }
 }

@@ -130,5 +130,6 @@
     <string name="no_activities_available">No content available!</string>
     <string name="activities">Activities:</string>
     <string name="logout_failed">Logout failed</string>
+    <string name="directions">Directions</string>
 
 </resources>

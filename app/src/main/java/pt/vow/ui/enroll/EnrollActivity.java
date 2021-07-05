@@ -2,8 +2,10 @@ package pt.vow.ui.enroll;
 
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,10 +18,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import java.io.File;
 import java.util.List;
 
 import pt.vow.R;
@@ -27,6 +33,7 @@ import pt.vow.data.model.Activity;
 import pt.vow.ui.VOW;
 import pt.vow.ui.getActivities.ActivitiesRegisteredView;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;
@@ -35,7 +42,7 @@ import pt.vow.ui.profile.ProfileRecyclerViewAdapter;
 public class EnrollActivity extends AppCompatActivity {
 
     private TextView textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
-    private Button enrollButton;
+    private Button enrollButton, directionsButton;
     private EnrollViewModel enrollViewModel;
     private CancelEnrollViewModel cancelEnrollViewModel;
     private LoggedInUserView user;
@@ -49,7 +56,6 @@ public class EnrollActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enroll);
-
         mActivity = this;
 
         textViewActName = findViewById(R.id.textViewActName);
@@ -60,6 +66,7 @@ public class EnrollActivity extends AppCompatActivity {
         textViewTime = findViewById(R.id.textViewTime);
 
         enrollButton = findViewById(R.id.enrollButton);
+        directionsButton = findViewById(R.id.btnDirections);
 
         enrollViewModel = new ViewModelProvider(this, new EnrollViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(EnrollViewModel.class);
@@ -76,12 +83,12 @@ public class EnrollActivity extends AppCompatActivity {
         activityInfo = activityInfoTitle.split("_");
 
 
-        textViewActName.setText(getResources().getString(R.string.activity_name) +" "+ activityInfo[0]);
-        textViewActOwner.setText(getResources().getString(R.string.organization) +" "+ activityInfo[1]);
-        textViewAddress.setText(getResources().getString(R.string.address) +" "+ activityInfo[2]);
-        textViewTime.setText(getResources().getString(R.string.time) +" "+ activityInfo[3]);
-        textViewNumPart.setText(getResources().getString(R.string.number_participants) +" "+ activityInfo[4]);
-        textViewDuration.setText(getResources().getString(R.string.duration) +" "+ Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60);
+        textViewActName.setText(Html.fromHtml("<b>" + getResources().getString(R.string.activity_name) +"</b>" + " " + activityInfo[0]));
+        textViewActOwner.setText(Html.fromHtml("<b>" +getResources().getString(R.string.organization) +"</b>"+ " " + activityInfo[1]));
+        textViewAddress.setText(Html.fromHtml("<b>" +getResources().getString(R.string.address) +"</b>"+ " " + activityInfo[2]));
+        textViewTime.setText(Html.fromHtml("<b>" +getResources().getString(R.string.time) +"</b>" +" " + activityInfo[3]));
+        textViewNumPart.setText(Html.fromHtml("<b>" +getResources().getString(R.string.number_participants) +"</b>" +" " + activityInfo[4]));
+        textViewDuration.setText(Html.fromHtml("<b>" +getResources().getString(R.string.duration) +"</b>" +" " + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60));
 
         getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getActivitiesByUserViewModel.getActivitiesResult().observeForever(new Observer<GetActivitiesByUserResult>() {
@@ -163,22 +170,41 @@ public class EnrollActivity extends AppCompatActivity {
             }
         });
 
+        directionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Bundle bundle = new Bundle();
+                bundle.putBoolean("getDirections", true);
+                bundle.putString("destination", activityInfo[2]);*/
+                Fragment fragment = new MapsFragment();
+                //fragment.setArguments(bundle);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.enroll_activity, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
+
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_share, menu);
         return true;
     }
 
-   /* @Override
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.share){
-            ApplicationInfo api = getApplicationContext().getApplicationInfo();
+        if (id == R.id.share) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, "URL da app");
+            startActivity(intent.createChooser(intent, "Share Using"));
         }
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 
     private void showGetActivitiesFailed(@StringRes Integer errorString) {
         Toast.makeText(this.getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
