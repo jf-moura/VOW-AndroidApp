@@ -134,5 +134,8 @@
     <string name="title_activities_data">My Activities</string>
     <string name="about_me">About Me</string>
     <string name="confirm">Confirm</string>
+    <string name="route_name">Route name:</string>
+    <string name="route_duration">Route Duration:</string>
+    <string name="title_new_route">New Route</string>
 
 </resources>

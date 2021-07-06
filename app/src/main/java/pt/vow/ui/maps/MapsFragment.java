@@ -121,6 +121,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     protected String start;
     protected String end;
 
+
+
     public MapsFragment() {
     }
 
@@ -649,95 +651,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         startActivity(intent);
     }
 
-
-    // function to find Routes.
-   /* public void findRoutes(LatLng Start, LatLng End) {
-        if (Start == null || End == null) {
-            Toast.makeText(getActivity().getApplicationContext(), "Unable to get location", Toast.LENGTH_LONG).show();
-        } else {
-
-            Routing routing = new Routing.Builder()
-                    .travelMode(AbstractRouting.TravelMode.DRIVING)
-                    .withListener(this)
-                    .alternativeRoutes(true)
-                    .waypoints(Start, End)
-                    .key(getResources().getString(R.string.google_maps_key))  //also define your api key here.
-                    .build();
-            routing.execute();
-        }
-    }
-
-    //Routing call back functions.
-    @Override
-    public void onRoutingFailure(com.directions.route.RouteException e) {
-        View parentLayout = root.findViewById(android.R.id.content);
-        Snackbar snackbar = Snackbar.make(parentLayout, e.toString(), Snackbar.LENGTH_LONG);
-        snackbar.show();
-//    Findroutes(start,end);
-    }
-
-
-    @Override
-    public void onRoutingStart() {
-        Toast.makeText(getActivity().getApplicationContext(), "Finding Route...", Toast.LENGTH_LONG).show();
-    }*/
-
-    //If Route finding success..
-   /* @Override
-    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-
-        CameraUpdate center = CameraUpdateFactory.newLatLng(start);
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
-        if (polylines != null) {
-            polylines.clear();
-        }
-        PolylineOptions polyOptions = new PolylineOptions();
-        LatLng polylineStartLatLng = null;
-        LatLng polylineEndLatLng = null;
-
-
-        polylines = new ArrayList<>();
-        //add route(s) to the map using polyline
-        for (int i = 0; i < route.size(); i++) {
-
-            if (i == shortestRouteIndex) {
-                polyOptions.color(getResources().getColor(R.color.black));
-                polyOptions.width(7);
-                polyOptions.addAll(route.get(shortestRouteIndex).getPoints());
-                Polyline polyline = mMap.addPolyline(polyOptions);
-                polylineStartLatLng = polyline.getPoints().get(0);
-                int k = polyline.getPoints().size();
-                polylineEndLatLng = polyline.getPoints().get(k - 1);
-                polylines.add(polyline);
-
-            } else {
-
-            }
-
-        }
-
-        //Add Marker on route starting position
-        MarkerOptions startMarker = new MarkerOptions();
-        startMarker.position(polylineStartLatLng);
-        startMarker.title("My Location");
-        mMap.addMarker(startMarker);
-
-        //Add Marker on route ending position
-        MarkerOptions endMarker = new MarkerOptions();
-        endMarker.position(polylineEndLatLng);
-        endMarker.title("Destination");
-        mMap.addMarker(endMarker);
-    }
-
-    @Override
-    public void onRoutingCancelled() {
-        findRoutes(start, end);
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        findRoutes(start, end);
-    }*/
 
     private void displayTrack(String source, String destination) {
         try {

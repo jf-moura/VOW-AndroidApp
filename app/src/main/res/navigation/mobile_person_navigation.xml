@@ -18,10 +18,10 @@
         tools:layout="@layout/fragment_maps" />-->
 
     <fragment
-        android:id="@+id/navigation_new_activity"
-        android:name="pt.vow.ui.newActivity.NewActivityFragment"
+        android:id="@+id/navigation_choose_type"
+        android:name="pt.vow.ui.route.ChooseType"
         android:label="@string/title_new_activity"
-        tools:layout="@layout/fragment_new_activity" />
+        tools:layout="@layout/fragment_choose_type" />
 
     <fragment
         android:id="@+id/navigation_podium"

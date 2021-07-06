@@ -1,24 +1,18 @@
-package pt.vow.ui.newActivity;
+package pt.vow.ui.route;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -27,62 +21,62 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 import java.util.TimeZone;
 
 import pt.vow.R;
+import pt.vow.databinding.ActivityNewRouteBinding;
 import pt.vow.databinding.FragmentNewActivityBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.newActivity.RegisteredActivityView;
 
-public class NewActivityFragment extends Fragment implements AdapterView.OnItemSelectedListener {
-
+public class NewRouteFragment extends Fragment {
     private EditText editTextName, editTextPartNum;
     private TextView textAddress;
-    private String latLng;
     private String date;
     private String timeZone;
     private String durationInMinutes;
+    private Button chooseRouteBttn, dateBttn, confirmButton;
 
-    private NewActivityViewModel newActivityFragment;
-    private FragmentNewActivityBinding binding;
     private LoggedInUserView user;
-    private Geocoder geocoder;
     private String type;
     private RadioGroup rg1, rg2;
-    private ProgressBar progressBar;
+    private NewRouteViewModel newRouteViewModel;
+    private String[] coordinateArray;
 
-
-    private static final String TAG = NewActivityFragment.class.getSimpleName();
+    private NewRouteFragment mActivity;
+    private ActivityNewRouteBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+                         ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = FragmentNewActivityBinding.inflate(inflater, container, false);
+
+        binding = ActivityNewRouteBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        mActivity = this;
+
+        newRouteViewModel = new ViewModelProvider(this, new NewRouteViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(NewRouteViewModel.class);
+
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
-        geocoder = new Geocoder(getActivity());
+
+        coordinateArray = (String[]) getActivity().getIntent().getSerializableExtra("CoordinateArray");
 
         type = "";
 
         editTextName = root.findViewById(R.id.editTextNameAct);
         textAddress = root.findViewById(R.id.editTextAddress);
         editTextPartNum = root.findViewById(R.id.editTextParticipantNum);
+        chooseRouteBttn = root.findViewById(R.id.bttnChooseRoute);
+        dateBttn = root.findViewById(R.id.bttnDate);
 
         rg1 = (RadioGroup) root.findViewById(R.id.group1);
         rg2 = (RadioGroup) root.findViewById(R.id.group2);
@@ -90,8 +84,6 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         rg2.clearCheck();
         rg1.setOnCheckedChangeListener(listener1);
         rg2.setOnCheckedChangeListener(listener2);
-
-        progressBar = root.findViewById(R.id.progress_bar_new_activity);
 
 
         TimePicker durationPicker = (TimePicker) root.findViewById(R.id.durationPicker);
@@ -108,47 +100,38 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                 .concat(String.valueOf(currentDate.get(Calendar.HOUR_OF_DAY))).concat(":").concat(String.valueOf(currentDate.get(Calendar.MINUTE)))
                 .concat(" ").concat(timeZone);
 
-        final Button confirmButton = root.findViewById(R.id.bttnSaveChanges);
+        confirmButton = root.findViewById(R.id.bttnSaveChanges);
 
-        newActivityFragment = new ViewModelProvider(this, new NewActivityViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
-                .get(NewActivityViewModel.class);
 
-        newActivityFragment.getNewActFormState().observe(getViewLifecycleOwner(), new Observer<NewActivityFormState>() {
+        newRouteViewModel.getNewRouteFormState().observe(getActivity(), new Observer<NewRouteFormState>() {
             @Override
-            public void onChanged(@Nullable NewActivityFormState newActivityFormState) {
-                if (newActivityFormState == null) {
+            public void onChanged(@Nullable NewRouteFormState newRouteFormState) {
+                if (newRouteFormState == null) {
                     return;
                 }
-                confirmButton.setEnabled(newActivityFormState.isDataValid());
-                if (newActivityFormState.getNameError() != null) {
-                    editTextName.setError(getString(newActivityFormState.getNameError()));
+                confirmButton.setEnabled(newRouteFormState.isDataValid());
+                if (newRouteFormState.getNameError() != null) {
+                    editTextName.setError(getString(newRouteFormState.getNameError()));
                 }
-                if (newActivityFormState.getParticipantNumError() != null) {
-                    editTextPartNum.setError(getString(newActivityFormState.getParticipantNumError()));
+                if (newRouteFormState.getParticipantNumError() != null) {
+                    editTextPartNum.setError(getString(newRouteFormState.getParticipantNumError()));
                 }
             }
         });
 
-        newActivityFragment.getNewActResult().observe(getViewLifecycleOwner(), new Observer<NewActivityResult>() {
+        newRouteViewModel.getNewRouteResult().observe(getActivity(), new Observer<NewRouteResult>() {
             @Override
-            public void onChanged(@Nullable NewActivityResult newActResult) {
-                if (newActResult == null) {
+            public void onChanged(@Nullable NewRouteResult newRouteResult) {
+                if (newRouteResult == null) {
                     return;
                 }
-                if (newActResult.getError() != null) {
-                    showRegisterFailed(newActResult.getError());
+                if (newRouteResult.getError() != null) {
+                    showRegisterFailed(newRouteResult.getError());
                 }
-                if (newActResult.getSuccess() != null) {
-                    registerActivitySuccess(newActResult.getSuccess());
+                if (newRouteResult.getSuccess() != null) {
+                    registerActivitySuccess(newRouteResult.getSuccess());
                     getActivity().setResult(Activity.RESULT_OK);
-                    editTextName.setText("");
-                    editTextPartNum.setText("");
-                    textAddress.setText("");
-                    durationPicker.setMinute(0);
-                    durationPicker.setHour(0);
-                    rg1.clearCheck(); // this is so we can start fresh, with no selection on both RadioGroups
-                    rg2.clearCheck();
-                    progressBar.setVisibility(View.GONE);
+
                 }
             }
         });
@@ -166,24 +149,13 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!textAddress.getText().toString().isEmpty()) {
-                    try {
-                        List<Address> addresses = geocoder.getFromLocationName(textAddress.getText().toString(), 1);
-                        if (addresses.size() > 0) {
-                            Address address = addresses.get(0);
-                            latLng = new String().concat(address.getLatitude() + "," + address.getLongitude());
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                        textAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                //TODO verify if array coordinates is empty
+                newRouteViewModel.newRouteDataChanged(editTextName.getText().toString(),
+                        date, type, editTextPartNum.getText().toString(), durationInMinutes);
             }
         };
 
         editTextName.addTextChangedListener(afterTextChangedListener);
-        textAddress.addTextChangedListener(afterTextChangedListener);
         editTextPartNum.addTextChangedListener(afterTextChangedListener);
 
         durationPicker.setOnTimeChangedListener(
@@ -197,37 +169,33 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                     }
                 });
 
-        binding.bttnDate.setOnClickListener(new View.OnClickListener() {
+        dateBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDatePickerDialog();
             }
         });
 
-        textAddress.setOnClickListener(new View.OnClickListener() {
+        chooseRouteBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Places.initialize(getActivity().getApplicationContext(), getString(R.string.google_maps_key));
-                // Set the fields to specify which types of place data to
-                // return after the user has made a selection.
-                List<Place.Field> fields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.NAME);
-
-                // Start the autocomplete intent.
-                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-                        .build(getActivity());
-                startActivityForResult(intent, 100);
+                Intent intent = new Intent(getActivity(), ChooseRouteActivity.class);
+                startActivity(intent);
             }
         });
-
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                newActivityFragment.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                        textAddress.getText().toString(), latLng, date, type, editTextPartNum.getText().toString(), durationInMinutes);
-
-
+                newRouteViewModel.registerRoute(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
+                      "lisbon", date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinateArray);
+                editTextName.setText("");
+                editTextPartNum.setText("");
+                textAddress.setText("");
+                durationPicker.setMinute(0);
+                durationPicker.setHour(0);
+                rg1.clearCheck(); // this is so we can start fresh, with no selection on both RadioGroups
+                rg2.clearCheck();
             }
         });
 
@@ -252,8 +220,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                                 .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
                                 .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
 
-                        newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
-                                textAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                        newRouteViewModel.newRouteDataChanged(editTextName.getText().toString(),
+                                 date, type, editTextPartNum.getText().toString(), durationInMinutes);
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
             }
@@ -266,38 +234,11 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         Toast.makeText(getActivity().getApplicationContext(), success, Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && resultCode == AutocompleteActivity.RESULT_OK) {
-            Place pl = Autocomplete.getPlaceFromIntent(data);
-            Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());
-            textAddress.setText(pl.getAddress());
-        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-            Status status = Autocomplete.getStatusFromIntent(data);
-            Log.i(TAG, status.getStatusMessage());
-        }
-    }
 
     private void showRegisterFailed(@StringRes Integer errorString) {
         Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 
     private RadioGroup.OnCheckedChangeListener listener1 = new RadioGroup.OnCheckedChangeListener() {
 

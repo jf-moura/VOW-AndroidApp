@@ -1,31 +1,30 @@
-package pt.vow.data.registerActivity;
+package pt.vow.data.route;
 
 import java.io.IOException;
 
 import pt.vow.data.Result;
-import pt.vow.data.model.ActivityRegistration;
 import pt.vow.data.model.RegisteredActivity;
+import pt.vow.data.model.RouteRegistration;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class NewActivityDataSource {
+public class NewRouteDataSource {
+    private ApiNewRoute service;
 
-    private ApiCreateActivity service;
-
-    public NewActivityDataSource() {
+    public NewRouteDataSource() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://vow-project-311114.ey.r.appspot.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        this.service = retrofit.create(ApiCreateActivity.class);
+        this.service = retrofit.create(ApiNewRoute.class);
     }
 
-    public Result<RegisteredActivity> registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes) {
+    public Result<RegisteredActivity> registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, String[] coordinateArray) {
 
-        Call<Void> activityRegistrationCall = service.createActivity(new ActivityRegistration(username, tokenID, name, address, coordinates, time, type, participantNum, durationInMinutes));
+        Call<Void> activityRegistrationCall = service.newRoute(new RouteRegistration(username, tokenID, name, address, time, type, participantNum, durationInMinutes, coordinateArray));
         try {
             Response<Void> response = activityRegistrationCall.execute();
             if (response.isSuccessful()) {
@@ -33,12 +32,12 @@ public class NewActivityDataSource {
             }
             return new Result.Error(new Exception(response.errorBody().toString()));
         } catch (IOException e) {
-            return new Result.Error(new IOException("Error registering", e));
+            return new Result.Error(new IOException("Error registering route", e));
         }
     }
 
 
-    public void deleteActivity() {
-        // TODO: revoke activity
+    public void deleteRoute() {
+        // TODO: revoke route
     }
 }
