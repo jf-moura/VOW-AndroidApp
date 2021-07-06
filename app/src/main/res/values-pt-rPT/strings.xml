@@ -138,6 +138,9 @@
     <string name="logout_failed">Logout falhou</string>
 
     <string name="directions">Direções</string>
+    <string name="title_activities_data">As Minhas Atividades</string>
+    <string name="about_me">Sobre mim</string>
+    <string name="confirm">Confirmo</string>
 
 
 </resources>
