@@ -135,5 +135,8 @@
     <string name="about_me">About Me</string>
     <string name="confirm">Confirm</string>
     <string name="enrolled_activities">Activities I\'ve Participated:</string>
+    <string name="route_name">Route name:</string>
+    <string name="route_duration">Route Duration:</string>
+    <string name="title_new_route">New Route</string>
 
 </resources>

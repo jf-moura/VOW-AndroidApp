@@ -4,65 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.newActivity.NewActivityFragment">
+    tools:context=".ui.route.NewRouteFragment"
+    android:id="@+id/activity_new_route">
 
     <TextView
         android:id="@+id/textViewNameAct"
         android:layout_width="99dp"
         android:layout_height="50dp"
-        android:layout_above="@+id/textViewAddress"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="84dp"
         android:gravity="center"
-        android:text="@string/activity_name"
+        android:text="@string/route_name"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewAddress"
-        android:layout_width="60dp"
-        android:layout_height="50dp"
-        android:textStyle="bold"
-        android:layout_above="@+id/textViewParticipantNum"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="@string/address"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewNameAct" />
-
-    <TextView
-        android:id="@+id/textViewParticipantNum"
-        android:layout_width="143dp"
-        android:layout_height="54dp"
-        android:textStyle="bold"
-        android:layout_above="@+id/textViewDuration"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:text="@string/number_participants"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAddress" />
-
-    <TextView
-        android:id="@+id/textViewDuration"
-        android:layout_width="121dp"
-        android:layout_height="50dp"
-        android:textStyle="bold"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="44dp"
-        android:gravity="center"
-        android:text="@string/activity_duration"
-        app:layout_constraintEnd_toEndOf="@+id/textViewParticipantNum"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textViewParticipantNum"
-        app:layout_constraintTop_toBottomOf="@+id/textViewParticipantNum" />
-
 
     <EditText
         android:id="@+id/editTextNameAct"
@@ -77,18 +33,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/editTextAddress"
-        android:layout_width="280dp"
-        android:layout_height="50dp"
+        android:id="@+id/textViewParticipantNum"
+        android:layout_width="143dp"
+        android:layout_height="54dp"
+        android:textStyle="bold"
+        android:layout_above="@+id/textViewDuration"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:hint="@string/hint_address"
-        android:inputType="textPostalAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNameAct" />
+        android:text="@string/number_participants"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNameAct" />
 
     <EditText
         android:id="@+id/editTextParticipantNum"
@@ -100,21 +56,33 @@
         android:layout_marginTop="20dp"
         android:inputType="text|number"
         app:layout_constraintStart_toEndOf="@+id/textViewParticipantNum"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAddress" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextNameAct" />
 
-    <Button
-        android:id="@+id/bttnSaveChanges"
-        android:layout_width="151dp"
-        android:layout_height="58dp"
-        android:layout_alignParentStart="true"
+    <TextView
+        android:id="@+id/textViewDuration"
+        android:layout_width="121dp"
+        android:layout_height="50dp"
+        android:textStyle="bold"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="76dp"
-        android:text="@string/save_changes"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/group2"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="@+id/group2" />
+        android:layout_marginTop="44dp"
+        android:gravity="center"
+        android:text="@string/route_duration"
+        app:layout_constraintEnd_toEndOf="@+id/textViewParticipantNum"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textViewParticipantNum"
+        app:layout_constraintTop_toBottomOf="@+id/textViewParticipantNum" />
+
+    <TimePicker
+        android:id="@+id/durationPicker"
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="24dp"
+        android:timePickerMode="spinner"
+        app:layout_constraintEnd_toEndOf="@+id/editTextParticipantNum"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editTextParticipantNum"
+        app:layout_constraintTop_toBottomOf="@+id/editTextParticipantNum" />
 
     <Button
         android:id="@+id/bttnDate"
@@ -136,17 +104,28 @@
         app:layout_constraintVertical_bias="0.0"
         app:rippleColor="#FF5722" />
 
-
-    <TimePicker
-        android:id="@+id/durationPicker"
-        android:layout_width="150dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="24dp"
-        android:timePickerMode="spinner"
-        app:layout_constraintEnd_toEndOf="@+id/editTextParticipantNum"
+    <Button
+        android:id="@+id/bttnChooseRoute"
+        android:layout_width="156dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="16dp"
+        android:text="Choose Route"
+        app:layout_constraintEnd_toEndOf="@+id/bttnDate"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editTextParticipantNum"
-        app:layout_constraintTop_toBottomOf="@+id/editTextParticipantNum" />
+        app:layout_constraintStart_toStartOf="@+id/bttnDate"
+        app:layout_constraintTop_toBottomOf="@+id/bttnDate" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginTop="32dp"
+        android:text="@string/type"
+        app:layout_constraintEnd_toEndOf="@+id/bttnChooseRoute"
+        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintStart_toStartOf="@+id/bttnChooseRoute"
+        app:layout_constraintTop_toBottomOf="@+id/bttnChooseRoute" />
 
     <RadioGroup
         android:id="@+id/group1"
@@ -154,10 +133,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/bttnDate"
+        app:layout_constraintEnd_toEndOf="@+id/bttnChooseRoute"
         app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="@+id/bttnDate"
-        app:layout_constraintTop_toBottomOf="@+id/bttnDate">
+        app:layout_constraintStart_toStartOf="@+id/bttnChooseRoute"
+        app:layout_constraintTop_toBottomOf="@+id/bttnChooseRoute">
 
         <RadioButton
             android:id="@+id/radioHealth"
@@ -224,27 +203,19 @@
             tools:layout_editor_absoluteY="516dp" />
     </RadioGroup>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_marginTop="32dp"
-        android:text="@string/type"
-        app:layout_constraintEnd_toEndOf="@+id/bttnDate"
-        app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintStart_toStartOf="@+id/bttnDate"
-        app:layout_constraintTop_toBottomOf="@+id/bttnDate" />
+    <Button
+        android:id="@+id/bttnSaveChanges"
+        android:layout_width="156dp"
+        android:layout_height="58dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="52dp"
+        android:text="@string/save_changes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/group2"
+        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintStart_toStartOf="@+id/group2" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar_new_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.215"
-        app:layout_constraintStart_toEndOf="@+id/bttnDate"
-        app:layout_constraintTop_toBottomOf="@+id/durationPicker" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
