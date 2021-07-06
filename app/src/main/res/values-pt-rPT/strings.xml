@@ -141,6 +141,7 @@
     <string name="title_activities_data">As Minhas Atividades</string>
     <string name="about_me">Sobre mim</string>
     <string name="confirm">Confirmo</string>
+    <string name="enrolled_activities">Actividades Que Participei:</string>
 
 
 </resources>

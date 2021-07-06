@@ -37,7 +37,6 @@ public class FeedFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<Activity> activitiesList;
     private GetActivitiesViewModel activitiesViewModel;
-    private FeedViewModel feedViewModel;
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
     private TextView activitiesTextView;
@@ -50,9 +49,6 @@ public class FeedFragment extends Fragment {
 
         binding = FragmentFeedBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        feedViewModel = new ViewModelProvider(this, new FeedViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
-                .get(FeedViewModel.class);
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
@@ -101,7 +97,6 @@ public class FeedFragment extends Fragment {
                                 aux.add(a);
                             }
                         }
-
                         RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux, user);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -109,6 +104,12 @@ public class FeedFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        activitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
     }
 
     @Override
@@ -135,7 +136,7 @@ public class FeedFragment extends Fragment {
         super.onDestroyView();
         binding = null;
         if (actObs != null)
-        activitiesViewModel.getActivitiesResult().removeObserver(actObs);
+            activitiesViewModel.getActivitiesResult().removeObserver(actObs);
     }
 
     private int monthToIntegerShort(String month) {

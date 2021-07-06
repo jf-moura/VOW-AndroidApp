@@ -11,20 +11,23 @@
         android:paddingLeft="10dip"
         android:paddingTop="5dip"
         android:paddingRight="20dip"
-        android:paddingBottom="5dip">
+        android:paddingBottom="5dip"
+        android:background="@color/white">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="2dip"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/white">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:background="@color/white">
 
                 <TextView
                     android:id="@+id/nameTxt"
@@ -33,7 +36,8 @@
                     android:gravity="center_vertical"
                     android:text="@string/activity_title"
                     android:textColor="#000000"
-                    android:textSize="10dip" />
+                    android:textSize="10dip"
+                    android:background="@color/white" />
 
             </LinearLayout>
 
@@ -41,7 +45,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:background="@color/white">
 
                 <TextView
                     android:id="@+id/ownerTxt"
@@ -50,7 +55,8 @@
                     android:gravity="center_vertical"
                     android:text="@string/organization_activity"
                     android:textColor="#000000"
-                    android:textSize="10dip" />
+                    android:textSize="10dip"
+                    android:background="@color/white" />
 
             </LinearLayout>
         </LinearLayout>

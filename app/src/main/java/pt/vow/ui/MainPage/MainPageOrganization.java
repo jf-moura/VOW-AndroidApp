@@ -28,6 +28,8 @@ import pt.vow.ui.VOW;
 import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.feed.GetActivitiesViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.profile.GetActivitiesByUserViewModel;
+import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;
 import pt.vow.ui.profile.GetMyActivitiesViewModel;
 import pt.vow.ui.profile.GetMyActivitiesViewModelFactory;
 
@@ -38,6 +40,7 @@ public class MainPageOrganization extends AppCompatActivity {
     private LoggedInUserView user;
     private GetActivitiesViewModel activitiesViewModel;
     private DownloadImageViewModel downloadImageViewModel;
+    private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
     private byte[] profileImageInByte;
 
@@ -53,12 +56,15 @@ public class MainPageOrganization extends AppCompatActivity {
                 .get(GetActivitiesViewModel.class);
         downloadImageViewModel = new ViewModelProvider(this, new DownloadImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(DownloadImageViewModel.class);
+        getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetActivitiesByUserViewModel.class);
         getMyActivitiesViewModel = new ViewModelProvider(this, new GetMyActivitiesViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetMyActivitiesViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
         activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
+        getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getMyActivitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         try {
             downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
@@ -75,7 +81,7 @@ public class MainPageOrganization extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        downloadImageViewModel.getDownloadResult().observe(this, new Observer<GetImageResult>() {
+        /*downloadImageViewModel.getDownloadResult().observe(this, new Observer<GetImageResult>() {
             @Override
             public void onChanged(@Nullable GetImageResult downloadResult) {
                 if (downloadResult == null) {
@@ -92,7 +98,7 @@ public class MainPageOrganization extends AppCompatActivity {
                     menu.findItem(R.id.navigation_profile).setIcon(drawable);
                 }
             }
-        });
+        });*/
 
     }
 

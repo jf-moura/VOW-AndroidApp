@@ -134,5 +134,6 @@
     <string name="title_activities_data">My Activities</string>
     <string name="about_me">About Me</string>
     <string name="confirm">Confirm</string>
+    <string name="enrolled_activities">Activities I\'ve Participated:</string>
 
 </resources>

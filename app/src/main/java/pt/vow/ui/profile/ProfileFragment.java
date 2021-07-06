@@ -48,8 +48,6 @@ import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.VOW;
-import pt.vow.ui.extraInfo.UploadImageViewModel;
-import pt.vow.ui.extraInfo.UploadImageViewModelFactory;
 import pt.vow.ui.frontPage.FrontPageActivity;
 import pt.vow.ui.MainPage.DownloadImageViewModel;
 import pt.vow.ui.MainPage.GetImageResult;
@@ -66,10 +64,12 @@ public class ProfileFragment extends Fragment {
     private ImageButton profileImage;
     private EditText aboutMeEditText;
     private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, linearLayoutPrincipal;
+    private TextView enrolledActivitiesTextView;
     private TextView myActivitiesTextView;
     private DrawerLayout drawerLayout;
+    private RecyclerView enrolledActRecyclerView;
+    private RecyclerView myActRecyclerView;
 
-    private ProfileViewModel profileViewModel;
     private LogoutViewModel logoutViewModel;
     private DownloadImageViewModel downloadImageViewModel;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
@@ -77,7 +77,6 @@ public class ProfileFragment extends Fragment {
     private UploadImageViewModel uploadImageViewModel;
     private LoggedInUserView user;
 
-    private RecyclerView recyclerView;
     private FragmentProfileBinding binding;
 
     private List<Activity> activitiesByUserList;
@@ -87,7 +86,6 @@ public class ProfileFragment extends Fragment {
 
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
-    private boolean saveLogin;
 
     private Observer<GetImageResult> imgObs;
     private Observer<GetActivitiesByUserResult> actByUserObs;
@@ -100,7 +98,6 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         logoutViewModel = new ViewModelProvider(this, new LogoutViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(LogoutViewModel.class);
         uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
@@ -108,9 +105,11 @@ public class ProfileFragment extends Fragment {
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
-        recyclerView = root.findViewById(R.id.activities_recycler_view_profile);
-        profileImage = root.findViewById(R.id.profileImage);
+        enrolledActRecyclerView = root.findViewById(R.id.enrolled_activities_recycler_view_profile);
+        myActRecyclerView = root.findViewById(R.id.my_activities_recycler_view_profile);
+        enrolledActivitiesTextView  = root.findViewById(R.id.enrolledActivitiesTextView);
         myActivitiesTextView = root.findViewById(R.id.myActivitiesTextView);
+        profileImage = root.findViewById(R.id.profileImage);
         aboutMeEditText = root.findViewById(R.id.aboutMeEditText);
 
         loginPreferences = getContext().getSharedPreferences("loginPrefs", MODE_PRIVATE);
@@ -206,7 +205,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        if (user.getRole() == 0) {
+        //if (user.getRole() == 0) { // volunteer
             getActivitiesByUserViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesByUserViewModel.class);
             getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
                 @Override
@@ -220,19 +219,18 @@ public class ProfileFragment extends Fragment {
                     if (getActivitiesResult.getSuccess() != null) {
                         activitiesByUserList = getActivitiesResult.getSuccess().getActivities();
                         if (activitiesByUserList.size() == 0) {
-                            myActivitiesTextView.setText(R.string.no_activities_available);
+                            enrolledActivitiesTextView.setText(R.string.no_activities_available);
                         }
                         if (activitiesByUserList != null) {
                             ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesByUserList);
-                            recyclerView.setAdapter(adapter);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            enrolledActRecyclerView.setAdapter(adapter);
+                            enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                         }
 
-                        getActivity().setResult(android.app.Activity.RESULT_OK);
                     }
                 }
             });
-        }
+        //}
 
         getMyActivitiesViewModel = new ViewModelProvider(requireActivity()).get(GetMyActivitiesViewModel.class);
         getMyActivitiesViewModel.getActivitiesResult().observeForever(myActObs = new Observer<GetMyActivitiesResult>() {
@@ -251,11 +249,10 @@ public class ProfileFragment extends Fragment {
                     }
                     if (myActivitiesList != null) {
                         ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), myActivitiesList);
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        myActRecyclerView.setAdapter(adapter);
+                        myActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     }
 
-                    getActivity().setResult(android.app.Activity.RESULT_OK);
                 }
             }
         });
@@ -287,6 +284,21 @@ public class ProfileFragment extends Fragment {
         getActivitiesByUserViewModel.getActivitiesResult().removeObserver(actByUserObs);
         if (myActObs != null)
         getMyActivitiesViewModel.getActivitiesResult().removeObserver(myActObs);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        getMyActivitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
+
+        //if (user.getRole() == 0) // volunteer
+        getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getTokenID());
+
     }
 
     private static void openDrawer(DrawerLayout drawerLayout) {

@@ -23,8 +23,7 @@ import android.widget.Toast;
 
 import pt.vow.R;
 import pt.vow.ui.VOW;
-import pt.vow.ui.extraInfo.ExtraInfoActivity;
-import pt.vow.ui.extraInfo.ExtraInfoOrganizationActivity;
+import pt.vow.ui.login.LoginActivity;
 
 public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -32,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     private DatePicker datePickerDateBirth;
     private TextView textViewDateBirth;
     private boolean isOrganization;
-    private RegisterActivity extraInfoActP;
+    private RegisterActivity mActivity;
     private RegisterViewModel registerViewModel;
     private String date;
 
@@ -42,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         setContentView(R.layout.activity_register);
 
         isOrganization = true;
-        extraInfoActP = this;
+        mActivity = this;
 
         editTextEmail = findViewById(R.id.emailAddress);
         editTextUsername = findViewById(R.id.username);
@@ -53,8 +52,6 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         editTextConfirmation = findViewById(R.id.passwordConfirmation);
         editTextPhoneNumber = findViewById(R.id.phoneNumber);
         textViewDateBirth = findViewById(R.id.textViewDateBirth);
-
-
 
         date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
                 .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
@@ -117,16 +114,8 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 if (registerResult.getSuccess() != null) {
                     registerUserSuccess(registerResult.getSuccess());
                     setResult(Activity.RESULT_OK);
-                    if (isOrganization) {
-                        Intent intent = new Intent(extraInfoActP, ExtraInfoOrganizationActivity.class);
-                        intent.putExtra("LoggedUser", editTextUsername.getText().toString());
-                        startActivity(intent);
-                    } else {
-                        Intent intent = new Intent(extraInfoActP, ExtraInfoActivity.class);
-                        intent.putExtra("LoggedUser", editTextUsername.getText().toString());
-                        startActivity(intent);
-
-                    }
+                    Intent intent = new Intent(mActivity, LoginActivity.class);
+                    startActivity(intent);
                 }
             }
         });

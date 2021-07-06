@@ -86,7 +86,6 @@ public class MainPageVolunteer extends AppCompatActivity {
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
         activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
-        getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getMyActivitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         try {
             downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
@@ -106,7 +105,7 @@ public class MainPageVolunteer extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        downloadImageViewModel.getDownloadResult().observe(this, new Observer<GetImageResult>() {
+        /*downloadImageViewModel.getDownloadResult().observe(this, new Observer<GetImageResult>() {
             @Override
             public void onChanged(@Nullable GetImageResult downloadResult) {
                 if (downloadResult == null) {
@@ -123,7 +122,7 @@ public class MainPageVolunteer extends AppCompatActivity {
                     menu.findItem(R.id.navigation_profile).setIcon(drawable);
                 }
             }
-        });
+        });*/
 
         getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
             @Override

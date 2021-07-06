@@ -1,4 +1,4 @@
-package pt.vow.ui.extraInfo;
+package pt.vow.ui.profile;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
