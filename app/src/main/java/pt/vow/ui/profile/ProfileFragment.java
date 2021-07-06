@@ -107,7 +107,7 @@ public class ProfileFragment extends Fragment {
 
         enrolledActRecyclerView = root.findViewById(R.id.enrolled_activities_recycler_view_profile);
         myActRecyclerView = root.findViewById(R.id.my_activities_recycler_view_profile);
-        enrolledActivitiesTextView  = root.findViewById(R.id.enrolledActivitiesTextView);
+        enrolledActivitiesTextView = root.findViewById(R.id.enrolledActivitiesTextView);
         myActivitiesTextView = root.findViewById(R.id.myActivitiesTextView);
         profileImage = root.findViewById(R.id.profileImage);
         aboutMeEditText = root.findViewById(R.id.aboutMeEditText);
@@ -206,30 +206,33 @@ public class ProfileFragment extends Fragment {
         });
 
         //if (user.getRole() == 0) { // volunteer
-            getActivitiesByUserViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesByUserViewModel.class);
-            getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
-                @Override
-                public void onChanged(@Nullable GetActivitiesByUserResult getActivitiesResult) {
-                    if (getActivitiesResult == null) {
-                        return;
-                    }
-                    if (getActivitiesResult.getError() != null) {
-                        showGetActivitiesFailed(getActivitiesResult.getError());
-                    }
-                    if (getActivitiesResult.getSuccess() != null) {
-                        activitiesByUserList = getActivitiesResult.getSuccess().getActivities();
-                        if (activitiesByUserList.size() == 0) {
-                            enrolledActivitiesTextView.setText(R.string.no_activities_available);
-                        }
-                        if (activitiesByUserList != null) {
-                            ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesByUserList);
-                            enrolledActRecyclerView.setAdapter(adapter);
-                            enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        }
-
-                    }
+        getActivitiesByUserViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesByUserViewModel.class);
+        getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
+            @Override
+            public void onChanged(@Nullable GetActivitiesByUserResult getActivitiesResult) {
+                if (getActivitiesResult == null) {
+                    return;
                 }
-            });
+                if (getActivitiesResult.getError() != null) {
+                    showGetActivitiesFailed(getActivitiesResult.getError());
+                }
+                if (getActivitiesResult.getSuccess() != null) {
+                    activitiesByUserList = getActivitiesResult.getSuccess().getActivities();
+                    if (activitiesByUserList.size() == 0) {
+                        if (myActivitiesTextView.getText().toString().equals(""))
+                            enrolledActivitiesTextView.setText(R.string.no_activities_available);
+                        else
+                            enrolledActivitiesTextView.setText("");
+                    }
+                    if (activitiesByUserList != null) {
+                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesByUserList);
+                        enrolledActRecyclerView.setAdapter(adapter);
+                        enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    }
+
+                }
+            }
+        });
         //}
 
         getMyActivitiesViewModel = new ViewModelProvider(requireActivity()).get(GetMyActivitiesViewModel.class);
@@ -245,7 +248,7 @@ public class ProfileFragment extends Fragment {
                 if (getActivitiesResult.getSuccess() != null) {
                     myActivitiesList = getActivitiesResult.getSuccess().getActivities();
                     if (myActivitiesList.size() == 0) {
-                        myActivitiesTextView.setText(R.string.no_activities_available);
+                        myActivitiesTextView.setText("");
                     }
                     if (myActivitiesList != null) {
                         ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), myActivitiesList);
@@ -279,11 +282,11 @@ public class ProfileFragment extends Fragment {
         super.onDestroyView();
         binding = null;
         if (imgObs != null)
-        downloadImageViewModel.getDownloadResult().removeObserver(imgObs);
+            downloadImageViewModel.getDownloadResult().removeObserver(imgObs);
         if (actByUserObs != null)
-        getActivitiesByUserViewModel.getActivitiesResult().removeObserver(actByUserObs);
+            getActivitiesByUserViewModel.getActivitiesResult().removeObserver(actByUserObs);
         if (myActObs != null)
-        getMyActivitiesViewModel.getActivitiesResult().removeObserver(myActObs);
+            getMyActivitiesViewModel.getActivitiesResult().removeObserver(myActObs);
     }
 
     @Override
