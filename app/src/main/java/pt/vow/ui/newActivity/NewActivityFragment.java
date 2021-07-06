@@ -64,15 +64,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     private Geocoder geocoder;
     private String type;
     private RadioGroup rg1, rg2;
-    private RadioButton rbNature, rbChildren, rbHealth, rbHouseBuilding, rbElderly, rbAnimals;
     private ProgressBar progressBar;
-
-    private static final int RB1_ID = 1;//animals radio button id
-    private static final int RB2_ID = 2;//children radio button id
-    private static final int RB3_ID = 3;//health radio button id
-    private static final int RB4_ID = 4;//nature radio button id
-    private static final int RB5_ID = 5;//houseBuilding radio button id
-    private static final int RB6_ID = 6;//elderly radio button id
 
 
     private static final String TAG = NewActivityFragment.class.getSimpleName();
