@@ -11,9 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,12 +30,10 @@ import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentFeedBinding;
 import pt.vow.ui.VOW;
-import pt.vow.ui.getActivities.GetActivitiesViewModel;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.maps.MapsFragment;
 
 public class FeedFragment extends Fragment {
-
     private RecyclerView recyclerView;
     private List<Activity> activitiesList;
     private GetActivitiesViewModel activitiesViewModel;
@@ -42,51 +42,73 @@ public class FeedFragment extends Fragment {
     private FragmentFeedBinding binding;
     private TextView activitiesTextView;
 
+    private Observer<GetActivitiesResult> actObs;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onViewCreated(container, savedInstanceState);
-        activitiesViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesViewModel.class);
-        activitiesViewModel.getActivitiesList().observe(getActivity(), list -> {
-            activitiesList = list;
-        });
 
         binding = FragmentFeedBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         feedViewModel = new ViewModelProvider(this, new FeedViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(FeedViewModel.class);
+
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
         activitiesTextView = root.findViewById(R.id.activitiesTextView);
 
-        if(activitiesList.size() == 0){
-            activitiesTextView.setText(R.string.no_activities_available);
-        }
-
-        if (activitiesList != null) {
-            List<Activity> aux = new LinkedList<>();
-            for (Activity a : activitiesList) {
-                Calendar currentTime = Calendar.getInstance();
-
-                String[] dateTime = a.getTime().split(" ");
-                String[] hours = dateTime[3].split(":");
-
-                Calendar beginTime = Calendar.getInstance();
-                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length()-1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
-                long startMillis = beginTime.getTimeInMillis();
-                if (startMillis > currentTime.getTimeInMillis()) {
-                    aux.add(a);
-                }
-            }
-
-            RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux, user);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        }
-
         setHasOptionsMenu(true);
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        activitiesViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesViewModel.class);
+
+        activitiesViewModel.getActivitiesResult().observeForever(actObs = new Observer<GetActivitiesResult>() {
+            @Override
+            public void onChanged(@Nullable GetActivitiesResult getActivitiesResult) {
+                if (getActivitiesResult == null) {
+                    return;
+                }
+                if (getActivitiesResult.getError() != null) {
+                    activitiesTextView.setText(R.string.no_activities_available);
+                }
+                if (getActivitiesResult.getSuccess() != null) {
+                    activitiesList = getActivitiesResult.getSuccess().getActivities();
+                    if (activitiesList.size() == 0) {
+                        activitiesTextView.setText(R.string.no_activities_available);
+                    }
+                    if (activitiesList != null) {
+                        List<Activity> aux = new LinkedList<>();
+                        for (Activity a : activitiesList) {
+                            long currentTime = Calendar.getInstance().getTimeInMillis();
+
+                            String[] dateTime = a.getTime().split(" ");
+                            String[] hours = dateTime[3].split(":");
+
+                            Calendar beginTime = Calendar.getInstance();
+                            if (dateTime[4].equals("PM"))
+                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
+                            else
+                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+
+                            long startMillis = beginTime.getTimeInMillis();
+                            if (startMillis > currentTime) {
+                                aux.add(a);
+                            }
+                        }
+
+                        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux, user);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -107,10 +129,13 @@ public class FeedFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        if (actObs != null)
+        activitiesViewModel.getActivitiesResult().removeObserver(actObs);
     }
 
     private int monthToIntegerShort(String month) {

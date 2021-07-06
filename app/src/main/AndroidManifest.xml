@@ -16,6 +16,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <queries>
+        <package android:name="com.google.android.apps.maps" />
+    </queries>
+
     <application
         android:name=".ui.VOW"
         android:allowBackup="true"
@@ -47,10 +51,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.getActivities.MainPageVolunteer"
+            android:name=".ui.MainPage.MainPageVolunteer"
             android:label="@string/title_activity_main_person" />
         <activity
-            android:name=".MainPage"
+            android:name=".ui.MainPage.MainPageOrganization"
             android:label="@string/title_activity_main_page"></activity>
         <activity
             android:name=".ui.update.UpdateActivity"

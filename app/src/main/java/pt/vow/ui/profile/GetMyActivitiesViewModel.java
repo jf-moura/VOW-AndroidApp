@@ -1,4 +1,4 @@
-package pt.vow.ui.getActivities;
+package pt.vow.ui.profile;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -9,37 +9,35 @@ import java.util.concurrent.Executor;
 
 import pt.vow.R;
 import pt.vow.data.Result;
-import pt.vow.data.getActivities.GetActivitiesRepository;
+import pt.vow.data.getMyActivities.GetMyActivitiesRepository;
 import pt.vow.data.model.Activity;
 
-public class GetActivitiesViewModel extends ViewModel {
-
-    private MutableLiveData<GetActivitiesResult> getActivitiesResult = new MutableLiveData<>();
+public class GetMyActivitiesViewModel extends ViewModel {
+    private MutableLiveData<GetMyActivitiesResult> getActivitiesResult = new MutableLiveData<>();
     private MutableLiveData<List<Activity>> activities = new MutableLiveData<>();
-    private GetActivitiesRepository activitiesInfoRepository;
+    private GetMyActivitiesRepository activitiesInfoRepository;
     private final Executor executor;
 
-    public GetActivitiesViewModel(GetActivitiesRepository activitiesInfoRepository, Executor executor) {
+    GetMyActivitiesViewModel(GetMyActivitiesRepository activitiesInfoRepository, Executor executor) {
         this.activitiesInfoRepository = activitiesInfoRepository;
         this.executor = executor;
     }
 
-    LiveData<GetActivitiesResult> getActivitiesResult() {
+    public LiveData<GetMyActivitiesResult> getActivitiesResult() {
         return getActivitiesResult;
     }
-
 
     public void getActivities(String username, String tokenID) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<ActivitiesRegisteredView> result = activitiesInfoRepository.getActivities(username, tokenID);
+                Result<MyActivitiesView> result = activitiesInfoRepository.getMyActivities(username, tokenID);
                 if (result instanceof Result.Success) {
-                    ActivitiesRegisteredView data = ((Result.Success<ActivitiesRegisteredView>) result).getData();
+                    MyActivitiesView data = ((Result.Success<MyActivitiesView>) result).getData();
                     activities.postValue(data.getActivities());
-                    getActivitiesResult.postValue(new GetActivitiesResult(new ActivitiesRegisteredView(data.activities)));
+                    getActivitiesResult.postValue(new GetMyActivitiesResult(new MyActivitiesView(data.activities)));
                 } else {
-                    getActivitiesResult.postValue(new GetActivitiesResult(R.string.get_activities_failed));
+                    getActivitiesResult.postValue(new GetMyActivitiesResult(R.string.get_activities_failed));
                 }
             }
         });
@@ -48,4 +46,5 @@ public class GetActivitiesViewModel extends ViewModel {
     public LiveData<List<Activity>> getActivitiesList() {
         return activities;
     }
+
 }

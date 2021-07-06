@@ -29,14 +29,7 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.directions.route.AbstractRouting;
-import com.directions.route.Route;
-import com.directions.route.Routing;
-import com.directions.route.RoutingListener;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -49,7 +42,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -61,10 +53,7 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.google.android.material.snackbar.Snackbar;
 
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -73,7 +62,7 @@ import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentMapsBinding;
 import pt.vow.ui.enroll.EnrollActivity;
-import pt.vow.ui.getActivities.GetActivitiesViewModel;
+import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.login.LoggedInUserView;
 
 
@@ -138,10 +127,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        activitiesViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesViewModel.class);
-        activitiesViewModel.getActivitiesList().observe(getActivity(), list -> {
-            activitiesList = list;
-        });
+
         View v = inflater.inflate(R.layout.fragment_maps, container, false);
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
@@ -225,6 +211,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return v;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        activitiesViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesViewModel.class);
+        activitiesViewModel.getActivitiesList().observe(getActivity(), list -> {
+            activitiesList = list;
+        });
+    }
 
     //MARKER WITH BUTTON
     public static int getPixelsFromDp(Context context, float dp) {

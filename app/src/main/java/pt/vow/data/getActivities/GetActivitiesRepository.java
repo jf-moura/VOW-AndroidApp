@@ -1,7 +1,7 @@
 package pt.vow.data.getActivities;
 
 import pt.vow.data.Result;
-import pt.vow.ui.getActivities.ActivitiesRegisteredView;
+import pt.vow.ui.feed.ActivitiesRegisteredView;
 
 public class GetActivitiesRepository {
 

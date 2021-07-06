@@ -22,8 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import pt.vow.ui.getActivities.MainPageVolunteer;
-import pt.vow.MainPage;
+import pt.vow.ui.MainPage.MainPageVolunteer;
+import pt.vow.ui.MainPage.MainPageOrganization;
 import pt.vow.ui.VOW;
 import pt.vow.R;
 
@@ -159,7 +159,7 @@ public class LoginActivity extends AppCompatActivity {
             intent = new Intent(mActivity, MainPageVolunteer.class);
             intent.putExtra("UserLogged", model);
         } else {
-            intent = new Intent(mActivity, MainPage.class);
+            intent = new Intent(mActivity, MainPageOrganization.class);
             intent.putExtra("UserLogged", model);
 
         }

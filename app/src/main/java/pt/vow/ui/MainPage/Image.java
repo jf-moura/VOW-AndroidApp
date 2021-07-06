@@ -1,4 +1,4 @@
-package pt.vow.ui.getActivities;
+package pt.vow.ui.MainPage;
 
 public class Image {
     private byte[] image;
@@ -7,7 +7,7 @@ public class Image {
         this.image = image;
     }
 
-    byte[] getImage() {
+    public byte[] getImage() {
         return image;
     }
 }

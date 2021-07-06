@@ -1,4 +1,4 @@
-package pt.vow.ui.getActivities;
+package pt.vow.ui.feed;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;

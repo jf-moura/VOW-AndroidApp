@@ -2,22 +2,22 @@ package pt.vow.ui.profile;
 
 import androidx.annotation.Nullable;
 
-public class GetActivitiesByUserResult {
+public class GetMyActivitiesResult {
     @Nullable
-    private ActivitiesByUserView success;
+    private MyActivitiesView success;
     @Nullable
     private Integer error;
 
-    GetActivitiesByUserResult(@Nullable Integer error) {
+    GetMyActivitiesResult(@Nullable Integer error) {
         this.error = error;
     }
 
-    GetActivitiesByUserResult(@Nullable ActivitiesByUserView success) {
+    GetMyActivitiesResult(@Nullable MyActivitiesView success) {
         this.success = success;
     }
 
     @Nullable
-    public ActivitiesByUserView getSuccess() {
+    public MyActivitiesView getSuccess() {
         return success;
     }
 

@@ -1,10 +1,7 @@
-package pt.vow.ui.getActivities;
-
-import android.graphics.Bitmap;
+package pt.vow.ui.MainPage;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.google.cloud.storage.Blob;
@@ -14,13 +11,9 @@ import com.google.cloud.storage.StorageOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.Executor;
 
 import pt.vow.R;
-import pt.vow.data.model.Activity;
-import pt.vow.ui.newActivity.NewActivityResult;
-import pt.vow.ui.newActivity.RegisteredActivityView;
 
 public class DownloadImageViewModel extends ViewModel {
     private final Executor executor;

@@ -1,4 +1,4 @@
-package pt.vow.ui.getActivities;
+package pt.vow.ui.MainPage;
 
 import androidx.annotation.Nullable;
 
@@ -15,12 +15,12 @@ public class GetImageResult {
     GetImageResult(@Nullable Image success) { this.success = success; }
 
     @Nullable
-    Image getSuccess() {
+    public Image getSuccess() {
         return success;
     }
 
     @Nullable
-    Integer getError() {
+    public Integer getError() {
         return error;
     }
 }

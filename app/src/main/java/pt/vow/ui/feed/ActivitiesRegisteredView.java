@@ -1,4 +1,4 @@
-package pt.vow.ui.getActivities;
+package pt.vow.ui.feed;
 
 import java.io.Serializable;
 import java.util.List;

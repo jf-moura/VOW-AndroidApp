@@ -5,11 +5,11 @@ import java.util.List;
 
 import pt.vow.data.model.Activity;
 
-public class ActivitiesByUserRegisteredView implements Serializable {
+public class ActivitiesByUserView implements Serializable {
 
     List<Activity> activities;
 
-    public ActivitiesByUserRegisteredView(List<Activity> activities) {
+    public ActivitiesByUserView(List<Activity> activities) {
         this.activities = activities;
     }
 

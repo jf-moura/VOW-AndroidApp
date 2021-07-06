@@ -13,14 +13,31 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/profileImage"
-            android:layout_width="110dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <ImageButton
+                android:id="@+id/profileImage"
+                android:layout_width="110dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:adjustViewBounds="true"
+                android:background="@color/quantum_grey300"
+                android:scaleType="fitCenter" />
+
+            <EditText
+                android:id="@+id/aboutMeEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/about_me"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"/>
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/myActivitiesTextView"
             android:layout_width="match_parent"

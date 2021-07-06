@@ -1,4 +1,4 @@
-package pt.vow.ui.profile;
+package pt.vow.ui.feed;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -9,35 +9,37 @@ import java.util.concurrent.Executor;
 
 import pt.vow.R;
 import pt.vow.data.Result;
-import pt.vow.data.getActivitiesByUser.GetActivitiesByUserRepository;
+import pt.vow.data.getActivities.GetActivitiesRepository;
 import pt.vow.data.model.Activity;
 
-public class GetActivitiesByUserViewModel extends ViewModel {
-    private MutableLiveData<GetActivitiesByUserResult> getActivitiesResult = new MutableLiveData<>();
+public class GetActivitiesViewModel extends ViewModel {
+
+    private MutableLiveData<GetActivitiesResult> getActivitiesResult = new MutableLiveData<>();
     private MutableLiveData<List<Activity>> activities = new MutableLiveData<>();
-    private GetActivitiesByUserRepository activitiesInfoRepository;
+    private GetActivitiesRepository activitiesInfoRepository;
     private final Executor executor;
 
-    GetActivitiesByUserViewModel(GetActivitiesByUserRepository activitiesInfoRepository, Executor executor) {
+    public GetActivitiesViewModel(GetActivitiesRepository activitiesInfoRepository, Executor executor) {
         this.activitiesInfoRepository = activitiesInfoRepository;
         this.executor = executor;
     }
 
-    public LiveData<GetActivitiesByUserResult> getActivitiesResult() {
+    LiveData<GetActivitiesResult> getActivitiesResult() {
         return getActivitiesResult;
     }
+
 
     public void getActivities(String username, String tokenID) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<ActivitiesByUserView> result = activitiesInfoRepository.getActivitiesByUser(username, tokenID);
+                Result<ActivitiesRegisteredView> result = activitiesInfoRepository.getActivities(username, tokenID);
                 if (result instanceof Result.Success) {
-                    ActivitiesByUserView data = ((Result.Success<ActivitiesByUserView>) result).getData();
+                    ActivitiesRegisteredView data = ((Result.Success<ActivitiesRegisteredView>) result).getData();
                     activities.postValue(data.getActivities());
-                    getActivitiesResult.postValue(new GetActivitiesByUserResult(new ActivitiesByUserView(data.activities)));
+                    getActivitiesResult.postValue(new GetActivitiesResult(new ActivitiesRegisteredView(data.activities)));
                 } else {
-                    getActivitiesResult.postValue(new GetActivitiesByUserResult(R.string.get_activities_failed));
+                    getActivitiesResult.postValue(new GetActivitiesResult(R.string.get_activities_failed));
                 }
             }
         });

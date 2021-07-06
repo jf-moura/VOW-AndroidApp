@@ -1,12 +1,10 @@
-package pt.vow.ui.getActivities;
+package pt.vow.ui.MainPage;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.concurrent.Executor;
-
-import pt.vow.ui.extraInfo.UploadImageViewModel;
 
 public class DownloadImageViewModelFactory implements ViewModelProvider.Factory {
     private Executor executor;

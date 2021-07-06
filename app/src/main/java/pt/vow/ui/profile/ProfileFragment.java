@@ -1,8 +1,5 @@
 package pt.vow.ui.profile;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -19,8 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,13 +30,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -56,48 +48,50 @@ import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.VOW;
-import pt.vow.ui.activityInfo.ActivityInfo;
 import pt.vow.ui.extraInfo.UploadImageViewModel;
 import pt.vow.ui.extraInfo.UploadImageViewModelFactory;
 import pt.vow.ui.frontPage.FrontPageActivity;
-import pt.vow.ui.getActivities.DownloadImageViewModel;
-import pt.vow.ui.getActivities.DownloadImageViewModelFactory;
+import pt.vow.ui.MainPage.DownloadImageViewModel;
+import pt.vow.ui.MainPage.GetImageResult;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.logout.LogoutViewModel;
 import pt.vow.ui.logout.LogoutViewModelFactory;
-import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.update.UpdateActivity;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class ProfileFragment extends Fragment {
-    private static final int IMG_REQUEST = 21;
     private static final int RESULT_OK = -1;
-    private static final String CHANNEL_ID = "012345";
 
     private ImageButton profileImage;
+    private EditText aboutMeEditText;
     private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, linearLayoutPrincipal;
     private TextView myActivitiesTextView;
+    private DrawerLayout drawerLayout;
 
     private ProfileViewModel profileViewModel;
     private LogoutViewModel logoutViewModel;
     private DownloadImageViewModel downloadImageViewModel;
+    private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
+    private GetMyActivitiesViewModel getMyActivitiesViewModel;
+    private UploadImageViewModel uploadImageViewModel;
+    private LoggedInUserView user;
+
     private RecyclerView recyclerView;
     private FragmentProfileBinding binding;
-    private List<Activity> activitiesList;
 
+    private List<Activity> activitiesByUserList;
+    private List<Activity> myActivitiesList;
     private Uri imageUri;
     private static Bitmap bitmap;
-    private UploadImageViewModel uploadImageViewModel;
-
-    private LoggedInUserView user;
-    private DrawerLayout drawerLayout;
-    private int notificationId;
-    private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
 
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
     private boolean saveLogin;
+
+    private Observer<GetImageResult> imgObs;
+    private Observer<GetActivitiesByUserResult> actByUserObs;
+    private Observer<GetMyActivitiesResult> myActObs;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -107,66 +101,20 @@ public class ProfileFragment extends Fragment {
         View root = binding.getRoot();
 
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
-                .get(GetActivitiesByUserViewModel.class);
         logoutViewModel = new ViewModelProvider(this, new LogoutViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(LogoutViewModel.class);
         uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(UploadImageViewModel.class);
-        downloadImageViewModel = new ViewModelProvider(requireActivity()).get(DownloadImageViewModel.class);
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         recyclerView = root.findViewById(R.id.activities_recycler_view_profile);
         profileImage = root.findViewById(R.id.profileImage);
         myActivitiesTextView = root.findViewById(R.id.myActivitiesTextView);
-
-        notificationId = 0;
-        createNotificationChannel();
+        aboutMeEditText = root.findViewById(R.id.aboutMeEditText);
 
         loginPreferences = getContext().getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
-
-        getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
-        getActivitiesByUserViewModel.getActivitiesResult().observeForever(new Observer<GetActivitiesByUserResult>() {
-            @Override
-            public void onChanged(@Nullable GetActivitiesByUserResult getActivitiesResult) {
-                if (getActivitiesResult == null) {
-                    return;
-                }
-                if (getActivitiesResult.getError() != null) {
-                    showGetActivitiesFailed(getActivitiesResult.getError());
-                }
-                if (getActivitiesResult.getSuccess() != null) {
-                    getActivitiesByUserViewModel.getActivitiesList().observe(getActivity(), list -> {
-                        activitiesList = list;
-                    });
-                    if (activitiesList.size() == 0) {
-                        myActivitiesTextView.setText(R.string.no_activities_available);
-                    }
-                    if (activitiesList != null) {
-                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesList);
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        /* for(Activity a : activitiesList){
-                            Calendar currentTime = Calendar.getInstance();
-
-                            String[] dateTime = a.getTime().split(" ");
-                            String[] hours = dateTime[3].split(":");
-
-                            Calendar beginTime = Calendar.getInstance();
-                            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length()-1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
-                            long startMillis = beginTime.getTimeInMillis();
-                            if(startMillis == currentTime.getTimeInMillis()){
-                               triggerNotification(a, a.getName());
-                            }
-                        }*/
-                    }
-
-                    getActivity().setResult(android.app.Activity.RESULT_OK);
-                }
-            }
-        });
 
         drawerLayout = root.findViewById(R.id.drawerLayout);
         settingsLinearLayout = root.findViewById(R.id.settingsLinearLayout);
@@ -226,13 +174,92 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        downloadImageViewModel.getImage().observe(getActivity(), image -> {
-            bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
-            profileImage.setImageBitmap(bitmap);
+        aboutMeEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                aboutMeEditText.setText(aboutMeEditText.getText().toString());
+            }
         });
 
         setHasOptionsMenu(true);
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        downloadImageViewModel = new ViewModelProvider(requireActivity()).get(DownloadImageViewModel.class);
+        downloadImageViewModel.getDownloadResult().observeForever(imgObs = new Observer<GetImageResult>() {
+            @Override
+            public void onChanged(@Nullable GetImageResult downloadResult) {
+                if (downloadResult == null) {
+                    return;
+                }
+                //if (downloadResult.getError() != null) {
+                // TODO:
+                //}
+                if (downloadResult.getSuccess() != null) {
+                    byte[] img = downloadResult.getSuccess().getImage();
+                    bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                    profileImage.setImageBitmap(bitmap);
+                }
+            }
+        });
+
+        if (user.getRole() == 0) {
+            getActivitiesByUserViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesByUserViewModel.class);
+            getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
+                @Override
+                public void onChanged(@Nullable GetActivitiesByUserResult getActivitiesResult) {
+                    if (getActivitiesResult == null) {
+                        return;
+                    }
+                    if (getActivitiesResult.getError() != null) {
+                        showGetActivitiesFailed(getActivitiesResult.getError());
+                    }
+                    if (getActivitiesResult.getSuccess() != null) {
+                        activitiesByUserList = getActivitiesResult.getSuccess().getActivities();
+                        if (activitiesByUserList.size() == 0) {
+                            myActivitiesTextView.setText(R.string.no_activities_available);
+                        }
+                        if (activitiesByUserList != null) {
+                            ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesByUserList);
+                            recyclerView.setAdapter(adapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        }
+
+                        getActivity().setResult(android.app.Activity.RESULT_OK);
+                    }
+                }
+            });
+        }
+
+        getMyActivitiesViewModel = new ViewModelProvider(requireActivity()).get(GetMyActivitiesViewModel.class);
+        getMyActivitiesViewModel.getActivitiesResult().observeForever(myActObs = new Observer<GetMyActivitiesResult>() {
+            @Override
+            public void onChanged(@Nullable GetMyActivitiesResult getActivitiesResult) {
+                if (getActivitiesResult == null) {
+                    return;
+                }
+                if (getActivitiesResult.getError() != null) {
+                    showGetActivitiesFailed(getActivitiesResult.getError());
+                }
+                if (getActivitiesResult.getSuccess() != null) {
+                    myActivitiesList = getActivitiesResult.getSuccess().getActivities();
+                    if (myActivitiesList.size() == 0) {
+                        myActivitiesTextView.setText(R.string.no_activities_available);
+                    }
+                    if (myActivitiesList != null) {
+                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), myActivitiesList);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    }
+
+                    getActivity().setResult(android.app.Activity.RESULT_OK);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -254,6 +281,12 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        if (imgObs != null)
+        downloadImageViewModel.getDownloadResult().removeObserver(imgObs);
+        if (actByUserObs != null)
+        getActivitiesByUserViewModel.getActivitiesResult().removeObserver(actByUserObs);
+        if (myActObs != null)
+        getMyActivitiesViewModel.getActivitiesResult().removeObserver(myActObs);
     }
 
     private static void openDrawer(DrawerLayout drawerLayout) {
@@ -274,11 +307,11 @@ public class ProfileFragment extends Fragment {
                             bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                             profileImage.setImageBitmap(bitmap);
                             uploadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
-                            /*try {
+                            try {
                                 downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
                             } catch (IOException e) {
                                 e.printStackTrace();
-                            }*/
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -301,61 +334,5 @@ public class ProfileFragment extends Fragment {
         Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
-    private void triggerNotification(Activity a, String name) {
-        // Create an explicit intent for an Activity in your app
-        Intent intent = new Intent(getActivity(), ActivityInfo.class);
-        intent.putExtra("NOTIFICATION", true);
-        intent.putExtra("UserLogged", user);
-        intent.putExtra("Activity", a);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent, 0);
 
-        String message = getString(R.string.message_notification);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity(), CHANNEL_ID)
-                .setSmallIcon(R.mipmap.icon_foreground)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_compass))
-                .setContentTitle("Rate your Activity")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentText(message + " " + name)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getActivity());
-        notificationManager.notify(notificationId, builder.build());
-        notificationId++;
-    }
-
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getActivity().getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null) {
-            final boolean fromNotification = extras.getBoolean("NOTIFICATION");
-            if (fromNotification) {
-                ProfileFragment fragment = new ProfileFragment();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.drawerLayout, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        }
-    }
 }

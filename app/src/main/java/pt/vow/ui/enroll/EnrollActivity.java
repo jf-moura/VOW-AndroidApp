@@ -23,7 +23,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.io.File;
 import java.util.List;
@@ -31,13 +30,11 @@ import java.util.List;
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.ui.VOW;
-import pt.vow.ui.getActivities.ActivitiesRegisteredView;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;
-import pt.vow.ui.profile.ProfileRecyclerViewAdapter;
 
 public class EnrollActivity extends AppCompatActivity {
 
@@ -52,6 +49,8 @@ public class EnrollActivity extends AppCompatActivity {
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private Activity aux;
     private EnrollActivity mActivity;
+
+    private Observer<GetActivitiesByUserResult> actByUserObs;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +90,7 @@ public class EnrollActivity extends AppCompatActivity {
         textViewDuration.setText(Html.fromHtml("<b>" +getResources().getString(R.string.duration) +"</b>" +" " + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60));
 
         getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
-        getActivitiesByUserViewModel.getActivitiesResult().observeForever(new Observer<GetActivitiesByUserResult>() {
+        getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
             @Override
             public void onChanged(@Nullable GetActivitiesByUserResult getActivitiesResult) {
                 if (getActivitiesResult == null) {
@@ -186,6 +185,13 @@ public class EnrollActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (actByUserObs != null)
+        getActivitiesByUserViewModel.getActivitiesResult().removeObserver(actByUserObs);
     }
 
     @Override

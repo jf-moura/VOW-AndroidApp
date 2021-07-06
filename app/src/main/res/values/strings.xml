@@ -131,5 +131,8 @@
     <string name="activities">Activities:</string>
     <string name="logout_failed">Logout failed</string>
     <string name="directions">Directions</string>
+    <string name="title_activities_data">My Activities</string>
+    <string name="about_me">About Me</string>
+    <string name="confirm">Confirm</string>
 
 </resources>
