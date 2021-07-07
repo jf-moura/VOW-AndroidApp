@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,8 @@ public class EnrolledActivitiesFragment extends Fragment {
 
     private Observer<GetActivitiesByUserResult> actByUserObs;
 
+    private RelativeLayout relativeLayout;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -49,6 +52,8 @@ public class EnrolledActivitiesFragment extends Fragment {
 
         enrolledActRecyclerView = root.findViewById(R.id.enrolled_activities_recycler_view_profile);
         enrolledActivitiesTextView = root.findViewById(R.id.enrolledActivitiesTextView);
+
+        relativeLayout = root.findViewById(R.id.empty_state_enrolled);
 
         //if (user.getRole() == 0) { // volunteer
         getActivitiesByUserViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesByUserViewModel.class);
@@ -65,6 +70,7 @@ public class EnrolledActivitiesFragment extends Fragment {
                     activitiesByUserList = getActivitiesResult.getSuccess().getActivities();
                     if (activitiesByUserList.size() == 0) {
                         enrolledActivitiesTextView.setVisibility(View.VISIBLE);
+                        relativeLayout.setVisibility(View.VISIBLE);
                     }
                     if (activitiesByUserList != null) {
                         ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesByUserList);

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,8 @@ public class MyActivitiesFragment extends Fragment {
 
     private Observer<GetMyActivitiesResult> myActObs;
 
+    private RelativeLayout relativeLayout;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -46,6 +49,8 @@ public class MyActivitiesFragment extends Fragment {
 
         myActRecyclerView = root.findViewById(R.id.my_activities_recycler_view_profile);
         myActivitiesTextView = root.findViewById(R.id.myActivitiesTextView);
+
+        relativeLayout = root.findViewById(R.id.empty_state_mine);
 
         getMyActivitiesViewModel = new ViewModelProvider(requireActivity()).get(GetMyActivitiesViewModel.class);
         getMyActivitiesViewModel.getActivitiesResult().observeForever(myActObs = new Observer<GetMyActivitiesResult>() {
@@ -61,6 +66,7 @@ public class MyActivitiesFragment extends Fragment {
                     myActivitiesList = getActivitiesResult.getSuccess().getActivities();
                     if (myActivitiesList.size() == 0) {
                         myActivitiesTextView.setVisibility(View.VISIBLE);
+                        relativeLayout.setVisibility(View.VISIBLE);
                     }
                     if (myActivitiesList != null) {
                         ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), myActivitiesList);
