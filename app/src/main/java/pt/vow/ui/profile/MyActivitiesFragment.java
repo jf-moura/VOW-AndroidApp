@@ -65,7 +65,7 @@ public class MyActivitiesFragment extends Fragment {
                 if (getActivitiesResult.getSuccess() != null) {
                     myActivitiesList = getActivitiesResult.getSuccess().getActivities();
                     if (myActivitiesList.size() == 0) {
-                        myActivitiesTextView.setVisibility(View.VISIBLE);
+                       // myActivitiesTextView.setVisibility(View.VISIBLE);
                         relativeLayout.setVisibility(View.VISIBLE);
                     }
                     if (myActivitiesList != null) {

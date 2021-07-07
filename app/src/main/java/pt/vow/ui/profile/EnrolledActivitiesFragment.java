@@ -69,7 +69,7 @@ public class EnrolledActivitiesFragment extends Fragment {
                 if (getActivitiesResult.getSuccess() != null) {
                     activitiesByUserList = getActivitiesResult.getSuccess().getActivities();
                     if (activitiesByUserList.size() == 0) {
-                        enrolledActivitiesTextView.setVisibility(View.VISIBLE);
+                       // enrolledActivitiesTextView.setVisibility(View.VISIBLE);
                         relativeLayout.setVisibility(View.VISIBLE);
                     }
                     if (activitiesByUserList != null) {

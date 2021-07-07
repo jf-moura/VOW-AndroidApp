@@ -42,6 +42,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone"
+        android:layout_marginTop="180dp"
         android:id="@+id/empty_state_enrolled">
 
         <TextView
