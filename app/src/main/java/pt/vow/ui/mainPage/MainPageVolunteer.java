@@ -128,7 +128,7 @@ public class MainPageVolunteer extends AppCompatActivity {
                 if (getActivitiesResult.getError() != null) {
                     showGetActivitiesFailed(getActivitiesResult.getError());
                 }
-                if (getActivitiesResult.getSuccess() != null) {
+                if (getActivitiesResult.getSuccess() != null && notificationId == 0) {
                     activitiesList = getActivitiesResult.getSuccess().getActivities();
                     if (activitiesList != null) {
                         for(Activity a : activitiesList){
