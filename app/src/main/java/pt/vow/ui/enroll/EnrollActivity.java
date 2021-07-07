@@ -172,11 +172,11 @@ public class EnrollActivity extends AppCompatActivity {
         directionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Bundle bundle = new Bundle();
+                Bundle bundle = new Bundle();
                 bundle.putBoolean("getDirections", true);
-                bundle.putString("destination", activityInfo[2]);*/
+                bundle.putString("destination", activityInfo[2]);
                 Fragment fragment = new MapsFragment();
-                //fragment.setArguments(bundle);
+                fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.enroll_activity, fragment);

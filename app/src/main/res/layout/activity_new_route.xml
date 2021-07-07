@@ -104,7 +104,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:rippleColor="#FF5722" />
 
-    <Button
+    <!--<Button
         android:id="@+id/bttnChooseRoute"
         android:layout_width="156dp"
         android:layout_height="51dp"
@@ -113,7 +113,7 @@
         app:layout_constraintEnd_toEndOf="@+id/bttnDate"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/bttnDate"
-        app:layout_constraintTop_toBottomOf="@+id/bttnDate" />
+        app:layout_constraintTop_toBottomOf="@+id/bttnDate" />-->
 
     <TextView
         android:id="@+id/textView"
@@ -122,10 +122,10 @@
         android:textStyle="bold"
         android:layout_marginTop="32dp"
         android:text="@string/type"
-        app:layout_constraintEnd_toEndOf="@+id/bttnChooseRoute"
+        app:layout_constraintEnd_toEndOf="@+id/bttnDate"
         app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintStart_toStartOf="@+id/bttnChooseRoute"
-        app:layout_constraintTop_toBottomOf="@+id/bttnChooseRoute" />
+        app:layout_constraintStart_toStartOf="@+id/bttnDate"
+        app:layout_constraintTop_toBottomOf="@+id/bttnDate" />
 
     <RadioGroup
         android:id="@+id/group1"
@@ -133,10 +133,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/bttnChooseRoute"
+        app:layout_constraintEnd_toEndOf="@+id/bttnDate"
         app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="@+id/bttnChooseRoute"
-        app:layout_constraintTop_toBottomOf="@+id/bttnChooseRoute">
+        app:layout_constraintStart_toStartOf="@+id/bttnDate"
+        app:layout_constraintTop_toBottomOf="@+id/bttnDate">
 
         <RadioButton
             android:id="@+id/radioHealth"

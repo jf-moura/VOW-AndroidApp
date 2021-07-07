@@ -57,6 +57,7 @@ public class ActivityInfo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String rating = String.valueOf(ratingBar.getRating());
+
             }
         });
     }

@@ -138,5 +138,7 @@
     <string name="route_name">Route name:</string>
     <string name="route_duration">Route Duration:</string>
     <string name="title_new_route">New Route</string>
+    <string name="title_my_activities">My Activities</string>
+    <string name="title_enrolled_activities">Enrolled Activities</string>
 
 </resources>

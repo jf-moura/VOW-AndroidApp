@@ -3,7 +3,6 @@ package pt.vow.ui.route;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,14 +13,12 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,14 +28,12 @@ import java.util.TimeZone;
 
 import pt.vow.R;
 import pt.vow.databinding.ActivityNewRouteBinding;
-import pt.vow.databinding.FragmentNewActivityBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.newActivity.RegisteredActivityView;
 
 public class NewRouteFragment extends Fragment {
     private EditText editTextName, editTextPartNum;
-    private TextView textAddress;
     private String date;
     private String timeZone;
     private String durationInMinutes;
@@ -57,7 +52,6 @@ public class NewRouteFragment extends Fragment {
                          ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         binding = ActivityNewRouteBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -68,14 +62,13 @@ public class NewRouteFragment extends Fragment {
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
-        coordinateArray = (String[]) getActivity().getIntent().getSerializableExtra("CoordinateArray");
+        coordinateArray = getArguments().getStringArray("CoordinateArray");
 
         type = "";
 
         editTextName = root.findViewById(R.id.editTextNameAct);
-        textAddress = root.findViewById(R.id.editTextAddress);
         editTextPartNum = root.findViewById(R.id.editTextParticipantNum);
-        chooseRouteBttn = root.findViewById(R.id.bttnChooseRoute);
+        //chooseRouteBttn = root.findViewById(R.id.bttnChooseRoute);
         dateBttn = root.findViewById(R.id.bttnDate);
 
         rg1 = (RadioGroup) root.findViewById(R.id.group1);
@@ -176,13 +169,13 @@ public class NewRouteFragment extends Fragment {
             }
         });
 
-        chooseRouteBttn.setOnClickListener(new View.OnClickListener() {
+        /*chooseRouteBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ChooseRouteActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,7 +184,6 @@ public class NewRouteFragment extends Fragment {
                       "lisbon", date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinateArray);
                 editTextName.setText("");
                 editTextPartNum.setText("");
-                textAddress.setText("");
                 durationPicker.setMinute(0);
                 durationPicker.setHour(0);
                 rg1.clearCheck(); // this is so we can start fresh, with no selection on both RadioGroups

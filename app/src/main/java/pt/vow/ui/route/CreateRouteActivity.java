@@ -2,7 +2,6 @@ package pt.vow.ui.route;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -15,7 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -42,7 +44,7 @@ import java.util.List;
 import pt.vow.R;
 import pt.vow.ui.login.LoggedInUserView;
 
-public class ChooseRouteActivity extends FragmentActivity implements OnMapReadyCallback {
+public class CreateRouteActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private String[] coordinates;
     private int counter;
@@ -69,14 +71,14 @@ public class ChooseRouteActivity extends FragmentActivity implements OnMapReadyC
     private List[] likelyPlaceAttributions;
     private LatLng[] likelyPlaceLatLngs;
 
-    private ChooseRouteActivity mActivity;
+    private CreateRouteActivity mActivity;
     private ImageView confirmBttn, goBackBttn;
     private ArrayList<Marker> mMarkerArray = new ArrayList<Marker>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_route);
+        setContentView(R.layout.activity_create_route);
         mActivity = this;
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
@@ -100,9 +102,15 @@ public class ChooseRouteActivity extends FragmentActivity implements OnMapReadyC
         confirmBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mActivity, NewRouteFragment.class);
-                intent.putExtra("CoordinateArray", coordinates);
-                startActivity(intent);
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("CoordinateArray", coordinates);
+                Fragment afragment = new NewRouteFragment();
+                afragment.setArguments(bundle);
+                FragmentManager afragmentManager = getSupportFragmentManager();
+                FragmentTransaction afragmentTransaction = afragmentManager.beginTransaction();
+                afragmentTransaction.replace(R.id.chooseRoute, afragment);
+                afragmentTransaction.addToBackStack(null);
+                afragmentTransaction.commit();
             }
         });
 

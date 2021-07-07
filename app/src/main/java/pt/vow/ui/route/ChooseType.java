@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import pt.vow.R;
 import pt.vow.databinding.FragmentChooseTypeBinding;
+import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.newActivity.NewActivityFragment;
 
 public class ChooseType extends Fragment {
@@ -25,6 +26,7 @@ public class ChooseType extends Fragment {
     private BottomNavigationView topNavigation;
     private ChooseType mActivity;
     private FragmentChooseTypeBinding binding;
+    private LoggedInUserView user;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -32,6 +34,8 @@ public class ChooseType extends Fragment {
 
         binding = FragmentChooseTypeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         mActivity = this;
         topNavigation = root.findViewById(R.id.topNavigation);
@@ -56,12 +60,15 @@ public class ChooseType extends Fragment {
                         fragmentTransaction.commit();
                         break;
                     case R.id.navigation_new_route:
-                        Fragment afragment = new NewRouteFragment();
+                        /*Fragment afragment = new NewRouteFragment();
                         FragmentManager afragmentManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction afragmentTransaction = afragmentManager.beginTransaction();
                         afragmentTransaction.replace(R.id.chooseType, afragment);
                         afragmentTransaction.addToBackStack(null);
-                        afragmentTransaction.commit();
+                        afragmentTransaction.commit();*/
+                        Intent intent = new Intent(getActivity(), CreateRouteActivity.class);
+                        intent.putExtra("UserLogged", user);
+                        startActivity(intent);
                         break;
                 }
                 return true;

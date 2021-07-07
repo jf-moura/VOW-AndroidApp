@@ -32,10 +32,14 @@ import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -54,6 +58,7 @@ import pt.vow.ui.MainPage.GetImageResult;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.logout.LogoutViewModel;
 import pt.vow.ui.logout.LogoutViewModelFactory;
+import pt.vow.ui.newActivity.NewActivityFragment;
 import pt.vow.ui.update.UpdateActivity;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -64,23 +69,16 @@ public class ProfileFragment extends Fragment {
     private ImageButton profileImage;
     private EditText aboutMeEditText;
     private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, linearLayoutPrincipal;
-    private TextView enrolledActivitiesTextView;
-    private TextView myActivitiesTextView;
     private DrawerLayout drawerLayout;
-    private RecyclerView enrolledActRecyclerView;
-    private RecyclerView myActRecyclerView;
+    private BottomNavigationView topNavigationProfile;
 
     private LogoutViewModel logoutViewModel;
     private DownloadImageViewModel downloadImageViewModel;
-    private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
-    private GetMyActivitiesViewModel getMyActivitiesViewModel;
     private UploadImageViewModel uploadImageViewModel;
     private LoggedInUserView user;
 
     private FragmentProfileBinding binding;
 
-    private List<Activity> activitiesByUserList;
-    private List<Activity> myActivitiesList;
     private Uri imageUri;
     private static Bitmap bitmap;
 
@@ -88,8 +86,6 @@ public class ProfileFragment extends Fragment {
     private SharedPreferences.Editor loginPrefsEditor;
 
     private Observer<GetImageResult> imgObs;
-    private Observer<GetActivitiesByUserResult> actByUserObs;
-    private Observer<GetMyActivitiesResult> myActObs;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -105,12 +101,9 @@ public class ProfileFragment extends Fragment {
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
-        enrolledActRecyclerView = root.findViewById(R.id.enrolled_activities_recycler_view_profile);
-        myActRecyclerView = root.findViewById(R.id.my_activities_recycler_view_profile);
-        enrolledActivitiesTextView = root.findViewById(R.id.enrolledActivitiesTextView);
-        myActivitiesTextView = root.findViewById(R.id.myActivitiesTextView);
         profileImage = root.findViewById(R.id.profileImage);
         aboutMeEditText = root.findViewById(R.id.aboutMeEditText);
+        topNavigationProfile = root.findViewById(R.id.topNavigationProfile);
 
         loginPreferences = getContext().getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
@@ -180,6 +173,35 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        Fragment fragment = new EnrolledActivitiesFragment();
+        fragmentTransaction.replace(R.id.drawerLayout, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+        topNavigationProfile.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                switch (item.getItemId()) {
+                    case R.id.navigation_enrolled_activities:
+                        Fragment fragment = new EnrolledActivitiesFragment();
+                        fragmentTransaction.replace(R.id.drawerLayout, fragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                        break;
+                    case R.id.navigation_my_activities:
+                        Fragment afragment = new MyActivitiesFragment();
+                        fragmentTransaction.replace(R.id.drawerLayout, afragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                        break;
+                }
+                return true;
+            }
+        });
+
+
         setHasOptionsMenu(true);
         return root;
     }
@@ -201,61 +223,6 @@ public class ProfileFragment extends Fragment {
                     byte[] img = downloadResult.getSuccess().getImage();
                     bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
                     profileImage.setImageBitmap(bitmap);
-                }
-            }
-        });
-
-        //if (user.getRole() == 0) { // volunteer
-        getActivitiesByUserViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesByUserViewModel.class);
-        getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
-            @Override
-            public void onChanged(@Nullable GetActivitiesByUserResult getActivitiesResult) {
-                if (getActivitiesResult == null) {
-                    return;
-                }
-                if (getActivitiesResult.getError() != null) {
-                    showGetActivitiesFailed(getActivitiesResult.getError());
-                }
-                if (getActivitiesResult.getSuccess() != null) {
-                    activitiesByUserList = getActivitiesResult.getSuccess().getActivities();
-                    if (activitiesByUserList.size() == 0) {
-                        if (myActivitiesTextView.getText().toString().equals(""))
-                            enrolledActivitiesTextView.setText(R.string.no_activities_available);
-                        else
-                            enrolledActivitiesTextView.setText("");
-                    }
-                    if (activitiesByUserList != null) {
-                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesByUserList);
-                        enrolledActRecyclerView.setAdapter(adapter);
-                        enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    }
-
-                }
-            }
-        });
-        //}
-
-        getMyActivitiesViewModel = new ViewModelProvider(requireActivity()).get(GetMyActivitiesViewModel.class);
-        getMyActivitiesViewModel.getActivitiesResult().observeForever(myActObs = new Observer<GetMyActivitiesResult>() {
-            @Override
-            public void onChanged(@Nullable GetMyActivitiesResult getActivitiesResult) {
-                if (getActivitiesResult == null) {
-                    return;
-                }
-                if (getActivitiesResult.getError() != null) {
-                    showGetActivitiesFailed(getActivitiesResult.getError());
-                }
-                if (getActivitiesResult.getSuccess() != null) {
-                    myActivitiesList = getActivitiesResult.getSuccess().getActivities();
-                    if (myActivitiesList.size() == 0) {
-                        myActivitiesTextView.setText("");
-                    }
-                    if (myActivitiesList != null) {
-                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), myActivitiesList);
-                        myActRecyclerView.setAdapter(adapter);
-                        myActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    }
-
                 }
             }
         });
@@ -283,10 +250,6 @@ public class ProfileFragment extends Fragment {
         binding = null;
         if (imgObs != null)
             downloadImageViewModel.getDownloadResult().removeObserver(imgObs);
-        if (actByUserObs != null)
-            getActivitiesByUserViewModel.getActivitiesResult().removeObserver(actByUserObs);
-        if (myActObs != null)
-            getMyActivitiesViewModel.getActivitiesResult().removeObserver(myActObs);
     }
 
     @Override
@@ -297,11 +260,6 @@ public class ProfileFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        getMyActivitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
-
-        //if (user.getRole() == 0) // volunteer
-        getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getTokenID());
-
     }
 
     private static void openDrawer(DrawerLayout drawerLayout) {
@@ -345,9 +303,6 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void showGetActivitiesFailed(@StringRes Integer errorString) {
-        Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
-    }
 
 
 }
