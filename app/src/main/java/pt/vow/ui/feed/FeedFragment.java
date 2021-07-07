@@ -42,14 +42,11 @@ public class FeedFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<Activity> activitiesList;
     private GetActivitiesViewModel activitiesViewModel;
-    private DownloadImageViewModel downloadImageViewModel;
-    private FeedFragment mActivity;
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
     private TextView activitiesTextView;
 
     private Observer<GetActivitiesResult> actObs;
-    private Observer<GetImageResult> imgObs;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -57,8 +54,6 @@ public class FeedFragment extends Fragment {
 
         binding = FragmentFeedBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        mActivity = this;
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
@@ -73,7 +68,6 @@ public class FeedFragment extends Fragment {
     public void onStart() {
         super.onStart();
         activitiesViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesViewModel.class);
-        downloadImageViewModel = new ViewModelProvider(requireActivity()).get(DownloadImageViewModel.class);
 
         activitiesViewModel.getActivitiesResult().observeForever(actObs = new Observer<GetActivitiesResult>() {
             @Override
@@ -91,7 +85,6 @@ public class FeedFragment extends Fragment {
                     }
                     if (activitiesList != null) {
                         List<Activity> aux = new LinkedList<>();
-                        List<Bitmap> bitmaps = new LinkedList<>();
                         for (Activity a : activitiesList) {
                             long currentTime = Calendar.getInstance().getTimeInMillis();
 
@@ -107,30 +100,10 @@ public class FeedFragment extends Fragment {
                             long startMillis = beginTime.getTimeInMillis();
                             if (startMillis > currentTime) {
                                 aux.add(a);
-                                try {
-                                    downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getOwner() + "_" + a.getName());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
                             }
                         }
-                        downloadImageViewModel.getDownloadResult().observeForever(new Observer<GetImageResult>() {
-                            @Override
-                            public void onChanged(@Nullable GetImageResult downloadResult) {
-                                if (downloadResult == null) {
-                                    return;
-                                }
-                                if (downloadResult.getError() != null) {
-                                    bitmaps.add(null);
-                                }
-                                if (downloadResult.getSuccess() != null) {
-                                    byte[] img = downloadResult.getSuccess().getImage();
-                                    Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                                    bitmaps.add(bitmap);
-                                }
-                            }
-                        });
-                        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux, user, bitmaps);
+
+                        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux, user);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     }
@@ -170,8 +143,6 @@ public class FeedFragment extends Fragment {
         binding = null;
         if (actObs != null)
             activitiesViewModel.getActivitiesResult().removeObserver(actObs);
-        if (imgObs != null)
-            downloadImageViewModel.getDownloadResult().removeObserver(imgObs);
     }
 
     private int monthToIntegerShort(String month) {

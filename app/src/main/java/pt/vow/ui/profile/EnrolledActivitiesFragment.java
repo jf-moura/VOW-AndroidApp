@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import pt.vow.R;
@@ -70,9 +72,31 @@ public class EnrolledActivitiesFragment extends Fragment {
                         relativeLayout.setVisibility(View.VISIBLE);
                     }
                     if (activitiesByUserList != null) {
-                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesByUserList, user);
-                        enrolledActRecyclerView.setAdapter(adapter);
-                        enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        List<Activity> aux = new LinkedList<>();
+                        for (Activity a : activitiesByUserList) {
+                            Calendar currentTime = Calendar.getInstance();
+
+                            String[] dateTime = a.getTime().split(" ");
+                            String[] hours = dateTime[3].split(":");
+
+                            Calendar beginTime = Calendar.getInstance();;
+                            if (dateTime[4].equals("PM"))
+                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length()-1)), Integer.valueOf(hours[0]) + 12 + Integer.valueOf(a.getDurationInMinutes())/60, Integer.valueOf(hours[1]) + Integer.valueOf(a.getDurationInMinutes())%60);
+                            else
+                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length()-1)), Integer.valueOf(hours[0]) +  Integer.valueOf(a.getDurationInMinutes())/60, Integer.valueOf(hours[1]) +  Integer.valueOf(a.getDurationInMinutes())%60);
+
+                            long startMillis = beginTime.getTimeInMillis();
+                            if(startMillis <= currentTime.getTimeInMillis()){
+                                aux.add(a);
+                            }
+                        }
+                        if (aux.isEmpty())
+                            relativeLayout.setVisibility(View.VISIBLE);
+                        else {
+                            ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), aux, user);
+                            enrolledActRecyclerView.setAdapter(adapter);
+                            enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        }
                     }
 
                 }
@@ -100,6 +124,49 @@ public class EnrolledActivitiesFragment extends Fragment {
 
     private void showGetActivitiesFailed(@StringRes Integer errorString) {
         Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    private int monthToIntegerShort(String month) {
+        int result = 0;
+        switch (month) {
+            case "Jan":
+                result = 0;
+                break;
+            case "Fev":
+                result = 1;
+                break;
+            case "Mar":
+                result = 2;
+                break;
+            case "Apr":
+                result = 3;
+                break;
+            case "May":
+                result = 4;
+                break;
+            case "Jun":
+                result = 5;
+                break;
+            case "Jul":
+                result = 6;
+                break;
+            case "Aug":
+                result = 7;
+                break;
+            case "Sep":
+                result = 8;
+                break;
+            case "Oct":
+                result = 9;
+                break;
+            case "Nov":
+                result = 10;
+                break;
+            case "Dec":
+                result = 11;
+                break;
+        }
+        return result;
     }
 
 }
