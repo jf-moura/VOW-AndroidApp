@@ -167,7 +167,7 @@ public class ProfileFragment extends Fragment {
 
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         Fragment fragment = new EnrolledActivitiesFragment();
-        fragmentTransaction.replace(R.id.drawerLayout, fragment);
+        fragmentTransaction.replace(R.id.activities_layout, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
@@ -178,13 +178,13 @@ public class ProfileFragment extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.navigation_enrolled_activities:
                         Fragment fragment = new EnrolledActivitiesFragment();
-                        fragmentTransaction.replace(R.id.drawerLayout, fragment);
+                        fragmentTransaction.replace(R.id.activities_layout, fragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;
                     case R.id.navigation_my_activities:
                         Fragment afragment = new MyActivitiesFragment();
-                        fragmentTransaction.replace(R.id.drawerLayout, afragment);
+                        fragmentTransaction.replace(R.id.activities_layout, afragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;
@@ -293,7 +293,6 @@ public class ProfileFragment extends Fragment {
             uploadImageViewModel.uploadImage(projectId, bucketName, objectName, imageInByte);
         }
     }
-
 
 
 }

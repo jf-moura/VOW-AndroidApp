@@ -24,12 +24,13 @@ import java.util.List;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
-import pt.vow.databinding.ScrollviewEnrolledActivitiesBinding;
+import pt.vow.databinding.FragmentProfileBinding;
+import pt.vow.databinding.ScrollviewActivitiesBinding;
 import pt.vow.ui.login.LoggedInUserView;
 
 public class EnrolledActivitiesFragment extends Fragment {
 
-    private ScrollviewEnrolledActivitiesBinding binding;
+    private ScrollviewActivitiesBinding binding;
 
     private RecyclerView enrolledActRecyclerView;
 
@@ -46,14 +47,14 @@ public class EnrolledActivitiesFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        binding = ScrollviewEnrolledActivitiesBinding.inflate(inflater, container, false);
+        binding = ScrollviewActivitiesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
-        enrolledActRecyclerView = root.findViewById(R.id.enrolled_activities_recycler_view_profile);
+        enrolledActRecyclerView = root.findViewById(R.id.activities_recycler_view_profile);
 
-        relativeLayout = root.findViewById(R.id.empty_state_enrolled);
+        relativeLayout = root.findViewById(R.id.empty_state);
 
         //if (user.getRole() == 0) { // volunteer
         getActivitiesByUserViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesByUserViewModel.class);

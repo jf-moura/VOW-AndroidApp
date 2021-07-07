@@ -21,11 +21,12 @@ import java.util.List;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
-import pt.vow.databinding.ScrollviewMyActivitiesBinding;
+import pt.vow.databinding.FragmentProfileBinding;
+import pt.vow.databinding.ScrollviewActivitiesBinding;
 import pt.vow.ui.login.LoggedInUserView;
 
 public class MyActivitiesFragment extends Fragment {
-    private ScrollviewMyActivitiesBinding binding;
+    private ScrollviewActivitiesBinding binding;
 
     private RecyclerView myActRecyclerView;
 
@@ -41,14 +42,14 @@ public class MyActivitiesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = ScrollviewMyActivitiesBinding.inflate(inflater, container, false);
+        binding = ScrollviewActivitiesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
-        myActRecyclerView = root.findViewById(R.id.my_activities_recycler_view_profile);
+        myActRecyclerView = root.findViewById(R.id.activities_recycler_view_profile);
 
-        relativeLayout = root.findViewById(R.id.empty_state_mine);
+        relativeLayout = root.findViewById(R.id.empty_state);
 
         getMyActivitiesViewModel = new ViewModelProvider(requireActivity()).get(GetMyActivitiesViewModel.class);
         getMyActivitiesViewModel.getActivitiesResult().observeForever(myActObs = new Observer<GetMyActivitiesResult>() {

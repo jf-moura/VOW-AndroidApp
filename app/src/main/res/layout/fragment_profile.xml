@@ -44,16 +44,18 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/activities_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp">
+        android:layout_height="match_parent"
+        android:layout_marginTop="200dp"
+        android:orientation="vertical">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/topNavigationProfile"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@color/logo_lighter_blue"
-            app:menu="@menu/top_navigation_profile"></com.google.android.material.bottomnavigation.BottomNavigationView>
+            app:menu="@menu/top_navigation_profile" />
     </LinearLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>
