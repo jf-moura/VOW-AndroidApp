@@ -193,7 +193,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-
         setHasOptionsMenu(true);
         return root;
     }
