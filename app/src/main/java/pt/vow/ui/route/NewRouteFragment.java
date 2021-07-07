@@ -45,7 +45,6 @@ public class NewRouteFragment extends Fragment {
     private NewRouteViewModel newRouteViewModel;
     private String[] coordinateArray;
 
-    private NewRouteFragment mActivity;
     private ActivityNewRouteBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -54,8 +53,6 @@ public class NewRouteFragment extends Fragment {
 
         binding = ActivityNewRouteBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        mActivity = this;
 
         newRouteViewModel = new ViewModelProvider(this, new NewRouteViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(NewRouteViewModel.class);
@@ -66,20 +63,20 @@ public class NewRouteFragment extends Fragment {
 
         type = "";
 
-        editTextName = root.findViewById(R.id.editTextNameAct);
-        editTextPartNum = root.findViewById(R.id.editTextParticipantNum);
+        editTextName = root.findViewById(R.id.editTextNameRoute);
+        editTextPartNum = root.findViewById(R.id.editTextParticipantNumRoute);
         //chooseRouteBttn = root.findViewById(R.id.bttnChooseRoute);
-        dateBttn = root.findViewById(R.id.bttnDate);
+        dateBttn = root.findViewById(R.id.bttnDateRoute);
 
-        rg1 = (RadioGroup) root.findViewById(R.id.group1);
-        rg2 = (RadioGroup) root.findViewById(R.id.group2);
+        rg1 = (RadioGroup) root.findViewById(R.id.group1Route);
+        rg2 = (RadioGroup) root.findViewById(R.id.group2Route);
         rg1.clearCheck(); // this is so we can start fresh, with no selection on both RadioGroups
         rg2.clearCheck();
         rg1.setOnCheckedChangeListener(listener1);
         rg2.setOnCheckedChangeListener(listener2);
 
 
-        TimePicker durationPicker = (TimePicker) root.findViewById(R.id.durationPicker);
+        TimePicker durationPicker = (TimePicker) root.findViewById(R.id.durationPickerRoute);
         durationPicker.setIs24HourView(true);
         durationPicker.setHour(0);
         durationPicker.setMinute(0);
@@ -93,7 +90,7 @@ public class NewRouteFragment extends Fragment {
                 .concat(String.valueOf(currentDate.get(Calendar.HOUR_OF_DAY))).concat(":").concat(String.valueOf(currentDate.get(Calendar.MINUTE)))
                 .concat(" ").concat(timeZone);
 
-        confirmButton = root.findViewById(R.id.bttnSaveChanges);
+        confirmButton = root.findViewById(R.id.bttnSaveChangesRoute);
 
 
         newRouteViewModel.getNewRouteFormState().observe(getActivity(), new Observer<NewRouteFormState>() {
@@ -102,7 +99,7 @@ public class NewRouteFragment extends Fragment {
                 if (newRouteFormState == null) {
                     return;
                 }
-                confirmButton.setEnabled(newRouteFormState.isDataValid());
+              //  confirmButton.setEnabled(newRouteFormState.isDataValid());
                 if (newRouteFormState.getNameError() != null) {
                     editTextName.setError(getString(newRouteFormState.getNameError()));
                 }

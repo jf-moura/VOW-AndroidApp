@@ -143,5 +143,16 @@
     <string name="confirm">Confirmo</string>
     <string name="enrolled_activities">Actividades Que Participei:</string>
 
+    <!--route-->
+    <string name="route_name">Nome da rota:</string>
+    <string name="route_duration">Duração da rota:</string>
+    <string name="title_new_route">Nova Rota</string>
+
+    <string name="title_my_activities">As minhas atividades</string>
+    <string name="title_enrolled_activities">Atividades em que participei</string>
+    <string name="set_rating_failed">Erro a definir pontuação</string>
+    <string name="choose_image">Adicione uma imagem</string>
+    <string name="set_image_failed">Por favor insira o nome da atividade antes de escolher uma imagem.</string>
+
 
 </resources>

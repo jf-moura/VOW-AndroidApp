@@ -102,6 +102,8 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
         confirmBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                goBackBttn.setVisibility(View.GONE);
+                confirmBttn.setVisibility(View.GONE);
                 Bundle bundle = new Bundle();
                 bundle.putStringArray("CoordinateArray", coordinates);
                 Fragment afragment = new NewRouteFragment();
@@ -114,11 +116,18 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
+        if (counter == 0) {
+            goBackBttn.setVisibility(View.GONE);
+            confirmBttn.setVisibility(View.GONE);
+        } else {
+            goBackBttn.setVisibility(View.VISIBLE);
+        }
+
         goBackBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String[] latlong = coordinates[counter-1].split(",");
+                String[] latlong = coordinates[counter - 1].split(",");
                 Double lat = Double.parseDouble(latlong[0]);
                 Double lon = Double.parseDouble(latlong[1]);
                 LatLng l = new LatLng(lat, lon);
@@ -129,6 +138,10 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
                     }
                 }
                 counter--;
+                if (counter == 0) {
+                    goBackBttn.setVisibility(View.GONE);
+                    confirmBttn.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -365,10 +378,12 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
                 markerOptions.title(String.valueOf(counter + 1));
-                Marker marker =  mMap.addMarker(markerOptions);
+                Marker marker = mMap.addMarker(markerOptions);
                 mMarkerArray.add(marker);
                 coordinates[counter] = latLng.latitude + "," + latLng.longitude;
                 counter++;
+                goBackBttn.setVisibility(View.VISIBLE);
+                confirmBttn.setVisibility(View.VISIBLE);
             }
         });
 
