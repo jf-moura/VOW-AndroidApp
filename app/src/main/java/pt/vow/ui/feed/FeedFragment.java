@@ -1,5 +1,7 @@
 package pt.vow.ui.feed;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,17 +34,22 @@ import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentFeedBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.mainPage.DownloadImageViewModel;
+import pt.vow.ui.mainPage.GetImageResult;
 import pt.vow.ui.maps.MapsFragment;
 
 public class FeedFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<Activity> activitiesList;
     private GetActivitiesViewModel activitiesViewModel;
+    private DownloadImageViewModel downloadImageViewModel;
+    private FeedFragment mActivity;
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
     private TextView activitiesTextView;
 
     private Observer<GetActivitiesResult> actObs;
+    private Observer<GetImageResult> imgObs;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -49,6 +57,8 @@ public class FeedFragment extends Fragment {
 
         binding = FragmentFeedBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        mActivity = this;
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
@@ -63,6 +73,7 @@ public class FeedFragment extends Fragment {
     public void onStart() {
         super.onStart();
         activitiesViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesViewModel.class);
+        downloadImageViewModel = new ViewModelProvider(requireActivity()).get(DownloadImageViewModel.class);
 
         activitiesViewModel.getActivitiesResult().observeForever(actObs = new Observer<GetActivitiesResult>() {
             @Override
@@ -80,6 +91,7 @@ public class FeedFragment extends Fragment {
                     }
                     if (activitiesList != null) {
                         List<Activity> aux = new LinkedList<>();
+                        List<Bitmap> bitmaps = new LinkedList<>();
                         for (Activity a : activitiesList) {
                             long currentTime = Calendar.getInstance().getTimeInMillis();
 
@@ -95,9 +107,30 @@ public class FeedFragment extends Fragment {
                             long startMillis = beginTime.getTimeInMillis();
                             if (startMillis > currentTime) {
                                 aux.add(a);
+                                try {
+                                    downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getOwner() + "_" + a.getName());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
-                        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux, user);
+                        downloadImageViewModel.getDownloadResult().observeForever(new Observer<GetImageResult>() {
+                            @Override
+                            public void onChanged(@Nullable GetImageResult downloadResult) {
+                                if (downloadResult == null) {
+                                    return;
+                                }
+                                if (downloadResult.getError() != null) {
+                                    bitmaps.add(null);
+                                }
+                                if (downloadResult.getSuccess() != null) {
+                                    byte[] img = downloadResult.getSuccess().getImage();
+                                    Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                                    bitmaps.add(bitmap);
+                                }
+                            }
+                        });
+                        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux, user, bitmaps);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     }
@@ -137,6 +170,8 @@ public class FeedFragment extends Fragment {
         binding = null;
         if (actObs != null)
             activitiesViewModel.getActivitiesResult().removeObserver(actObs);
+        if (imgObs != null)
+            downloadImageViewModel.getDownloadResult().removeObserver(imgObs);
     }
 
     private int monthToIntegerShort(String month) {

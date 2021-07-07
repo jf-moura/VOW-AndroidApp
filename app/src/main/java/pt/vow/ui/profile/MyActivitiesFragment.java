@@ -27,7 +27,6 @@ import pt.vow.ui.login.LoggedInUserView;
 public class MyActivitiesFragment extends Fragment {
     private ScrollviewMyActivitiesBinding binding;
 
-    private TextView myActivitiesTextView;
     private RecyclerView myActRecyclerView;
 
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
@@ -48,7 +47,6 @@ public class MyActivitiesFragment extends Fragment {
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         myActRecyclerView = root.findViewById(R.id.my_activities_recycler_view_profile);
-        myActivitiesTextView = root.findViewById(R.id.myActivitiesTextView);
 
         relativeLayout = root.findViewById(R.id.empty_state_mine);
 
@@ -65,11 +63,10 @@ public class MyActivitiesFragment extends Fragment {
                 if (getActivitiesResult.getSuccess() != null) {
                     myActivitiesList = getActivitiesResult.getSuccess().getActivities();
                     if (myActivitiesList.size() == 0) {
-                       // myActivitiesTextView.setVisibility(View.VISIBLE);
                         relativeLayout.setVisibility(View.VISIBLE);
                     }
                     if (myActivitiesList != null) {
-                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), myActivitiesList);
+                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), myActivitiesList, user);
                         myActRecyclerView.setAdapter(adapter);
                         myActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     }

@@ -140,5 +140,8 @@
     <string name="title_new_route">New Route</string>
     <string name="title_my_activities">My Activities</string>
     <string name="title_enrolled_activities">Enrolled Activities</string>
+    <string name="set_rating_failed">Error seting rating</string>
+    <string name="choose_image">Add a picture</string>
+    <string name="set_image_failed">Please insert the activities name before choosing an image.</string>
 
 </resources>

@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -17,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -24,8 +29,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -38,6 +48,7 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -48,8 +59,11 @@ import pt.vow.R;
 import pt.vow.databinding.FragmentNewActivityBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.profile.UploadImageViewModel;
+import pt.vow.ui.profile.UploadImageViewModelFactory;
 
 public class NewActivityFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+    private static final int RESULT_OK = -1;
 
     private EditText editTextName, editTextPartNum;
     private TextView textAddress;
@@ -59,12 +73,18 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     private String durationInMinutes;
 
     private NewActivityViewModel newActivityFragment;
+    private UploadImageViewModel uploadImageViewModel;
+
     private FragmentNewActivityBinding binding;
     private LoggedInUserView user;
     private Geocoder geocoder;
     private String type;
     private RadioGroup rg1, rg2;
     private ProgressBar progressBar;
+    private ImageView imageView;
+    private Button imgPickBttn;
+    private Uri imageUri;
+    private static Bitmap bitmap;
 
 
     private static final String TAG = NewActivityFragment.class.getSimpleName();
@@ -75,6 +95,10 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
         binding = FragmentNewActivityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(UploadImageViewModel.class);
+
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
         geocoder = new Geocoder(getActivity());
 
@@ -83,6 +107,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         editTextName = root.findViewById(R.id.editTextNameAct);
         textAddress = root.findViewById(R.id.editTextAddress);
         editTextPartNum = root.findViewById(R.id.editTextParticipantNum);
+        imageView = root.findViewById(R.id.imgView);
+        imgPickBttn = root.findViewById(R.id.imgPickBttn);
 
         rg1 = (RadioGroup) root.findViewById(R.id.group1);
         rg2 = (RadioGroup) root.findViewById(R.id.group2);
@@ -231,6 +257,21 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             }
         });
 
+        imgPickBttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (editTextName.getText().toString() != null && !editTextName.getText().toString().isEmpty()) {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(intent.ACTION_GET_CONTENT);
+
+                    someActivityResultLauncher.launch(intent);
+                } else {
+                    showSetImageFailed();
+                }
+            }
+        });
+
         return root;
     }
 
@@ -299,6 +340,39 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
     }
 
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        imageUri = data.getData();
+
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                            imageView.setImageBitmap(bitmap);
+                            imageView.setVisibility(View.VISIBLE);
+                            uploadImage("vow-project-311114", "vow_profile_pictures", user.getUsername() + "_" + editTextName.getText().toString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void uploadImage(String projectId, String bucketName, String objectName) throws IOException {
+        if (imageUri != null) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            byte[] imageInByte = out.toByteArray();
+            out.close();
+            uploadImageViewModel.uploadImage(projectId, bucketName, objectName, imageInByte);
+        }
+    }
+
     private RadioGroup.OnCheckedChangeListener listener1 = new RadioGroup.OnCheckedChangeListener() {
 
         @Override
@@ -350,5 +424,9 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                 break;
         }
 
+    }
+
+    private void showSetImageFailed() {
+        Toast.makeText(getActivity().getApplicationContext(), R.string.set_image_failed, Toast.LENGTH_SHORT).show();
     }
 }

@@ -29,7 +29,6 @@ public class EnrolledActivitiesFragment extends Fragment {
 
     private ScrollviewEnrolledActivitiesBinding binding;
 
-    private TextView enrolledActivitiesTextView;
     private RecyclerView enrolledActRecyclerView;
 
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
@@ -51,7 +50,6 @@ public class EnrolledActivitiesFragment extends Fragment {
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         enrolledActRecyclerView = root.findViewById(R.id.enrolled_activities_recycler_view_profile);
-        enrolledActivitiesTextView = root.findViewById(R.id.enrolledActivitiesTextView);
 
         relativeLayout = root.findViewById(R.id.empty_state_enrolled);
 
@@ -69,11 +67,10 @@ public class EnrolledActivitiesFragment extends Fragment {
                 if (getActivitiesResult.getSuccess() != null) {
                     activitiesByUserList = getActivitiesResult.getSuccess().getActivities();
                     if (activitiesByUserList.size() == 0) {
-                       // enrolledActivitiesTextView.setVisibility(View.VISIBLE);
                         relativeLayout.setVisibility(View.VISIBLE);
                     }
                     if (activitiesByUserList != null) {
-                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesByUserList);
+                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activitiesByUserList, user);
                         enrolledActRecyclerView.setAdapter(adapter);
                         enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     }

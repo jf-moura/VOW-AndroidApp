@@ -51,10 +51,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MainPage.MainPageVolunteer"
+            android:name=".ui.mainPage.MainPageVolunteer"
             android:label="@string/title_activity_main_person" />
         <activity
-            android:name=".ui.MainPage.MainPageOrganization"
+            android:name=".ui.mainPage.MainPageOrganization"
             android:label="@string/title_activity_main_page"></activity>
         <activity
             android:name=".ui.update.UpdateActivity"

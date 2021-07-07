@@ -9,9 +9,13 @@ import android.widget.TextView;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
+import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.login.LoginViewModel;
+import pt.vow.ui.login.LoginViewModelFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 public class ActivityInfo extends AppCompatActivity {
 
@@ -24,12 +28,16 @@ public class ActivityInfo extends AppCompatActivity {
     private String activityInfoTitle;
     private String[] activityInfo;
     private Activity activityInfoFromNotification;
+    private RatingViewModel ratingViewModel;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
         mActivity = this;
+
+        ratingViewModel = new ViewModelProvider(this, new RatingViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                        .get(RatingViewModel.class);
 
         textViewActName = findViewById(R.id.textViewActName2);
         textViewActOwner = findViewById(R.id.textViewActOwner2);
@@ -42,6 +50,7 @@ public class ActivityInfo extends AppCompatActivity {
         editTextComment = findViewById(R.id.editTextComment);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
+
        // activityInfoFromNotification = (Activity) getIntent().getSerializableExtra("Activity");
         activityInfoTitle = (String) getIntent().getSerializableExtra("ActivityInfo");
         activityInfo = activityInfoTitle.split("_");
@@ -56,8 +65,7 @@ public class ActivityInfo extends AppCompatActivity {
         submitBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String rating = String.valueOf(ratingBar.getRating());
-
+                ratingViewModel.setRating(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6], (long) ratingBar.getRating());
             }
         });
     }

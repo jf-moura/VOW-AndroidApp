@@ -16,15 +16,18 @@ import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.ui.activityInfo.ActivityInfo;
 import pt.vow.ui.enroll.EnrollActivity;
+import pt.vow.ui.login.LoggedInUserView;
 
 public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecyclerViewAdapter.ViewHolder> {
 
         Context context;
         List<Activity> activityList;
+        LoggedInUserView user;
 
-        public ProfileRecyclerViewAdapter(Context context, List<Activity> activityList) {
+        public ProfileRecyclerViewAdapter(Context context, List<Activity> activityList, LoggedInUserView user) {
             this.context = context;
             this.activityList = activityList;
+            this.user = user;
         }
 
         @NonNull
@@ -47,6 +50,7 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
                     //Intent intent = new Intent(context, EnrollActivity.class);
                     Intent intent = new Intent(context, ActivityInfo.class);
                     intent.putExtra("ActivityInfo", activity);
+                    intent.putExtra("UserLogged", user);
                     context.startActivity(intent);
                 }
             });

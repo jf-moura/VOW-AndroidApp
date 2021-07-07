@@ -3,9 +3,11 @@ package pt.vow.ui.feed;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,11 +25,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     Context context;
     List<Activity> activityList;
     LoggedInUserView user;
+    List<Bitmap> bitmaps;
 
-    public RecyclerViewAdapter(Context context, List<Activity> activityList, LoggedInUserView user) {
+    public RecyclerViewAdapter(Context context, List<Activity> activityList, LoggedInUserView user, List<Bitmap> bitmaps) {
         this.context = context;
         this.activityList = activityList;
         this.user = user;
+        this.bitmaps = bitmaps;
     }
 
     @NonNull
@@ -42,9 +46,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) +" "+ activityList.get(position).getName());
-        holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) +" "+ activityList.get(position).getOwner());
-        holder.time.setText(holder.itemView.getContext().getString(R.string.date)+" "+ activityList.get(position).getTime());
-        holder.duration.setText(holder.itemView.getContext().getString(R.string.duration)+" " + activityList.get(position).getDurationInMinutes() + " minutes");
+        //holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) +" "+ activityList.get(position).getOwner());
+        //holder.time.setText(holder.itemView.getContext().getString(R.string.date)+" "+ activityList.get(position).getTime());
+        //holder.duration.setText(holder.itemView.getContext().getString(R.string.duration)+" " + activityList.get(position).getDurationInMinutes() + " minutes");
+        if (bitmaps.get(position) != null)
+            holder.actImg.setImageBitmap(bitmaps.get(position));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,13 +72,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView activityName, owner, time, duration;
+        ImageView actImg;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             activityName = itemView.findViewById(R.id.textViewActivityName);
-            owner = itemView.findViewById(R.id.textViewOwner);
-            time = itemView.findViewById(R.id.textViewTime);
-            duration = itemView.findViewById(R.id.textViewDuration);
+            //owner = itemView.findViewById(R.id.textViewOwner);
+            //time = itemView.findViewById(R.id.textViewTime);
+            //duration = itemView.findViewById(R.id.textViewDuration);
+            actImg = itemView.findViewById(R.id.actImgView);
         }
     }
 }

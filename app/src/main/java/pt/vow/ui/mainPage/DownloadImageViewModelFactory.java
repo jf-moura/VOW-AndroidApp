@@ -1,4 +1,4 @@
-package pt.vow.ui.MainPage;
+package pt.vow.ui.mainPage;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;

@@ -1,17 +1,12 @@
-package pt.vow.ui.MainPage;
+package pt.vow.ui.mainPage;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -45,7 +40,6 @@ import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;
-import pt.vow.ui.profile.GetMyActivitiesResult;
 import pt.vow.ui.profile.GetMyActivitiesViewModel;
 import pt.vow.ui.profile.GetMyActivitiesViewModelFactory;
 import pt.vow.ui.profile.ProfileFragment;
@@ -87,6 +81,7 @@ public class MainPageVolunteer extends AppCompatActivity {
 
         activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getMyActivitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
+        getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getTokenID());
         try {
             downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
         } catch (IOException e) {
@@ -167,7 +162,7 @@ public class MainPageVolunteer extends AppCompatActivity {
         super.onDestroy();
         binding = null;
         if (actByUserObs != null)
-        getActivitiesByUserViewModel.getActivitiesResult().removeObserver(actByUserObs);
+            getActivitiesByUserViewModel.getActivitiesResult().removeObserver(actByUserObs);
     }
 
     private void showGetActivitiesFailed(@StringRes Integer errorString) {

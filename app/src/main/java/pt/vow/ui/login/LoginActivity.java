@@ -22,8 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import pt.vow.ui.MainPage.MainPageVolunteer;
-import pt.vow.ui.MainPage.MainPageOrganization;
+import pt.vow.ui.mainPage.MainPageVolunteer;
+import pt.vow.ui.mainPage.MainPageOrganization;
 import pt.vow.ui.VOW;
 import pt.vow.R;
 

@@ -6,245 +6,289 @@
     android:layout_height="match_parent"
     tools:context=".ui.newActivity.NewActivityFragment">
 
-    <TextView
-        android:id="@+id/textViewNameAct"
-        android:layout_width="99dp"
-        android:layout_height="50dp"
-        android:layout_above="@+id/textViewAddress"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="84dp"
-        android:gravity="center"
-        android:text="@string/activity_name"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewAddress"
-        android:layout_width="60dp"
-        android:layout_height="50dp"
-        android:textStyle="bold"
-        android:layout_above="@+id/textViewParticipantNum"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="@string/address"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewNameAct" />
-
-    <TextView
-        android:id="@+id/textViewParticipantNum"
-        android:layout_width="143dp"
-        android:layout_height="54dp"
-        android:textStyle="bold"
-        android:layout_above="@+id/textViewDuration"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:text="@string/number_participants"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAddress" />
-
-    <TextView
-        android:id="@+id/textViewDuration"
-        android:layout_width="121dp"
-        android:layout_height="50dp"
-        android:textStyle="bold"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="44dp"
-        android:gravity="center"
-        android:text="@string/activity_duration"
-        app:layout_constraintEnd_toEndOf="@+id/textViewParticipantNum"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textViewParticipantNum"
-        app:layout_constraintTop_toBottomOf="@+id/textViewParticipantNum" />
-
-
-    <EditText
-        android:id="@+id/editTextNameAct"
-        android:layout_width="212dp"
-        android:layout_height="48dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="84dp"
-        android:layout_marginEnd="48dp"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/editTextAddress"
-        android:layout_width="280dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:hint="@string/hint_address"
-        android:inputType="textPostalAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNameAct" />
-
-    <EditText
-        android:id="@+id/editTextParticipantNum"
-        android:layout_width="64dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="20dp"
-        android:inputType="text|number"
-        app:layout_constraintStart_toEndOf="@+id/textViewParticipantNum"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAddress" />
-
-    <Button
-        android:id="@+id/bttnSaveChanges"
-        android:layout_width="151dp"
-        android:layout_height="58dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="76dp"
-        android:text="@string/save_changes"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/group2"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="@+id/group2" />
-
-    <Button
-        android:id="@+id/bttnDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="20dp"
-        android:drawableLeft="@drawable/ic_baseline_calendar_today_24"
-        android:text="@string/date"
-        android:textColorHighlight="#FFFFFF"
-        android:textColorLink="#53BCBE"
-        app:layout_constraintBottom_toTopOf="@+id/bttnSaveChanges"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDuration"
-        app:layout_constraintVertical_bias="0.0"
-        app:rippleColor="#FF5722" />
-
-
-    <TimePicker
-        android:id="@+id/durationPicker"
-        android:layout_width="150dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="24dp"
-        android:timePickerMode="spinner"
-        app:layout_constraintEnd_toEndOf="@+id/editTextParticipantNum"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editTextParticipantNum"
-        app:layout_constraintTop_toBottomOf="@+id/editTextParticipantNum" />
-
-    <RadioGroup
-        android:id="@+id/group1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/bttnDate"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="@+id/bttnDate"
-        app:layout_constraintTop_toBottomOf="@+id/bttnDate">
-
-        <RadioButton
-            android:id="@+id/radioHealth"
-            android:layout_width="128dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="30dp"
-            android:text="@string/health"
-            tools:layout_editor_absoluteX="18dp"
-            tools:layout_editor_absoluteY="516dp" />
-
-        <RadioButton
-            android:id="@+id/radioChildren"
-            android:layout_width="126dp"
-            android:layout_height="match_parent"
-            android:text="@string/children"
-            tools:layout_editor_absoluteX="18dp"
-            tools:layout_editor_absoluteY="516dp" />
-
-        <RadioButton
-            android:id="@+id/radioNature"
-            android:layout_width="146dp"
-            android:layout_height="match_parent"
-            android:text="@string/nature"
-            tools:layout_editor_absoluteX="18dp"
-            tools:layout_editor_absoluteY="516dp" />
-
-    </RadioGroup>
-
-    <RadioGroup
-        android:id="@+id/group2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_marginTop="4dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/group1"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/group1"
-        app:layout_constraintTop_toBottomOf="@+id/group1">
-
-        <RadioButton
-            android:id="@+id/radioHouseBuilding"
-            android:layout_width="128dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="30dp"
-            android:text="@string/house_building"
-            tools:layout_editor_absoluteX="20dp"
-            tools:layout_editor_absoluteY="200dp" />
-
-        <RadioButton
-            android:id="@+id/radioElderly"
-            android:layout_width="126dp"
-            android:layout_height="match_parent"
-            android:text="@string/elderly"
-            tools:layout_editor_absoluteX="18dp"
-            tools:layout_editor_absoluteY="516dp" />
-
-        <RadioButton
-            android:id="@+id/radioAnimals"
-            android:layout_width="142dp"
-            android:layout_height="match_parent"
-            android:text="@string/animals"
-            tools:layout_editor_absoluteX="18dp"
-            tools:layout_editor_absoluteY="516dp" />
-    </RadioGroup>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_marginTop="32dp"
-        android:text="@string/type"
-        app:layout_constraintEnd_toEndOf="@+id/bttnDate"
-        app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintStart_toStartOf="@+id/bttnDate"
-        app:layout_constraintTop_toBottomOf="@+id/bttnDate" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar_new_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.215"
-        app:layout_constraintStart_toEndOf="@+id/bttnDate"
-        app:layout_constraintTop_toBottomOf="@+id/durationPicker" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:descendantFocusability="blocksDescendants">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewNameAct"
+                android:layout_width="99dp"
+                android:layout_height="50dp"
+                android:layout_above="@+id/textViewAddress"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:text="@string/activity_name"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewAddress"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_above="@+id/textViewParticipantNum"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="@string/address"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewNameAct" />
+
+            <TextView
+                android:id="@+id/textViewParticipantNum"
+                android:layout_width="143dp"
+                android:layout_height="54dp"
+                android:layout_above="@+id/textViewDuration"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@string/number_participants"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewAddress" />
+
+            <TextView
+                android:id="@+id/textViewDuration"
+                android:layout_width="121dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="44dp"
+                android:gravity="center"
+                android:text="@string/activity_duration"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/textViewParticipantNum"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textViewParticipantNum"
+                app:layout_constraintTop_toBottomOf="@+id/textViewParticipantNum" />
+
+
+            <EditText
+                android:id="@+id/editTextNameAct"
+                android:layout_width="212dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="48dp"
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/editTextAddress"
+                android:layout_width="280dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                android:hint="@string/hint_address"
+                android:inputType="textPostalAddress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextNameAct" />
+
+            <EditText
+                android:id="@+id/editTextParticipantNum"
+                android:layout_width="64dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="20dp"
+                android:inputType="text|number"
+                app:layout_constraintStart_toEndOf="@+id/textViewParticipantNum"
+                app:layout_constraintTop_toBottomOf="@+id/editTextAddress" />
+
+            <Button
+                android:id="@+id/bttnSaveChanges"
+                android:layout_width="151dp"
+                android:layout_height="58dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="30dp"
+                android:text="@string/save_changes"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.511"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgView" />
+
+            <Button
+                android:id="@+id/bttnDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
+                android:drawableLeft="@drawable/ic_baseline_calendar_today_24"
+                android:text="@string/date"
+                android:textColorHighlight="#FFFFFF"
+                android:textColorLink="#53BCBE"
+                app:layout_constraintBottom_toTopOf="@+id/bttnSaveChanges"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewDuration"
+                app:layout_constraintVertical_bias="0.0"
+                app:rippleColor="#FF5722" />
+
+
+            <TimePicker
+                android:id="@+id/durationPicker"
+                android:layout_width="150dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="24dp"
+                android:timePickerMode="spinner"
+                app:layout_constraintEnd_toEndOf="@+id/editTextParticipantNum"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/editTextParticipantNum"
+                app:layout_constraintTop_toBottomOf="@+id/editTextParticipantNum" />
+
+            <RadioGroup
+                android:id="@+id/group1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="52dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@+id/bttnDate"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintStart_toStartOf="@+id/bttnDate"
+                app:layout_constraintTop_toBottomOf="@+id/bttnDate">
+
+                <RadioButton
+                    android:id="@+id/radioHealth"
+                    android:layout_width="128dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="30dp"
+                    android:text="@string/health"
+                    tools:layout_editor_absoluteX="18dp"
+                    tools:layout_editor_absoluteY="516dp" />
+
+                <RadioButton
+                    android:id="@+id/radioChildren"
+                    android:layout_width="126dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/children"
+                    tools:layout_editor_absoluteX="18dp"
+                    tools:layout_editor_absoluteY="516dp" />
+
+                <RadioButton
+                    android:id="@+id/radioNature"
+                    android:layout_width="146dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/nature"
+                    tools:layout_editor_absoluteX="18dp"
+                    tools:layout_editor_absoluteY="516dp" />
+
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/group2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/group1"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/group1"
+                app:layout_constraintTop_toBottomOf="@+id/group1">
+
+                <RadioButton
+                    android:id="@+id/radioHouseBuilding"
+                    android:layout_width="128dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="30dp"
+                    android:text="@string/house_building"
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="200dp" />
+
+                <RadioButton
+                    android:id="@+id/radioElderly"
+                    android:layout_width="126dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/elderly"
+                    tools:layout_editor_absoluteX="18dp"
+                    tools:layout_editor_absoluteY="516dp" />
+
+                <RadioButton
+                    android:id="@+id/radioAnimals"
+                    android:layout_width="142dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/animals"
+                    tools:layout_editor_absoluteX="18dp"
+                    tools:layout_editor_absoluteY="516dp" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/imgPickBttn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/choose_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.139"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/group2" />
+
+            <ImageView
+                android:id="@+id/imgView"
+                android:layout_width="300dp"
+                android:layout_height="160dp"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="20dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.099"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgPickBttn" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/type"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/bttnDate"
+                app:layout_constraintHorizontal_bias="0.02"
+                app:layout_constraintStart_toStartOf="@+id/bttnDate"
+                app:layout_constraintTop_toBottomOf="@+id/bttnDate" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar_new_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.215"
+                app:layout_constraintStart_toEndOf="@+id/bttnDate"
+                app:layout_constraintTop_toBottomOf="@+id/durationPicker" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
