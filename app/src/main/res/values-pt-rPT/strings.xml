@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="hello_world">Hello Round World!</string>
+
     <string name="app_name">VOW</string>
     <!-- Strings related to login -->
     <string name="prompt_email">email</string>
@@ -153,6 +155,11 @@
     <string name="set_rating_failed">Erro a definir pontuação</string>
     <string name="choose_image">Adicione uma imagem</string>
     <string name="set_image_failed">Por favor insira o nome da atividade antes de escolher uma imagem.</string>
+
+    <string name="dessert">Isto aqui parece um deserto!</string>
+    <string name="no_activities">Não tens nenhuma atividade :(</string>
+    <string name="organization_title">Organização</string>
+
 
 
 </resources>

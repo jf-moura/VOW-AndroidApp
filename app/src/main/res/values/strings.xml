@@ -1,4 +1,7 @@
 <resources>
+
+    <string name="hello_world">Hello Round World!</string>
+
     <string name="app_name">VOW</string>
     <!-- Strings related to login -->
     <string name="prompt_email">email</string>
@@ -144,4 +147,8 @@
     <string name="choose_image">Add a picture</string>
     <string name="set_image_failed">Please insert the activities name before choosing an image.</string>
 
+    <string name="dessert">It\'s like a dessert in here!</string>
+    <string name="no_activities">You don\'t have any activities :(</string>
+
+    <string name="organization_title">Organization</string>
 </resources>

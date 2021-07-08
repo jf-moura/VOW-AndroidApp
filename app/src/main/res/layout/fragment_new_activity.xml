@@ -7,9 +7,9 @@
     tools:context=".ui.newActivity.NewActivityFragment">
 
     <ScrollView
-        android:layout_width="397dp"
+        android:layout_width="match_parent"
         android:layout_height="721dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:layout_marginBottom="60dp"
         android:descendantFocusability="blocksDescendants"
         app:layout_constraintBottom_toBottomOf="parent"

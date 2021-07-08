@@ -9,7 +9,9 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -92,6 +94,14 @@ public class MainPageOrganization extends AppCompatActivity {
                 }
             }
         });*/
+
+        /*NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.container);
+        NavController navController2 = navHostFragment.getNavController();
+        NavGraph navGraph = navController2.getNavInflater().inflate(R.navigation.mobile_navigation_organization);
+        navGraph.findNode();
+        navController2.setGraph(navGraph);
+        NavigationUI.setupWithNavController(binding.bottomNavView, navController2);*/
 
     }
 

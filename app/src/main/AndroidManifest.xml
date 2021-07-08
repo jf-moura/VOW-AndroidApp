@@ -59,15 +59,10 @@
         <activity
             android:name=".ui.update.UpdateActivity"
             android:label="Settings" />
-        <activity
-            android:name=".ui.extraInfo.ExtraInfoActivity"
-            android:label="Register" >
-        </activity>
+
         <activity android:name=".ui.enroll.Pop"
             android:theme="@style/AppTheme.customPop" />
-        <activity
-            android:name=".ui.extraInfo.ExtraInfoOrganizationActivity"
-            android:label="Register" />
+
         <activity
             android:name=".ui.register.RegisterActivity"
             android:label="Register" />
@@ -78,7 +73,6 @@
             android:name=".ui.login.LoginActivity"
             android:label="Login" />
         <activity android:name=".ui.route.CreateRouteActivity"/>
-        <activity android:name=".ui.route.NewRouteFragment"/>
         <activity
             android:name=".ui.frontPage.FrontPageActivity"
             android:label="VOW">

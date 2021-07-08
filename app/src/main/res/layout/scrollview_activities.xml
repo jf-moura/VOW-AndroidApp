@@ -37,7 +37,7 @@ android:layout_height="match_parent">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="It's like a dessert in here!"
+        android:text="@string/dessert"
         android:textSize="20dp"
         android:textStyle="bold" />
 
@@ -46,7 +46,7 @@ android:layout_height="match_parent">
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:gravity="center"
-        android:text="You don't have any activities :("
+        android:text="@string/no_activities"
         android:textSize="20dp"
         android:textStyle="bold" />
 

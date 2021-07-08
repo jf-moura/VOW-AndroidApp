@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.extraInfo.ExtraInfoActivity">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/uploadImage"
@@ -75,7 +74,6 @@
         android:id="@+id/checkBoxChildren"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:onClick="itemClickedExtraInfo"
         android:text="@string/children"
         app:layout_constraintBottom_toTopOf="@+id/checkBoxAnimals"
         app:layout_constraintEnd_toEndOf="@+id/textViewInterests"
@@ -89,7 +87,6 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginBottom="24dp"
-        android:onClick="itemClickedExtraInfo"
         android:text="@string/animals"
         app:layout_constraintBottom_toTopOf="@+id/checkBoxElderly"
         app:layout_constraintEnd_toEndOf="@+id/checkBoxChildren"
@@ -101,7 +98,6 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
-        android:onClick="itemClickedExtraInfo"
         android:text="@string/nature"
         app:layout_constraintEnd_toEndOf="@+id/checkBoxHealth"
         app:layout_constraintHorizontal_bias="0.0"
@@ -113,7 +109,6 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginBottom="140dp"
-        android:onClick="itemClickedExtraInfo"
         android:text="@string/elderly"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/checkBoxAnimals"
@@ -124,7 +119,6 @@
         android:id="@+id/checkBoxHealth"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:onClick="itemClickedExtraInfo"
         android:text="@string/health"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -137,7 +131,6 @@
         android:id="@+id/checkBoxHouseBuilding"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:onClick="itemClickedExtraInfo"
         android:text="@string/house_building"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/checkBoxNature"

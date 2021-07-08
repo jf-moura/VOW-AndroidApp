@@ -14,18 +14,20 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import pt.vow.R;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoginActivity;
 
-public class RegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class RegisterActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextName, editTextOrgWebsite, editTextPassword, editTextConfirmation, editTextUsername, editTextPhoneNumber;
     private DatePicker datePickerDateBirth;
@@ -34,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     private RegisterActivity mActivity;
     private RegisterViewModel registerViewModel;
     private String date;
+    private TextInputLayout textInputLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,19 +55,41 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         editTextConfirmation = findViewById(R.id.passwordConfirmation);
         editTextPhoneNumber = findViewById(R.id.phoneNumber);
         textViewDateBirth = findViewById(R.id.textViewDateBirth);
+        textInputLayout = findViewById(R.id.textInputLayout);
+        AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
 
         date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
                 .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
 
         final Button confirmButton = findViewById(R.id.confirmBttn);
 
-        Spinner spinner = findViewById(R.id.spinner1);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.typeUser, android.R.layout.simple_spinner_item);
+                R.array.typeUser, R.layout.dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
 
-        spinner.setOnItemSelectedListener(this);
+        autoCompleteTextView.setAdapter(adapter);
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        editTextOrgWebsite.setVisibility(view.VISIBLE);
+                        datePickerDateBirth.setVisibility(view.GONE);
+                        textViewDateBirth.setVisibility(view.GONE);
+                        isOrganization = true;
+                        break;
+
+                    case 1:
+                        editTextOrgWebsite.setVisibility(view.GONE);
+                        datePickerDateBirth.setVisibility(view.VISIBLE);
+                        textViewDateBirth.setVisibility(view.VISIBLE);
+                        isOrganization = false;
+                        break;
+                }
+            }
+        });
+
+       // spinner.setOnItemSelectedListener(this);
         registerViewModel = new ViewModelProvider(this, new RegisterViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(RegisterViewModel.class);
 
@@ -187,29 +212,4 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String text = parent.getItemAtPosition(position).toString();
-        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
-
-        switch (position) {
-            case 0:
-                editTextOrgWebsite.setVisibility(view.VISIBLE);
-                datePickerDateBirth.setVisibility(view.GONE);
-                textViewDateBirth.setVisibility(view.GONE);
-                isOrganization = true;
-                break;
-
-            case 1:
-                editTextOrgWebsite.setVisibility(view.GONE);
-                datePickerDateBirth.setVisibility(view.VISIBLE);
-                textViewDateBirth.setVisibility(view.VISIBLE);
-                isOrganization = false;
-                break;
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-    }
 }

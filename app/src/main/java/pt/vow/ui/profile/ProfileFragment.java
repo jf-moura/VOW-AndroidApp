@@ -33,6 +33,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -54,6 +55,7 @@ import pt.vow.ui.logout.LogoutViewModelFactory;
 import pt.vow.ui.update.UpdateActivity;
 
 import static android.content.Context.MODE_PRIVATE;
+import static androidx.core.app.ActivityCompat.invalidateOptionsMenu;
 
 public class ProfileFragment extends Fragment {
     private static final int RESULT_OK = -1;
@@ -78,6 +80,7 @@ public class ProfileFragment extends Fragment {
     private SharedPreferences.Editor loginPrefsEditor;
 
     private Observer<GetImageResult> imgObs;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -105,6 +108,7 @@ public class ProfileFragment extends Fragment {
         statsLinearLayout = root.findViewById(R.id.statsLinearLayout);
         logoutLinearLayout = root.findViewById(R.id.logoutLinearLayout);
         linearLayoutPrincipal = root.findViewById(R.id.linearLayoutPrincipal);
+
 
 
         if (user.getRole() == 0) { //volunteer
@@ -192,7 +196,7 @@ public class ProfileFragment extends Fragment {
                 return true;
             }
         });
-
+        getActivity().invalidateOptionsMenu();
         setHasOptionsMenu(true);
         return root;
     }
@@ -293,6 +297,5 @@ public class ProfileFragment extends Fragment {
             uploadImageViewModel.uploadImage(projectId, bucketName, objectName, imageInByte);
         }
     }
-
 
 }

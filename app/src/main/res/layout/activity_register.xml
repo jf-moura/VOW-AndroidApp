@@ -23,14 +23,23 @@
             android:layout_gravity="center_horizontal"
             android:orientation="vertical">
 
-            <Spinner
-                android:id="@+id/spinner1"
-                style="@style/Widget.AppCompat.Light.Spinner.DropDown.ActionBar"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="80dp"
-                android:background="@android:drawable/btn_dropdown"
-                android:theme="@android:style/Theme.Holo.Light.DarkActionBar" />
+                android:id="@+id/textInputLayout"
+                android:hint="@string/type">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/organization_title"
+                    android:inputType="none"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <EditText
                 android:id="@+id/name"
