@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chooseRoute"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.route.CreateRouteActivity"
-    android:id="@+id/chooseRoute">
+    tools:context=".ui.route.CreateRouteFragment">
 
 
     <fragment
@@ -27,7 +27,7 @@
         app:layout_constraintHorizontal_bias="0.08"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.954" />
+        app:layout_constraintVertical_bias="0.881" />
 
     <ImageView
         android:id="@+id/confirm"
@@ -39,6 +39,6 @@
         app:layout_constraintHorizontal_bias="0.894"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.954" />
+        app:layout_constraintVertical_bias="0.881" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

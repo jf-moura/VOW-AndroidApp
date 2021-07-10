@@ -6,8 +6,6 @@ public class NewRouteFormState {
     @Nullable
     private Integer nameError;
     @Nullable
-    private Integer addressError;
-    @Nullable
     private Integer dateError;
     @Nullable
     private Integer timeError;
@@ -20,10 +18,9 @@ public class NewRouteFormState {
 
     private boolean isDataValid;
 
-    NewRouteFormState(@Nullable Integer nameError, @Nullable Integer addressError, @Nullable Integer dateError, @Nullable Integer timeError, @Nullable
+    NewRouteFormState(@Nullable Integer nameError, @Nullable Integer dateError, @Nullable Integer timeError, @Nullable
             Integer typeError, @Nullable Integer participantNumError, @Nullable Integer durationError) {
         this.nameError = nameError;
-        this.addressError = addressError;
         this.dateError = dateError;
         this.timeError = timeError;
         this.participantNumError = participantNumError;
@@ -34,7 +31,6 @@ public class NewRouteFormState {
 
     NewRouteFormState(boolean isDataValid) {
         this.nameError = null;
-        this.addressError = null;
         this.dateError = null;
         this.timeError = null;
         this.participantNumError = null;
@@ -48,10 +44,6 @@ public class NewRouteFormState {
         return nameError;
     }
 
-    @Nullable
-    Integer getAddressError() {
-        return addressError;
-    }
 
     @Nullable
     Integer getDateError() {

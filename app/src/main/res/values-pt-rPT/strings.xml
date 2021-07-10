@@ -160,6 +160,16 @@
     <string name="no_activities">Não tens nenhuma atividade :(</string>
     <string name="organization_title">Organização</string>
 
+    <string name="username_email">username/email</string>
+    <string-array name="filter">
+        <item>Saúde</item>
+        <item>Crianças</item>
+        <item>Natureza</item>
+        <item>Construção de Casas</item>
+        <item>Idosos</item>
+        <item>Animais</item>
+    </string-array>
+
 
 
 </resources>

@@ -60,15 +60,21 @@ public class ChooseType extends Fragment {
                         fragmentTransaction.commit();
                         break;
                     case R.id.navigation_new_route:
-                        /*Fragment afragment = new NewRouteFragment();
+                        /* afragment = new NewRouteFragment();
                         FragmentManager afragmentManager = getActivity().getSupportFragmentManager();
                         FragmentTransaction afragmentTransaction = afragmentManager.beginTransaction();
                         afragmentTransaction.replace(R.id.chooseType, afragment);
                         afragmentTransaction.addToBackStack(null);
                         afragmentTransaction.commit();*/
-                        Intent intent = new Intent(getActivity(), CreateRouteActivity.class);
+                        /*Intent intent = new Intent(getActivity(), CreateRouteActivity.class);
                         intent.putExtra("UserLogged", user);
-                        startActivity(intent);
+                        startActivity(intent);*/
+                        Fragment afragment = new CreateRouteFragment();
+                        FragmentManager afragmentManager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction afragmentTransaction = afragmentManager.beginTransaction();
+                        afragmentTransaction.replace(R.id.chooseType, afragment);
+                        afragmentTransaction.addToBackStack(null);
+                        afragmentTransaction.commit();
                         break;
                 }
                 return true;

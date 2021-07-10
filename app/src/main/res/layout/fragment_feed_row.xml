@@ -12,12 +12,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardElevation="10dp"
+        app:cardCornerRadius="8dp"
+        android:layout_margin="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_comment_box">
+            android:background="@drawable/bg_search_view">
 
             <TextView
                 android:id="@+id/textViewActivityName"

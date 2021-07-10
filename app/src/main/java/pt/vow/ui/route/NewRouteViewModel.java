@@ -8,7 +8,7 @@ import java.util.concurrent.Executor;
 
 import pt.vow.R;
 import pt.vow.data.Result;
-import pt.vow.data.model.RegisteredActivity;
+import pt.vow.data.model.RegisteredRoute;
 import pt.vow.data.route.NewRouteRepository;
 import pt.vow.ui.newActivity.RegisteredActivityView;
 
@@ -35,7 +35,7 @@ public class NewRouteViewModel extends ViewModel {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredActivity> result = newRouteRepository.registerRoute(username, tokenID, name, address, time,type, participantNum, durationInMinutes, coordinateArray);
+                Result<RegisteredRoute> result = newRouteRepository.registerRoute(username, tokenID, name, address, time,type, participantNum, durationInMinutes, coordinateArray);
                 if (result instanceof Result.Success) {
                     newRouteResult.postValue(new NewRouteResult(new RegisteredActivityView()));
                 } else {
@@ -47,15 +47,15 @@ public class NewRouteViewModel extends ViewModel {
 
     public void newRouteDataChanged(String name, String time, String type, String participantNum, String durationInMinutes) {
         if (!isNameValid(name))
-            newRouteFormState.setValue(new NewRouteFormState(R.string.invalid_name, null, null, null, null, null, null));
+            newRouteFormState.setValue(new NewRouteFormState(R.string.invalid_name, null, null, null, null, null));
         else if (!isTimeValid(time))
-            newRouteFormState.setValue(new NewRouteFormState(null, null, R.string.invalid_time, null, null, null, null));
+            newRouteFormState.setValue(new NewRouteFormState(null, R.string.invalid_time, null, null, null, null));
         else if (!isParticipantNumValid(participantNum))
-            newRouteFormState.setValue(new NewRouteFormState(null, null, null, null, R.string.invalid_participant_num, null, null));
+            newRouteFormState.setValue(new NewRouteFormState(null, null, null, R.string.invalid_participant_num, null, null));
         else if (!isDurationInMinutesValid(durationInMinutes))
-            newRouteFormState.setValue(new NewRouteFormState(null, null, null, null, null, R.string.invalid_duration, null));
+            newRouteFormState.setValue(new NewRouteFormState(null, null, null, null, R.string.invalid_duration, null));
         else if (!isTypeValid(type))
-            newRouteFormState.setValue(new NewRouteFormState(null, null, null, null,  R.string.invalid_type,null, null));
+            newRouteFormState.setValue(new NewRouteFormState(null, null, null,  R.string.invalid_type,null, null));
         else
             newRouteFormState.setValue(new NewRouteFormState(true));
     }
@@ -65,10 +65,6 @@ public class NewRouteViewModel extends ViewModel {
         return name != null && !name.trim().isEmpty();
     }
 
-    // A placeholder address validation check
-    private boolean isAddressValid(String address) {
-        return address != null && !address.trim().isEmpty();
-    }
 
     // A placeholder time validation check
     private boolean isTimeValid(String time) {

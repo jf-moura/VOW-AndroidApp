@@ -27,7 +27,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import pt.vow.R;
-import pt.vow.databinding.ActivityNewRouteBinding;
+import pt.vow.databinding.FragmentNewRouteBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.newActivity.RegisteredActivityView;
@@ -45,13 +45,13 @@ public class NewRouteFragment extends Fragment {
     private NewRouteViewModel newRouteViewModel;
     private String[] coordinateArray;
 
-    private ActivityNewRouteBinding binding;
+    private FragmentNewRouteBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                         ViewGroup container, Bundle savedInstanceState) {
+                             ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityNewRouteBinding.inflate(inflater, container, false);
+        binding = FragmentNewRouteBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         newRouteViewModel = new ViewModelProvider(this, new NewRouteViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
@@ -60,7 +60,6 @@ public class NewRouteFragment extends Fragment {
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         coordinateArray = getArguments().getStringArray("CoordinateArray");
-
         type = "";
 
         editTextName = root.findViewById(R.id.editTextNameRoute);
@@ -99,7 +98,7 @@ public class NewRouteFragment extends Fragment {
                 if (newRouteFormState == null) {
                     return;
                 }
-              //  confirmButton.setEnabled(newRouteFormState.isDataValid());
+                confirmButton.setEnabled(newRouteFormState.isDataValid());
                 if (newRouteFormState.getNameError() != null) {
                     editTextName.setError(getString(newRouteFormState.getNameError()));
                 }
@@ -121,6 +120,12 @@ public class NewRouteFragment extends Fragment {
                 if (newRouteResult.getSuccess() != null) {
                     registerActivitySuccess(newRouteResult.getSuccess());
                     getActivity().setResult(Activity.RESULT_OK);
+                    editTextName.setText("");
+                    editTextPartNum.setText("");
+                    durationPicker.setMinute(0);
+                    durationPicker.setHour(0);
+                    rg1.clearCheck(); // this is so we can start fresh, with no selection on both RadioGroups
+                    rg2.clearCheck();
 
                 }
             }
@@ -159,7 +164,7 @@ public class NewRouteFragment extends Fragment {
                     }
                 });
 
-        dateBttn.setOnClickListener(new View.OnClickListener() {
+        binding.bttnDateRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDatePickerDialog();
@@ -178,13 +183,8 @@ public class NewRouteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 newRouteViewModel.registerRoute(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                      "lisbon", date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinateArray);
-                editTextName.setText("");
-                editTextPartNum.setText("");
-                durationPicker.setMinute(0);
-                durationPicker.setHour(0);
-                rg1.clearCheck(); // this is so we can start fresh, with no selection on both RadioGroups
-                rg2.clearCheck();
+                        "lisbon", date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinateArray);
+
             }
         });
 
@@ -210,7 +210,7 @@ public class NewRouteFragment extends Fragment {
                                 .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
 
                         newRouteViewModel.newRouteDataChanged(editTextName.getText().toString(),
-                                 date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                                date, type, editTextPartNum.getText().toString(), durationInMinutes);
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
             }
@@ -255,7 +255,7 @@ public class NewRouteFragment extends Fragment {
         }
     };
 
-    private void updateType(){
+    private void updateType() {
         int chkId1 = rg1.getCheckedRadioButtonId();
         int chkId2 = rg2.getCheckedRadioButtonId();
         int realCheck = chkId1 == -1 ? chkId2 : chkId1;

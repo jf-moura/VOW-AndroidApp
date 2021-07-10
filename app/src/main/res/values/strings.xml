@@ -151,4 +151,14 @@
     <string name="no_activities">You don\'t have any activities :(</string>
 
     <string name="organization_title">Organization</string>
+    <string name="username_email">username/email</string>
+
+    <string-array name="filter">
+        <item>Health</item>
+        <item>Children</item>
+        <item>Nature</item>
+        <item>House Building</item>
+        <item>Elderly</item>
+        <item>Animals</item>
+    </string-array>
 </resources>

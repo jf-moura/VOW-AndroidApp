@@ -9,6 +9,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +24,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +50,8 @@ public class FeedFragment extends Fragment {
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
     private TextView activitiesTextView;
+    private TextInputLayout textInputLayout;
+    private AutoCompleteTextView autoCompleteTextView;
 
     private Observer<GetActivitiesResult> actObs;
 
@@ -59,6 +66,15 @@ public class FeedFragment extends Fragment {
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
         activitiesTextView = root.findViewById(R.id.activitiesTextView);
+
+        textInputLayout = root.findViewById(R.id.textInputLayout2);
+        autoCompleteTextView = root.findViewById(R.id.autoCompleteTextView2);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.filter, R.layout.dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        autoCompleteTextView.setAdapter(adapter);
 
         setHasOptionsMenu(true);
         return root;
@@ -86,6 +102,7 @@ public class FeedFragment extends Fragment {
                     if (activitiesList != null) {
                         List<Activity> aux = new LinkedList<>();
                         for (Activity a : activitiesList) {
+
                             long currentTime = Calendar.getInstance().getTimeInMillis();
 
                             String[] dateTime = a.getTime().split(" ");
@@ -102,7 +119,27 @@ public class FeedFragment extends Fragment {
                                 aux.add(a);
                             }
                         }
+                        List<Activity> filter = new LinkedList<>();
+                        for (Activity act : aux) {
+                            autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    switch (position) {
+                                        case 0:
+                                            if (act.getType().equals(getResources().getString(R.string.health))) {
+                                                filter.add(act);
+                                            }
+                                            break;
 
+                                        case 1:
+                                            if (act.getType().equals(getResources().getString(R.string.children))) {
+                                                filter.add(act);
+                                            }
+                                            break;
+                                    }//TODO: for every case and put filter on recyclerViewAdapter
+                                }
+                            });
+                        }
                         RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux, user);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -119,7 +156,7 @@ public class FeedFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater){
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         menuInflater.inflate(R.menu.menu_map, menu);
         super.onCreateOptionsMenu(menu, menuInflater);
     }

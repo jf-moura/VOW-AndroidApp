@@ -48,6 +48,8 @@ public class UpdateActivity extends AppCompatActivity {
         editTextPhoneNumber = findViewById(R.id.editTextPhone);
         textViewWebsiteSett = findViewById(R.id.textViewWebsiteSett);
 
+        editTextName.setHint(user.getUsername());
+
         if (user.getRole() == 1) {
             editTextEntWebsite.setVisibility(View.VISIBLE);
             textViewWebsiteSett.setVisibility(View.VISIBLE);

@@ -72,7 +72,7 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:label="Login" />
-        <activity android:name=".ui.route.CreateRouteActivity"/>
+        <activity android:name=".ui.route.CreateRouteFragment"/>
         <activity
             android:name=".ui.frontPage.FrontPageActivity"
             android:label="VOW">

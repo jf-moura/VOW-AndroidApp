@@ -6,16 +6,17 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -42,9 +43,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import pt.vow.R;
+import pt.vow.databinding.FragmentCreateRouteBinding;
 import pt.vow.ui.login.LoggedInUserView;
 
-public class CreateRouteActivity extends FragmentActivity implements OnMapReadyCallback {
+public class CreateRouteFragment extends Fragment implements OnMapReadyCallback {
 
     private String[] coordinates;
     private int counter;
@@ -71,33 +73,38 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
     private List[] likelyPlaceAttributions;
     private LatLng[] likelyPlaceLatLngs;
 
-    private CreateRouteActivity mActivity;
+    private CreateRouteFragment mActivity;
     private ImageView confirmBttn, goBackBttn;
     private ArrayList<Marker> mMarkerArray = new ArrayList<Marker>();
+    private FragmentCreateRouteBinding binding;
+    private ConstraintLayout cl;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_route);
-        mActivity = this;
+        binding = FragmentCreateRouteBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-        user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
+        user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapRoute);
+        final SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapRoute);
         mapFragment.getMapAsync(this);
         counter = 0;
 
         // Construct a PlacesClient
-        Places.initialize(this.getApplicationContext(), getString(R.string.google_maps_key));
-        placesClient = Places.createClient(mActivity);
+        Places.initialize(getActivity().getApplicationContext(), getString(R.string.google_maps_key));
+        placesClient = Places.createClient(getActivity());
 
         // Construct a FusedLocationProviderClient.
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mActivity);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         coordinates = new String[10];
 
-        confirmBttn = findViewById(R.id.confirm);
-        goBackBttn = findViewById(R.id.goBackBttn);
+        confirmBttn = root.findViewById(R.id.confirm);
+        goBackBttn = root.findViewById(R.id.goBackBttn);
+
+        cl = root.findViewById(R.id.chooseRoute);
 
         confirmBttn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,9 +113,10 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
                 confirmBttn.setVisibility(View.GONE);
                 Bundle bundle = new Bundle();
                 bundle.putStringArray("CoordinateArray", coordinates);
+                cl.removeAllViewsInLayout();
                 Fragment afragment = new NewRouteFragment();
                 afragment.setArguments(bundle);
-                FragmentManager afragmentManager = getSupportFragmentManager();
+                FragmentManager afragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction afragmentTransaction = afragmentManager.beginTransaction();
                 afragmentTransaction.replace(R.id.chooseRoute, afragment);
                 afragmentTransaction.addToBackStack(null);
@@ -144,7 +152,7 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
                 }
             }
         });
-
+        return root;
     }
 
     @Override
@@ -258,7 +266,7 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
         };
 
         // Display the dialog.
-        AlertDialog dialog = new AlertDialog.Builder(mActivity)
+        AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.pick_place)
                 .setItems(likelyPlaceNames, listener)
                 .show();
@@ -270,12 +278,12 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
         } else {
-            ActivityCompat.requestPermissions(mActivity,
+            ActivityCompat.requestPermissions(getActivity(),
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
@@ -333,7 +341,7 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
         try {
             if (locationPermissionGranted) {
                 Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(mActivity, new OnCompleteListener<Location>() {
+                locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
