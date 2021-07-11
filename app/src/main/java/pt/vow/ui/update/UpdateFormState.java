@@ -4,10 +4,6 @@ import androidx.annotation.Nullable;
 
 public class UpdateFormState {
     @Nullable
-    private Integer nameError;
-    @Nullable
-    private Integer passwordError;
-    @Nullable
     private Integer confirmPasswordError;
     @Nullable
     private  Integer newPasswordError;
@@ -15,9 +11,7 @@ public class UpdateFormState {
     private Integer phoneNumberError;
     private boolean isDataValid;
 
-    UpdateFormState(@Nullable Integer nameError, @Nullable Integer passwordError, @Nullable Integer newPasswordError, @Nullable Integer confirmPasswordError, @Nullable Integer phoneNumberError) {
-        this.nameError = nameError;
-        this.passwordError = passwordError;
+    UpdateFormState(@Nullable Integer newPasswordError, @Nullable Integer confirmPasswordError, @Nullable Integer phoneNumberError) {
         this.confirmPasswordError = confirmPasswordError;
         this.newPasswordError = newPasswordError;
         this.phoneNumberError = phoneNumberError;
@@ -25,8 +19,6 @@ public class UpdateFormState {
     }
 
     UpdateFormState(boolean isDataValid) {
-        this.nameError = null;
-        this.passwordError = null;
         this.confirmPasswordError = null;
         this.newPasswordError = null;
         this.phoneNumberError = null;
@@ -34,20 +26,10 @@ public class UpdateFormState {
     }
 
     @Nullable
-    Integer getNameError() { return nameError; }
-
-    @Nullable
-    Integer getPasswordError() {
-        return passwordError;
-    }
+    Integer getNewPasswordError() { return newPasswordError; }
 
     @Nullable
     Integer getConfirmPasswordError() { return confirmPasswordError; }
-
-    @Nullable
-    Integer getNewPasswordError() {
-        return newPasswordError;
-    }
 
     @Nullable
     Integer getPhoneNumberError() { return phoneNumberError; }

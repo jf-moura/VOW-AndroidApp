@@ -182,6 +182,7 @@ public class NewRouteFragment extends Fragment {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO: change address
                 newRouteViewModel.registerRoute(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
                         "lisbon", date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinateArray);
 

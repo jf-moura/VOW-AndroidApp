@@ -151,6 +151,7 @@
     <string name="no_activities">You don\'t have any activities :(</string>
 
     <string name="organization_title">Organization</string>
+    <string name="password_not_available">Please insert password</string>
     <string name="username_email">username/email</string>
 
     <string-array name="filter">

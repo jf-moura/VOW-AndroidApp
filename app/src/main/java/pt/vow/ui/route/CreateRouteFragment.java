@@ -48,7 +48,7 @@ import pt.vow.ui.login.LoggedInUserView;
 
 public class CreateRouteFragment extends Fragment implements OnMapReadyCallback {
 
-    private String[] coordinates;
+    private List<String> coordinates;
     private int counter;
     private LoggedInUserView user;
     private GoogleMap mMap;
@@ -99,7 +99,7 @@ public class CreateRouteFragment extends Fragment implements OnMapReadyCallback 
         // Construct a FusedLocationProviderClient.
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
-        coordinates = new String[10];
+        coordinates = new ArrayList<>();
 
         confirmBttn = root.findViewById(R.id.confirm);
         goBackBttn = root.findViewById(R.id.goBackBttn);
@@ -112,7 +112,7 @@ public class CreateRouteFragment extends Fragment implements OnMapReadyCallback 
                 goBackBttn.setVisibility(View.GONE);
                 confirmBttn.setVisibility(View.GONE);
                 Bundle bundle = new Bundle();
-                bundle.putStringArray("CoordinateArray", coordinates);
+                bundle.putStringArrayList("CoordinateArray", (ArrayList<String>) coordinates);
                 cl.removeAllViewsInLayout();
                 Fragment afragment = new NewRouteFragment();
                 afragment.setArguments(bundle);
@@ -135,7 +135,7 @@ public class CreateRouteFragment extends Fragment implements OnMapReadyCallback 
             @Override
             public void onClick(View v) {
 
-                String[] latlong = coordinates[counter - 1].split(",");
+                String[] latlong = coordinates.get(counter - 1).split(",");
                 Double lat = Double.parseDouble(latlong[0]);
                 Double lon = Double.parseDouble(latlong[1]);
                 LatLng l = new LatLng(lat, lon);
@@ -388,7 +388,7 @@ public class CreateRouteFragment extends Fragment implements OnMapReadyCallback 
                 markerOptions.title(String.valueOf(counter + 1));
                 Marker marker = mMap.addMarker(markerOptions);
                 mMarkerArray.add(marker);
-                coordinates[counter] = latLng.latitude + "," + latLng.longitude;
+                coordinates.add(latLng.latitude + "," + latLng.longitude);
                 counter++;
                 goBackBttn.setVisibility(View.VISIBLE);
                 confirmBttn.setVisibility(View.VISIBLE);

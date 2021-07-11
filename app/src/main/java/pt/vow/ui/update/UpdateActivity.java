@@ -70,12 +70,6 @@ public class UpdateActivity extends AppCompatActivity {
                     return;
                 }
                 confirmButton.setEnabled(updateFormState.isDataValid());
-                if (updateFormState.getNameError() != null) {
-                    editTextName.setError(getString(updateFormState.getNameError()));
-                }
-                if (updateFormState.getPasswordError() != null) {
-                    editTextPassword.setError(getString(updateFormState.getPasswordError()));
-                }
                 if (updateFormState.getNewPasswordError() != null) {
                     editTextNewPassword.setError(getString(updateFormState.getNewPasswordError()));
                 }
@@ -117,13 +111,11 @@ public class UpdateActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                updateViewModel.updateDataChanged(editTextName.getText().toString(),
-                        editTextPassword.getText().toString(), editTextNewPassword.getText().toString(),
+                updateViewModel.updateDataChanged(editTextPassword.getText().toString(), editTextNewPassword.getText().toString(),
                         editTextConfirmation.getText().toString(), editTextPhoneNumber.getText().toString());
             }
         };
 
-        editTextName.addTextChangedListener(afterTextChangedListener);
         editTextPassword.addTextChangedListener(afterTextChangedListener);
         editTextNewPassword.addTextChangedListener(afterTextChangedListener);
         editTextConfirmation.addTextChangedListener(afterTextChangedListener);
@@ -134,10 +126,10 @@ public class UpdateActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (user.getRole() == 0) { //person
-                    updateViewModel.update(user.getUsername(), user.getTokenID(), editTextName.getText().toString(), editTextPassword.getText().toString(),
+                    updateViewModel.update(user.getUsername(), user.getTokenID(), editTextName.getText().toString(), editTextNewPassword.getText().toString(),
                              editTextPhoneNumber.getText().toString(), "", "");
                 } else
-                    updateViewModel.update(user.getUsername(), user.getTokenID(), editTextName.getText().toString(), editTextPassword.getText().toString(),
+                    updateViewModel.update(user.getUsername(), user.getTokenID(), editTextName.getText().toString(), editTextNewPassword.getText().toString(),
                              editTextPhoneNumber.getText().toString(),"", editTextEntWebsite.getText().toString());
             }
         });

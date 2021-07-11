@@ -45,32 +45,31 @@ public class UpdateViewModel extends ViewModel {
         });
     }
 
-    public void updateDataChanged(String name, String password, String newPassword, String confirmPassword, String phoneNumber) {
-        if (!isNameValid(name))
-            updateFormState.setValue(new UpdateFormState(R.string.invalid_name, null, null, null, null));
-        else if (!isPasswordValid(password))
-            updateFormState.setValue(new UpdateFormState(null, R.string.invalid_incorrect_password, null, null, null));
-        else if (!isPasswordValid(newPassword))
-            updateFormState.setValue(new UpdateFormState(null, null,  R.string.invalid_password, null,null));
+    public void updateDataChanged(String password, String newPassword, String confirmPassword, String phoneNumber) {
+        if (!isPasswordAvailable(password, newPassword))
+            updateFormState.setValue(new UpdateFormState(R.string.password_not_available, null, null));
+        else if (!isPasswordValid(password, newPassword))
+            updateFormState.setValue(new UpdateFormState(R.string.invalid_password, null,null));
         else if (!isConfirmPasswordValid(newPassword, confirmPassword))
-            updateFormState.setValue(new UpdateFormState(null, null, null, R.string.invalid_password_confirmation, null));
+            updateFormState.setValue(new UpdateFormState(null, R.string.invalid_password_confirmation, null));
         else if (!isPhoneNumberValid(phoneNumber))
-            updateFormState.setValue(new UpdateFormState(null, null, null, null, R.string.invalid_phone_number));
+            updateFormState.setValue(new UpdateFormState(null, null, R.string.invalid_phone_number));
         else
             updateFormState.setValue(new UpdateFormState(true));
     }
 
-    // A placeholder name validation check
-    private boolean isNameValid(String name) {
-        if (name != null)
-            return !name.trim().isEmpty();
+    private boolean isPasswordAvailable(String password, String newPassword) {
+        if ((!password.isEmpty() && password != null) && (newPassword.isEmpty() || newPassword == null))
+            return false;
+        if ((password.isEmpty() || password == null) && (!newPassword.isEmpty() && newPassword != null))
+            return false;
         return true;
     }
 
     // A placeholder new password check
-    private boolean isPasswordValid(String password) {
-        if (password != null)
-            return password.trim().length() >= 4;
+    private boolean isPasswordValid(String password, String newPassword) {
+        if (newPassword != null && !newPassword.isEmpty())
+            return newPassword.trim().length() >= 4;
         return true;
     }
 
@@ -81,7 +80,7 @@ public class UpdateViewModel extends ViewModel {
 
     // A placeholder phone number validation check
     private boolean isPhoneNumberValid(String phoneNumber) {
-        if (phoneNumber != null)
+        if (phoneNumber != null && !phoneNumber.isEmpty())
             return phoneNumber.trim().length() == 9 || phoneNumber.trim().length() == 0;
         return true;
     }
