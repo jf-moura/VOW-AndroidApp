@@ -42,6 +42,7 @@ public class MainPageOrganization extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_profile);
 
         binding = ActivityMainPageOrganizationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

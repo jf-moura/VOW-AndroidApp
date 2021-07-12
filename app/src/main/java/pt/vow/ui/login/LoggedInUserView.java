@@ -16,6 +16,7 @@ public class LoggedInUserView implements Serializable {
         this.tokenID = tokenID;
     }
 
+
     public long getRole() { return role; }
 
     public String getUsername() { return username; }

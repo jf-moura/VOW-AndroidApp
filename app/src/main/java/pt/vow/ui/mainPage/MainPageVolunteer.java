@@ -63,6 +63,7 @@ public class MainPageVolunteer extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_profile);
 
         binding = ActivityMainPagePersonBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -117,7 +118,7 @@ public class MainPageVolunteer extends AppCompatActivity {
                     menu.findItem(R.id.navigation_profile).setIcon(drawable);
                 }
             }
-        });*/
+        });
 
         getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
             @Override
@@ -153,7 +154,7 @@ public class MainPageVolunteer extends AppCompatActivity {
                     setResult(android.app.Activity.RESULT_OK);
                 }
             }
-        });
+        });*/
 
     }
 

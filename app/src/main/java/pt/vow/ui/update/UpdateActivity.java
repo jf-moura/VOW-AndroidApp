@@ -25,7 +25,6 @@ import pt.vow.ui.profile.ProfileFragment;
 public class UpdateActivity extends AppCompatActivity {
     private EditText editTextName, editTextEntWebsite, editTextPassword, editTextConfirmation, editTextNewPassword, editTextPhoneNumber;
     private TextView textViewWebsiteSett;
-    private UpdateActivity mActivity;
     private UpdateViewModel updateViewModel;
     private LoggedInUserView user;
 
@@ -34,19 +33,17 @@ public class UpdateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        mActivity = this;
-
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
         editTextName = findViewById(R.id.editTextName);
 
-        editTextEntWebsite = findViewById(R.id.editTextWebsiteSett);
+        editTextEntWebsite = findViewById(R.id.editTextWebsite);
 
         editTextPassword = findViewById(R.id.editTextPassword);
         editTextNewPassword = findViewById(R.id.editTextNewPassword);
         editTextConfirmation = findViewById(R.id.editTextConfirmPassword);
         editTextPhoneNumber = findViewById(R.id.editTextPhone);
-        textViewWebsiteSett = findViewById(R.id.textViewWebsiteSett);
+        textViewWebsiteSett = findViewById(R.id.textViewWebsite);
 
         editTextName.setHint(user.getUsername());
 
