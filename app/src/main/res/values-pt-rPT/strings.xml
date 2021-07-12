@@ -163,6 +163,7 @@
 
 
     <string name="username_email">username/email</string>
+    <string name="commit_rating">Thank you for your rating</string>
     <string-array name="filter">
         <item>Saúde</item>
         <item>Crianças</item>

@@ -7,16 +7,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.ui.VOW;
+import pt.vow.ui.feed.GetActivitiesResult;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.login.LoginViewModel;
 import pt.vow.ui.login.LoginViewModelFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+import javax.annotation.Nullable;
 
 public class ActivityInfo extends AppCompatActivity {
 
@@ -30,6 +35,9 @@ public class ActivityInfo extends AppCompatActivity {
     private String[] activityInfo;
     private Activity activityInfoFromNotification;
     private RatingViewModel ratingViewModel;
+    private GetRatingViewModel getRatingViewModel;
+    private String totalRate, rate;
+    private Observer<GetRatingResult> rateObs;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +46,10 @@ public class ActivityInfo extends AppCompatActivity {
         mActivity = this;
 
         ratingViewModel = new ViewModelProvider(this, new RatingViewModelFactory(((VOW) getApplication()).getExecutorService()))
-                        .get(RatingViewModel.class);
+                .get(RatingViewModel.class);
+        getRatingViewModel = new ViewModelProvider(this, new GetRatingViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetRatingViewModel.class);
+        user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
         textViewActName = findViewById(R.id.textViewActName2);
         textViewActOwner = findViewById(R.id.textViewActOwner2);
@@ -51,23 +62,55 @@ public class ActivityInfo extends AppCompatActivity {
         editTextComment = findViewById(R.id.editTextComment);
         textViewRating = findViewById(R.id.textViewRating);
 
-        user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
-       // activityInfoFromNotification = (Activity) getIntent().getSerializableExtra("Activity");
+        // activityInfoFromNotification = (Activity) getIntent().getSerializableExtra("Activity");
         activityInfoTitle = (String) getIntent().getSerializableExtra("ActivityInfo");
         activityInfo = activityInfoTitle.split("_");
 
-        textViewActName.setText(Html.fromHtml("<b>" + getResources().getString(R.string.activity_name) +"</b>" + " " + activityInfo[0]));
-        textViewActOwner.setText(Html.fromHtml("<b>" +getResources().getString(R.string.organization) +"</b>"+ " " + activityInfo[1]));
-        textViewAddress.setText(Html.fromHtml("<b>" +getResources().getString(R.string.address) +"</b>"+ " " + activityInfo[2]));
-        textViewTime.setText(Html.fromHtml("<b>" +getResources().getString(R.string.time) +"</b>" +" " + activityInfo[3]));
-        textViewNumPart.setText(Html.fromHtml("<b>" +getResources().getString(R.string.number_participants) +"</b>" +" " + activityInfo[4]));
-        textViewDuration.setText(Html.fromHtml("<b>" +getResources().getString(R.string.duration) +"</b>" +" " + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60));
+        getRatingViewModel.getRating(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
+
+        getRatingViewModel.getRatingResult().observeForever(rateObs = new Observer<GetRatingResult>() {
+            @Override
+            public void onChanged(@Nullable GetRatingResult getRatingResult) {
+                if (getRatingResult == null) {
+                    totalRate = "0";
+                    return;
+                }
+                if (getRatingResult.getError() != null) {
+                    return;
+                }
+                if (getRatingResult.getSuccess() != null) {
+                    rate = getRatingResult.getSuccess().getRating();
+                    //activityRatingSum/activityRatingCounter
+                    int activityRatingSum = Integer.parseInt(getRatingResult.getSuccess().getActivityRatingSum());
+                    int activityRatingCounter = Integer.parseInt(getRatingResult.getSuccess().getActivityRatingCounter());
+                    if (activityRatingCounter != 0) {
+                        int totalRateAux = activityRatingSum / activityRatingCounter;
+                        totalRate = String.valueOf(totalRateAux);
+                    }
+                }
+            }
+        });
+
+        textViewActName.setText(Html.fromHtml("<b>" + getResources().getString(R.string.activity_name) + "</b>" + " " + activityInfo[0]));
+        textViewActOwner.setText(Html.fromHtml("<b>" + getResources().getString(R.string.organization) + "</b>" + " " + activityInfo[1]));
+        textViewAddress.setText(Html.fromHtml("<b>" + getResources().getString(R.string.address) + "</b>" + " " + activityInfo[2]));
+        textViewTime.setText(Html.fromHtml("<b>" + getResources().getString(R.string.time) + "</b>" + " " + activityInfo[3]));
+        textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + "</b>" + " " + activityInfo[4]));
+        textViewDuration.setText(Html.fromHtml("<b>" + getResources().getString(R.string.duration) + "</b>" + " " + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60));
+        textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b>" + totalRate + "/5"));
+
+        if (rate != null) {
+            submitBttn.setVisibility(View.GONE);
+            ratingBar.setRating((float) Integer.parseInt(rate));
+        }
+
 
         submitBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ratingViewModel.setRating(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6], (long) ratingBar.getRating());
+                Toast.makeText(getApplicationContext(), R.string.commit_rating, Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -35,7 +35,7 @@ public class GetRatingViewModel extends ViewModel {
                     GetRatingView data = ((Result.Success<GetRatingView>) result).getData();
                     getRatingResult.postValue(new GetRatingResult(new GetRatingView(data.getRating(), data.getActivityRatingSum(), data.getActivityRatingCounter())));
                 } else {
-                    getRatingResult.postValue(new GetRatingResult(R.string.set_rating_failed));
+                    getRatingResult.postValue(new GetRatingResult(R.string.get_rating_failed));
                 }
             }
         });

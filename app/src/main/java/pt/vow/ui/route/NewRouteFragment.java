@@ -195,7 +195,7 @@ public class NewRouteFragment extends Fragment {
     private void showDatePickerDialog() {
         Calendar cal = Calendar.getInstance();
 
-        new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dpd = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 cal.set(year, monthOfYear, dayOfMonth);
@@ -215,7 +215,9 @@ public class NewRouteFragment extends Fragment {
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
             }
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
+        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
+        dpd.getDatePicker().setMinDate(cal.getTimeInMillis());
+        dpd.show();
     }
 
     private void registerActivitySuccess(RegisteredActivityView model) {

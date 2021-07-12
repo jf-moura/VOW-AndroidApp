@@ -74,6 +74,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     private String date;
     private String timeZone;
     private String durationInMinutes;
+    private Button confirmButton;
 
     private NewActivityViewModel newActivityFragment;
     private UploadImageViewModel uploadImageViewModel;
@@ -120,7 +121,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         rg2.setOnCheckedChangeListener(listener2);
 
         progressBar = root.findViewById(R.id.progress_bar_new_activity);
-
+        confirmButton = root.findViewById(R.id.bttnSaveChanges);
+        confirmButton.setEnabled(false);
 
         TimePicker durationPicker = (TimePicker) root.findViewById(R.id.durationPicker);
         durationPicker.setIs24HourView(true);
@@ -137,7 +139,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                 .concat(String.valueOf(currentDate.get(Calendar.HOUR_OF_DAY))).concat(":").concat(String.valueOf(currentDate.get(Calendar.MINUTE)))
                 .concat(" ").concat(timeZone);
 
-        final Button confirmButton = root.findViewById(R.id.bttnSaveChanges);
+
 
         newActivityFragment = new ViewModelProvider(this, new NewActivityViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(NewActivityViewModel.class);
