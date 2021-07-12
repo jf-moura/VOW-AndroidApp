@@ -74,7 +74,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     private String timeZone;
     private String durationInMinutes;
 
-    private NewActivityViewModel newActivityFragment;
+    private NewActivityViewModel newActivityViewModel;
     private UploadImageViewModel uploadImageViewModel;
 
     private FragmentNewActivityBinding binding;
@@ -97,6 +97,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         binding = FragmentNewActivityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        newActivityViewModel = new ViewModelProvider(this, new NewActivityViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(NewActivityViewModel.class);
         uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(UploadImageViewModel.class);
 
@@ -120,7 +122,6 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
         progressBar = root.findViewById(R.id.progress_bar_new_activity);
 
-
         TimePicker durationPicker = (TimePicker) root.findViewById(R.id.durationPicker);
         durationPicker.setIs24HourView(true);
         durationPicker.setHour(0);
@@ -137,10 +138,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
 
         final Button confirmButton = root.findViewById(R.id.bttnSaveChanges);
 
-        newActivityFragment = new ViewModelProvider(this, new NewActivityViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
-                .get(NewActivityViewModel.class);
-
-        newActivityFragment.getNewActFormState().observe(getActivity(), new Observer<NewActivityFormState>() {
+        newActivityViewModel.getNewActFormState().observe(getActivity(), new Observer<NewActivityFormState>() {
             @Override
             public void onChanged(@Nullable NewActivityFormState newActivityFormState) {
                 if (newActivityFormState == null) {
@@ -156,7 +154,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             }
         });
 
-        newActivityFragment.getNewActResult().observe(getActivity(), new Observer<NewActivityResult>() {
+        newActivityViewModel.getNewActResult().observe(getActivity(), new Observer<NewActivityResult>() {
             @Override
             public void onChanged(@Nullable NewActivityResult newActResult) {
                 if (newActResult == null) {
@@ -204,7 +202,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                         e.printStackTrace();
                     }
                 }
-                newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
+                newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
                         textAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
             }
         };
@@ -251,7 +249,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                newActivityFragment.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
+                newActivityViewModel.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
                         textAddress.getText().toString(), latLng, date, type, editTextPartNum.getText().toString(), durationInMinutes);
 
 
@@ -294,7 +292,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                                 .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
                                 .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
 
-                        newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
+                        newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
                                 textAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
