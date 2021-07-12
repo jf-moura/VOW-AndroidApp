@@ -36,7 +36,8 @@ public class ActivityInfo extends AppCompatActivity {
     private Activity activityInfoFromNotification;
     private RatingViewModel ratingViewModel;
     private GetRatingViewModel getRatingViewModel;
-    private String totalRate, rate;
+    private double totalRate;
+    private String rate;
     private Observer<GetRatingResult> rateObs;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,7 @@ public class ActivityInfo extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable GetRatingResult getRatingResult) {
                 if (getRatingResult == null) {
-                    totalRate = "0";
+                    totalRate = 0;
                     return;
                 }
                 if (getRatingResult.getError() != null) {
@@ -82,13 +83,13 @@ public class ActivityInfo extends AppCompatActivity {
                 if (getRatingResult.getSuccess() != null) {
                     rate = getRatingResult.getSuccess().getRating();
                     //activityRatingSum/activityRatingCounter
-                    int activityRatingSum = Integer.parseInt(getRatingResult.getSuccess().getActivityRatingSum());
-                    int activityRatingCounter = Integer.parseInt(getRatingResult.getSuccess().getActivityRatingCounter());
+                    double activityRatingSum = Integer.parseInt(getRatingResult.getSuccess().getActivityRatingSum());
+                    double activityRatingCounter = Integer.parseInt(getRatingResult.getSuccess().getActivityRatingCounter());
                     if (activityRatingCounter != 0) {
-                        int totalRateAux = activityRatingSum / activityRatingCounter;
-                        totalRate = String.valueOf(totalRateAux);
+                        totalRate = activityRatingSum / activityRatingCounter;
                     }
                 }
+                textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b> " + totalRate + "/5.0"));
             }
         });
 
@@ -98,7 +99,7 @@ public class ActivityInfo extends AppCompatActivity {
         textViewTime.setText(Html.fromHtml("<b>" + getResources().getString(R.string.time) + "</b>" + " " + activityInfo[3]));
         textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + "</b>" + " " + activityInfo[4]));
         textViewDuration.setText(Html.fromHtml("<b>" + getResources().getString(R.string.duration) + "</b>" + " " + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60));
-        textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b>" + totalRate + "/5"));
+
 
         if (rate != null) {
             submitBttn.setVisibility(View.GONE);

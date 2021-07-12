@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import pt.vow.R;
+import pt.vow.databinding.FragmentNewActivityBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.profile.ProfileFragment;

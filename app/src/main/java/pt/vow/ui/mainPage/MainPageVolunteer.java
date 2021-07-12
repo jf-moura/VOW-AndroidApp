@@ -37,6 +37,8 @@ import pt.vow.ui.activityInfo.ActivityInfo;
 import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.feed.GetActivitiesViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.newActivity.NewActivityViewModel;
+import pt.vow.ui.newActivity.NewActivityViewModelFactory;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;

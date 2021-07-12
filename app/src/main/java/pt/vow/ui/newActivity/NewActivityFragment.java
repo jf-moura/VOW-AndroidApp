@@ -62,6 +62,7 @@ import pt.vow.R;
 import pt.vow.databinding.FragmentNewActivityBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 import pt.vow.ui.profile.UploadImageViewModel;
 import pt.vow.ui.profile.UploadImageViewModelFactory;
 
@@ -76,7 +77,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     private String durationInMinutes;
     private Button confirmButton;
 
-    private NewActivityViewModel newActivityFragment;
+    private NewActivityViewModel newActivityViewModel;
     private UploadImageViewModel uploadImageViewModel;
 
     private FragmentNewActivityBinding binding;
@@ -96,9 +97,12 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = FragmentNewActivityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        newActivityViewModel = new ViewModelProvider(this, new NewActivityViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(NewActivityViewModel.class);
         uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(UploadImageViewModel.class);
 
@@ -121,8 +125,6 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         rg2.setOnCheckedChangeListener(listener2);
 
         progressBar = root.findViewById(R.id.progress_bar_new_activity);
-        confirmButton = root.findViewById(R.id.bttnSaveChanges);
-        confirmButton.setEnabled(false);
 
         TimePicker durationPicker = (TimePicker) root.findViewById(R.id.durationPicker);
         durationPicker.setIs24HourView(true);
@@ -133,18 +135,9 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         Calendar currentDate = Calendar.getInstance();
         timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
 
-        // TODO: verify date is after curDate
-        String curDate = new String().concat(String.valueOf(currentDate.get(Calendar.DAY_OF_MONTH))).concat("/")
-                .concat(String.valueOf(currentDate.get(Calendar.MONTH) + 1)).concat("/").concat(String.valueOf(currentDate.get(Calendar.YEAR))).concat(" ")
-                .concat(String.valueOf(currentDate.get(Calendar.HOUR_OF_DAY))).concat(":").concat(String.valueOf(currentDate.get(Calendar.MINUTE)))
-                .concat(" ").concat(timeZone);
+        final Button confirmButton = root.findViewById(R.id.bttnSaveChanges);
 
-
-
-        newActivityFragment = new ViewModelProvider(this, new NewActivityViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
-                .get(NewActivityViewModel.class);
-
-        newActivityFragment.getNewActFormState().observe(getActivity(), new Observer<NewActivityFormState>() {
+        newActivityViewModel.getNewActFormState().observe(getActivity(), new Observer<NewActivityFormState>() {
             @Override
             public void onChanged(@Nullable NewActivityFormState newActivityFormState) {
                 if (newActivityFormState == null) {
@@ -160,7 +153,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             }
         });
 
-        newActivityFragment.getNewActResult().observe(getActivity(), new Observer<NewActivityResult>() {
+        newActivityViewModel.getNewActResult().observe(getActivity(), new Observer<NewActivityResult>() {
             @Override
             public void onChanged(@Nullable NewActivityResult newActResult) {
                 if (newActResult == null) {
@@ -208,7 +201,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                         e.printStackTrace();
                     }
                 }
-                newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
+                newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
                         textAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
             }
         };
@@ -225,6 +218,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                         int minutes = durationPicker.getMinute();
                         int aux = hour * 60 + minutes;
                         durationInMinutes = new String().concat(String.valueOf(aux));
+                        newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
+                                textAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
                     }
                 });
 
@@ -255,7 +250,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                newActivityFragment.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
+                newActivityViewModel.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
                         textAddress.getText().toString(), latLng, date, type, editTextPartNum.getText().toString(), durationInMinutes);
 
 
@@ -298,7 +293,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                                 .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
                                 .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
 
-                        newActivityFragment.newActivityDataChanged(editTextName.getText().toString(),
+                        newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
                                 textAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
@@ -431,7 +426,8 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                 type = "elderly";
                 break;
         }
-
+        newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
+                textAddress.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
     }
 
     private void showSetImageFailed() {
