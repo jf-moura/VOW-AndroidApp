@@ -48,6 +48,8 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -92,7 +94,6 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = FragmentNewActivityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -139,7 +140,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         newActivityFragment = new ViewModelProvider(this, new NewActivityViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(NewActivityViewModel.class);
 
-        newActivityFragment.getNewActFormState().observe(getViewLifecycleOwner(), new Observer<NewActivityFormState>() {
+        newActivityFragment.getNewActFormState().observe(getActivity(), new Observer<NewActivityFormState>() {
             @Override
             public void onChanged(@Nullable NewActivityFormState newActivityFormState) {
                 if (newActivityFormState == null) {
@@ -155,7 +156,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
             }
         });
 
-        newActivityFragment.getNewActResult().observe(getViewLifecycleOwner(), new Observer<NewActivityResult>() {
+        newActivityFragment.getNewActResult().observe(getActivity(), new Observer<NewActivityResult>() {
             @Override
             public void onChanged(@Nullable NewActivityResult newActResult) {
                 if (newActResult == null) {

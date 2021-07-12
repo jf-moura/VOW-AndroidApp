@@ -8,9 +8,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="721dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="60dp"
+        android:layout_height="wrap_content"
         android:descendantFocusability="blocksDescendants"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,7 +28,7 @@
                 android:layout_above="@+id/textViewAddress"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="70dp"
                 android:gravity="center"
                 android:text="@string/activity_name"
                 android:textStyle="bold"
@@ -87,10 +85,10 @@
                 android:layout_height="48dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginTop="60dp"
-                android:layout_marginEnd="48dp"
+                android:layout_marginTop="70dp"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textViewNameAct"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -100,11 +98,11 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
                 android:gravity="center"
                 android:hint="@string/hint_address"
                 android:inputType="textPostalAddress"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textViewAddress"
                 app:layout_constraintTop_toBottomOf="@+id/editTextNameAct" />
 
             <EditText
@@ -113,9 +111,9 @@
                 android:layout_height="50dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="28dp"
                 android:layout_marginTop="20dp"
                 android:inputType="text|number"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textViewParticipantNum"
                 app:layout_constraintTop_toBottomOf="@+id/editTextAddress" />
 
@@ -127,7 +125,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="40dp"
-                android:layout_marginBottom="60dp"
+                android:layout_marginBottom="80dp"
                 android:text="@string/save_changes"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -162,9 +160,8 @@
                 android:layout_height="100dp"
                 android:layout_marginTop="24dp"
                 android:timePickerMode="spinner"
-                app:layout_constraintEnd_toEndOf="@+id/editTextParticipantNum"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/editTextParticipantNum"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textViewDuration"
                 app:layout_constraintTop_toBottomOf="@+id/editTextParticipantNum" />
 
             <RadioGroup
