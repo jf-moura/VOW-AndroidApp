@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.Calendar;
 import java.util.concurrent.Executor;
 
 import pt.vow.R;
@@ -35,7 +36,7 @@ public class NewActivityViewModel extends ViewModel {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredActivity> result = newActivityRepository.registerActivity(username, tokenID, name, address, coordinates, time,type, participantNum, durationInMinutes);
+                Result<RegisteredActivity> result = newActivityRepository.registerActivity(username, tokenID, name, address, coordinates, time, type, participantNum, durationInMinutes);
                 if (result instanceof Result.Success) {
                     newActResult.postValue(new NewActivityResult(new RegisteredActivityView()));
                 } else {
@@ -57,7 +58,7 @@ public class NewActivityViewModel extends ViewModel {
         else if (!isDurationInMinutesValid(durationInMinutes))
             newActFormState.setValue(new NewActivityFormState(null, null, null, null, null, R.string.invalid_duration, null));
         else if (!isTypeValid(type))
-            newActFormState.setValue(new NewActivityFormState(null, null, null, null,  R.string.invalid_type,null, null));
+            newActFormState.setValue(new NewActivityFormState(null, null, null, null, R.string.invalid_type, null, null));
         else
             newActFormState.setValue(new NewActivityFormState(true));
     }
@@ -74,7 +75,25 @@ public class NewActivityViewModel extends ViewModel {
 
     // A placeholder time validation check
     private boolean isTimeValid(String time) {
-        return time != null && !time.trim().isEmpty();
+        boolean valid = false;
+
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+
+        String[] dateTime = time.split(" ");
+        String[] hours = dateTime[3].split(":");
+
+        Calendar beginTime = Calendar.getInstance();
+        if (dateTime[4].equals("PM"))
+            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
+        else
+            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+
+        long startMillis = beginTime.getTimeInMillis();
+        if (startMillis > currentTime && time != null && !time.trim().isEmpty()) {
+            valid = true;
+        }
+        return valid;
+
     }
 
     // A placeholder duration validation check
@@ -85,12 +104,56 @@ public class NewActivityViewModel extends ViewModel {
     // A placeholder participant number validation check
     private boolean isParticipantNumValid(String participantNum) {
         if (participantNum != null)
-            return  !participantNum.trim().isEmpty() && participantNum.compareTo("0") >= 1;
+            return !participantNum.trim().isEmpty() && participantNum.compareTo("0") >= 1;
         return true;
     }
+
     // A placeholder type validation check
     private boolean isTypeValid(String type) {
         return type != null;
+    }
+
+    private int monthToIntegerShort(String month) {
+        int result = 0;
+        switch (month) {
+            case "Jan":
+                result = 0;
+                break;
+            case "Fev":
+                result = 1;
+                break;
+            case "Mar":
+                result = 2;
+                break;
+            case "Apr":
+                result = 3;
+                break;
+            case "May":
+                result = 4;
+                break;
+            case "Jun":
+                result = 5;
+                break;
+            case "Jul":
+                result = 6;
+                break;
+            case "Aug":
+                result = 7;
+                break;
+            case "Sep":
+                result = 8;
+                break;
+            case "Oct":
+                result = 9;
+                break;
+            case "Nov":
+                result = 10;
+                break;
+            case "Dec":
+                result = 11;
+                break;
+        }
+        return result;
     }
 
 }

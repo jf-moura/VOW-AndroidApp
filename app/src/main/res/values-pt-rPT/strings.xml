@@ -159,6 +159,8 @@
     <string name="dessert">Isto aqui parece um deserto!</string>
     <string name="no_activities">Não tens nenhuma atividade :(</string>
     <string name="organization_title">Organização</string>
+    <string name="password_not_available">Por favor insira a palavra passe</string>
+
 
     <string name="username_email">username/email</string>
     <string-array name="filter">
@@ -168,6 +170,7 @@
         <item>Construção de Casas</item>
         <item>Idosos</item>
         <item>Animais</item>
+        <item> All</item>
     </string-array>
 
 

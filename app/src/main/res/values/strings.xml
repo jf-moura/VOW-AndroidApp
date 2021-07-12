@@ -153,6 +153,7 @@
     <string name="organization_title">Organization</string>
     <string name="password_not_available">Please insert password</string>
     <string name="username_email">username/email</string>
+    <string name="date_no_valid">Cannot create activities for the past</string>
 
     <string-array name="filter">
         <item>Health</item>
@@ -161,5 +162,6 @@
         <item>House Building</item>
         <item>Elderly</item>
         <item>Animals</item>
+        <item> All</item>
     </string-array>
 </resources>
