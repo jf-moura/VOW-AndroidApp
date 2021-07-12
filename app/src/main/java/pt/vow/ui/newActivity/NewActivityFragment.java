@@ -47,6 +47,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.datepicker.CalendarConstraints;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -126,6 +127,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
         durationPicker.setIs24HourView(true);
         durationPicker.setHour(0);
         durationPicker.setMinute(0);
+
 
         Calendar currentDate = Calendar.getInstance();
         timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
@@ -277,7 +279,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     private void showDatePickerDialog() {
         Calendar cal = Calendar.getInstance();
 
-        new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dpd = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 cal.set(year, monthOfYear, dayOfMonth);
@@ -297,7 +299,9 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
             }
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)).show();
+        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
+        dpd.getDatePicker().setMinDate(cal.getTimeInMillis());
+        dpd.show();
     }
 
     private void registerActivitySuccess(RegisteredActivityView model) {
@@ -320,6 +324,7 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     }
 
     private void showRegisterFailed(@StringRes Integer errorString) {
+        progressBar.setVisibility(View.GONE);
         Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
@@ -428,4 +433,6 @@ public class NewActivityFragment extends Fragment implements AdapterView.OnItemS
     private void showSetImageFailed() {
         Toast.makeText(getActivity().getApplicationContext(), R.string.set_image_failed, Toast.LENGTH_SHORT).show();
     }
+
+
 }

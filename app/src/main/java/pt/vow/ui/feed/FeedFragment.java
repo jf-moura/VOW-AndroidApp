@@ -119,27 +119,9 @@ public class FeedFragment extends Fragment {
                                 aux.add(a);
                             }
                         }
-                        List<Activity> filter = new LinkedList<>();
-                        for (Activity act : aux) {
-                            autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    switch (position) {
-                                        case 0:
-                                            if (act.getType().equals(getResources().getString(R.string.health))) {
-                                                filter.add(act);
-                                            }
-                                            break;
 
-                                        case 1:
-                                            if (act.getType().equals(getResources().getString(R.string.children))) {
-                                                filter.add(act);
-                                            }
-                                            break;
-                                    }//TODO: for every case and put filter on recyclerViewAdapter
-                                }
-                            });
-                        }
+                        showFilteredAct(aux);
+
                         RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux, user);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -180,6 +162,62 @@ public class FeedFragment extends Fragment {
         binding = null;
         if (actObs != null)
             activitiesViewModel.getActivitiesResult().removeObserver(actObs);
+    }
+
+    private void showFilteredAct(List<Activity> aux) {
+        List<Activity> filter = new LinkedList<>();
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                filter.clear();
+                switch (position) {
+                    case 0:
+                        for (Activity act : aux) {
+                            if (act.getType().equals("health"))
+                                filter.add(act);
+                        }
+                        break;
+                    case 1:
+                        for (Activity act : aux) {
+                            if (act.getType().equals("children"))
+                                filter.add(act);
+                        }
+                        break;
+                    case 2:
+                        for (Activity act : aux) {
+                            if (act.getType().equals("nature"))
+                                filter.add(act);
+                        }
+                        break;
+                    case 3:
+                        for (Activity act : aux) {
+                            if (act.getType().equals("houseBuilding"))
+                                filter.add(act);
+                        }
+                        break;
+                    case 4:
+                        for (Activity act : aux) {
+                            if (act.getType().equals("elderly"))
+                                filter.add(act);
+                        }
+                        break;
+                    case 5:
+                        for (Activity act : aux) {
+                            if (act.getType().equals("animals"))
+                                filter.add(act);
+                        }
+                        break;
+                    case 6:
+                        for(Activity act : aux){
+                            filter.add(act);
+                        }
+                        break;
+                }
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), filter, user);
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            }
+        });
     }
 
     private int monthToIntegerShort(String month) {
