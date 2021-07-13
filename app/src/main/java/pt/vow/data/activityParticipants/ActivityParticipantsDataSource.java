@@ -1,0 +1,41 @@
+package pt.vow.data.activityParticipants;
+
+import java.io.IOException;
+import java.util.List;
+
+import pt.vow.data.Result;
+import pt.vow.data.model.Activity;
+import pt.vow.data.rating.ApiSetRating;
+import pt.vow.ui.activityInfo.ActivityParticipantsView;
+import pt.vow.ui.activityInfo.RatingView;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class ActivityParticipantsDataSource {
+    private ApiActivityParticipants service;
+
+    public ActivityParticipantsDataSource() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://vow-project-311114.ey.r.appspot.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        this.service = retrofit.create(ApiActivityParticipants.class);
+    }
+
+    public Result<ActivityParticipantsView> getActParticipants(String username, String tokenID, String owner, String activityid) {
+        Call<List<String>> getActParticipantsCall = service.getActivityParticipants(username, tokenID, owner, activityid);
+        try {
+            Response<List<String>> response = getActParticipantsCall.execute();
+            if (response.isSuccessful()) {
+                List<String> p = response.body();
+                return new Result.Success<>(new ActivityParticipantsView(p));
+            }
+            return new Result.Error(new Exception(response.errorBody().toString()));
+        } catch (IOException e) {
+            return new Result.Error(new IOException("Error setting rating by user", e));
+        }
+    }
+}

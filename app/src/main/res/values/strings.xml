@@ -156,6 +156,7 @@
     <string name="date_no_valid">Cannot create activities for the past</string>
     <string name="commit_rating">Thank you for your rating</string>
     <string name="get_rating_failed">Error getting rating</string>
+    <string name="act_participants_failed">Getting of participants failed</string>
 
     <string-array name="filter">
         <item>Health</item>

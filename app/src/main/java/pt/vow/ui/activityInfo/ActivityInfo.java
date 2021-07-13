@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 public class ActivityInfo extends AppCompatActivity {
@@ -36,6 +38,7 @@ public class ActivityInfo extends AppCompatActivity {
     private Activity activityInfoFromNotification;
     private RatingViewModel ratingViewModel;
     private GetRatingViewModel getRatingViewModel;
+    private ActivityParticipantsViewModel actParticipantsViewModel;
     private double totalRate;
     private String rate;
     private Observer<GetRatingResult> rateObs;
@@ -50,6 +53,8 @@ public class ActivityInfo extends AppCompatActivity {
                 .get(RatingViewModel.class);
         getRatingViewModel = new ViewModelProvider(this, new GetRatingViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetRatingViewModel.class);
+        actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(ActivityParticipantsViewModel.class);
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
         textViewActName = findViewById(R.id.textViewActName2);
@@ -88,8 +93,30 @@ public class ActivityInfo extends AppCompatActivity {
                     if (activityRatingCounter != 0) {
                         totalRate = activityRatingSum / activityRatingCounter;
                     }
+                    if (rate != null) {
+                        submitBttn.setVisibility(View.GONE);
+                        ratingBar.setRating((float) Integer.parseInt(rate));
+                    }
+
                 }
                 textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b> " + totalRate + "/5.0"));
+            }
+        });
+
+        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
+        actParticipantsViewModel.getParticipantsResult().observeForever(new Observer<ActivityParticipantsResult>() {
+            @Override
+            public void onChanged(ActivityParticipantsResult activityParticipantsResult) {
+                if (activityParticipantsResult == null) {
+                    return;
+                }
+                if (activityParticipantsResult.getError() != null) {
+                    return;
+                }
+                if (activityParticipantsResult.getSuccess() != null) {
+                    List<String> participants = activityParticipantsResult.getSuccess().getParticipants();
+                    textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + " </b>" + participants.size() + "/" + activityInfo[4]));
+                }
             }
         });
 
@@ -101,10 +128,6 @@ public class ActivityInfo extends AppCompatActivity {
         textViewDuration.setText(Html.fromHtml("<b>" + getResources().getString(R.string.duration) + "</b>" + " " + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60));
 
 
-        if (rate != null) {
-            submitBttn.setVisibility(View.GONE);
-            ratingBar.setRating((float) Integer.parseInt(rate));
-        }
 
 
         submitBttn.setOnClickListener(new View.OnClickListener() {
