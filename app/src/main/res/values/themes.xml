@@ -20,6 +20,5 @@
     </style>
 
     <style name="Theme.VOW.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="Theme.VOW.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

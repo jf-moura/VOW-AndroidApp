@@ -153,6 +153,7 @@
 
     <string name="title_my_activities">As minhas atividades</string>
     <string name="title_enrolled_activities">Atividades em que participei</string>
+    <string name="title_future_activities">Atividades Futuras</string>
     <string name="set_rating_failed">Erro a definir pontuação</string>
     <string name="choose_image">Adicione uma imagem</string>
     <string name="set_image_failed">Por favor insira o nome da atividade antes de escolher uma imagem.</string>
@@ -164,7 +165,13 @@
 
 
     <string name="username_email">username/email</string>
-    <string name="commit_rating">Thank you for your rating</string>
+    <string name="date_no_valid">Não é possível criar atividades para o passado</string>
+    <string name="commit_rating">Obrigada pela sua pontuação</string>
+    <string name="get_rating_failed">Erro ao obter a pontuação</string>
+    <string name="act_participants_failed">Erro ao obter os participantes</string>
+    <string name="get_route_coord_failed">Erro ao obter as coordenadas da rota</string>
+
+
     <string-array name="filter">
         <item>Saúde</item>
         <item>Crianças</item>

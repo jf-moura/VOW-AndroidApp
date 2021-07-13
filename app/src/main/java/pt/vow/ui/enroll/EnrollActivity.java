@@ -30,6 +30,9 @@ import java.util.List;
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.ui.VOW;
+import pt.vow.ui.activityInfo.ActivityParticipantsResult;
+import pt.vow.ui.activityInfo.ActivityParticipantsViewModel;
+import pt.vow.ui.activityInfo.ActivityParticipantsViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
@@ -47,6 +50,7 @@ public class EnrollActivity extends AppCompatActivity {
     private String activityInfoTitle;
     private List<Activity> activitiesList;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
+    private ActivityParticipantsViewModel actParticipantsViewModel;
     private Activity aux;
     private EnrollActivity mActivity;
 
@@ -76,18 +80,21 @@ public class EnrollActivity extends AppCompatActivity {
         getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetActivitiesByUserViewModel.class);
 
+        actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(ActivityParticipantsViewModel.class);
+
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         activityInfoTitle = (String) getIntent().getSerializableExtra("ActivityInfo");
 
         activityInfo = activityInfoTitle.split("_");
 
 
-        textViewActName.setText(Html.fromHtml("<b>" + getResources().getString(R.string.activity_name) +"</b>" + " " + activityInfo[0]));
-        textViewActOwner.setText(Html.fromHtml("<b>" +getResources().getString(R.string.organization) +"</b>"+ " " + activityInfo[1]));
-        textViewAddress.setText(Html.fromHtml("<b>" +getResources().getString(R.string.address) +"</b>"+ " " + activityInfo[2]));
-        textViewTime.setText(Html.fromHtml("<b>" +getResources().getString(R.string.time) +"</b>" +" " + activityInfo[3]));
-        textViewNumPart.setText(Html.fromHtml("<b>" +getResources().getString(R.string.number_participants) +"</b>" +" " + activityInfo[4]));
-        textViewDuration.setText(Html.fromHtml("<b>" +getResources().getString(R.string.duration) +"</b>" +" " + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60));
+        textViewActName.setText(Html.fromHtml("<b>" + getResources().getString(R.string.activity_name) + "</b>" + " " + activityInfo[0]));
+        textViewActOwner.setText(Html.fromHtml("<b>" + getResources().getString(R.string.organization) + "</b>" + " " + activityInfo[1]));
+        textViewAddress.setText(Html.fromHtml("<b>" + getResources().getString(R.string.address) + "</b>" + " " + activityInfo[2]));
+        textViewTime.setText(Html.fromHtml("<b>" + getResources().getString(R.string.time) + "</b>" + " " + activityInfo[3]));
+        textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + "</b>" + " " + activityInfo[4]));
+        textViewDuration.setText(Html.fromHtml("<b>" + getResources().getString(R.string.duration) + "</b>" + " " + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60));
 
         getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
@@ -114,6 +121,26 @@ public class EnrollActivity extends AppCompatActivity {
                         enrollButton.setText(getResources().getString(R.string.unjoin));
                     }
                     setResult(android.app.Activity.RESULT_OK);
+                }
+            }
+        });
+
+        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
+        actParticipantsViewModel.getParticipantsResult().observeForever(new Observer<ActivityParticipantsResult>() {
+            @Override
+            public void onChanged(ActivityParticipantsResult activityParticipantsResult) {
+                if (activityParticipantsResult == null) {
+                    return;
+                }
+                if (activityParticipantsResult.getError() != null) {
+                    return;
+                }
+                if (activityParticipantsResult.getSuccess() != null) {
+                    List<String> participants = activityParticipantsResult.getSuccess().getParticipants();
+                    textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + " </b>" + participants.size() + "/" + activityInfo[4]));
+                    if (participants.size() == Integer.parseInt(activityInfo[4])) {
+                        enrollButton.setEnabled(false);
+                    } else enrollButton.setEnabled(true);
                 }
             }
         });
@@ -191,7 +218,7 @@ public class EnrollActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (actByUserObs != null)
-        getActivitiesByUserViewModel.getActivitiesResult().removeObserver(actByUserObs);
+            getActivitiesByUserViewModel.getActivitiesResult().removeObserver(actByUserObs);
     }
 
     @Override

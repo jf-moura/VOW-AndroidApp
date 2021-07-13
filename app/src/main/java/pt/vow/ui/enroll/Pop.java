@@ -7,6 +7,7 @@ import android.provider.CalendarContract.Events;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import pt.vow.R;
 public class Pop extends AppCompatActivity {
 
     private Button buttonYes, buttonNo;
+    private TextView textView1;
     private String activityTitle, location, time, duration;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,8 @@ public class Pop extends AppCompatActivity {
 
         buttonYes = findViewById(R.id.buttonYes);
         buttonNo = findViewById(R.id.buttonNo);
+        textView1 = findViewById(R.id.textView5);
+        textView1.setText(R.string.add_calendar);
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -33,7 +37,7 @@ public class Pop extends AppCompatActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int) (width * .6), (int) (height * .3));
+        getWindow().setLayout((int) (width * .7), (int) (height * .25));
 
         activityTitle = (String) getIntent().getSerializableExtra("title");
         location = (String) getIntent().getSerializableExtra("location");
