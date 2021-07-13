@@ -7,10 +7,11 @@
 
     <TextView
         android:id="@+id/textViewDuration2"
-        android:layout_width="255dp"
+        android:layout_width="95dp"
         android:layout_height="34dp"
         android:text="@string/duration"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textViewNumParticipants2"
         app:layout_constraintHorizontal_bias="0.0"
@@ -18,12 +19,25 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewNumParticipants2"
         app:layout_constraintVertical_bias="0.0" />
 
+    <EditText
+        android:id="@+id/editTextDur"
+        android:layout_width="272dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="1dp"
+        android:background="@android:color/transparent"
+        android:drawableRight="@drawable/ic_fi_rr_pencil"
+        app:layout_constraintEnd_toEndOf="@+id/editTextPartNum"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textViewNumParticipants2"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPartNum" />
+
     <TextView
         android:id="@+id/textViewNumParticipants2"
-        android:layout_width="328dp"
-        android:layout_height="39dp"
+        android:layout_width="192dp"
+        android:layout_height="48dp"
         android:text="@string/number_participants"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textViewTime2"
         app:layout_constraintHorizontal_bias="0.0"
@@ -31,13 +45,27 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewTime2"
         app:layout_constraintVertical_bias="0.0" />
 
+    <EditText
+        android:id="@+id/editTextPartNum"
+        android:layout_width="170dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+
+        android:drawableRight="@drawable/ic_fi_rr_pencil"
+        app:layout_constraintEnd_toEndOf="@+id/editTextTime2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textViewTime2"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTime2" />
+
     <TextView
         android:id="@+id/textViewTime2"
-        android:layout_width="334dp"
+        android:layout_width="64dp"
         android:layout_height="37dp"
         android:layout_marginBottom="484dp"
         android:text="@string/time"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textViewAddress2"
         app:layout_constraintHorizontal_bias="0.0"
@@ -45,25 +73,54 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewAddress2"
         app:layout_constraintVertical_bias="0.0" />
 
+    <EditText
+        android:id="@+id/editTextTime2"
+        android:layout_width="300dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="1dp"
+        android:background="@android:color/transparent"
+
+        android:drawableRight="@drawable/ic_fi_rr_pencil"
+        app:layout_constraintEnd_toEndOf="@+id/editTextAddress2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textViewAddress2"
+        app:layout_constraintTop_toBottomOf="@+id/editTextAddress2" />
+
     <TextView
         android:id="@+id/textViewActName2"
-        android:layout_width="255dp"
-        android:layout_height="34dp"
+        android:layout_width="117dp"
+        android:layout_height="52dp"
         android:text="@string/activity_name"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.301"
+        app:layout_constraintHorizontal_bias="0.108"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.111" />
+        app:layout_constraintVertical_bias="0.114" />
+
+    <EditText
+        android:id="@+id/editTextActName"
+        android:layout_width="224dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="75dp"
+        android:layout_marginBottom="2dp"
+        android:background="@android:color/transparent"
+        android:drawableRight="@drawable/ic_fi_rr_pencil"
+        app:layout_constraintBottom_toTopOf="@+id/textViewActOwner2"
+        app:layout_constraintStart_toEndOf="@+id/textViewActName2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.518" />
 
     <TextView
         android:id="@+id/textViewActOwner2"
-        android:layout_width="255dp"
+        android:layout_width="135dp"
         android:layout_height="34dp"
         android:text="@string/organization"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textViewActName2"
         app:layout_constraintHorizontal_bias="0.0"
@@ -71,13 +128,27 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewActName2"
         app:layout_constraintVertical_bias="0.0" />
 
+    <EditText
+        android:id="@+id/editTextOrganization"
+        android:layout_width="220dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:drawableRight="@drawable/ic_fi_rr_pencil"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintStart_toEndOf="@+id/textViewActName2"
+        app:layout_constraintTop_toBottomOf="@+id/editTextActName" />
+
     <TextView
         android:id="@+id/textViewAddress2"
-        android:layout_width="336dp"
-        android:layout_height="49dp"
+        android:layout_width="96dp"
+        android:layout_height="39dp"
         android:layout_marginBottom="516dp"
         android:text="@string/address"
         android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textViewActOwner2"
         app:layout_constraintHorizontal_bias="0.0"
@@ -85,10 +156,22 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewActOwner2"
         app:layout_constraintVertical_bias="0.0" />
 
+    <EditText
+        android:id="@+id/editTextAddress2"
+        android:layout_width="262dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="1dp"
+        android:background="@android:color/transparent"
+        android:drawableRight="@drawable/ic_fi_rr_pencil"
+        app:layout_constraintEnd_toEndOf="@+id/editTextOrganization"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textViewActOwner2"
+        app:layout_constraintTop_toBottomOf="@+id/editTextOrganization" />
+
     <TextView
         android:id="@+id/textViewRating"
-        android:layout_width="255dp"
-        android:layout_height="34dp"
+        android:layout_width="208dp"
+        android:layout_height="38dp"
         android:text="@string/rating"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -103,13 +186,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="46dp" />
+        app:layout_constraintGuide_begin="29dp" />
 
     <RatingBar
         android:id="@+id/rating_bar"
         android:layout_width="240dp"
         android:layout_height="48dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="108dp"
         android:numStars="5"
         app:layout_constraintEnd_toEndOf="@+id/textViewRating"
         app:layout_constraintHorizontal_bias="0.0"
@@ -120,7 +203,7 @@
         android:id="@+id/editTextComment"
         android:layout_width="300dp"
         android:layout_height="100dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/bg_comment_box"
         android:ems="10"
         android:gravity="top"
@@ -136,11 +219,11 @@
         android:id="@+id/submitBttn"
         android:layout_width="78dp"
         android:layout_height="41dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="108dp"
         android:text="@string/submit"
         android:textSize="9sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.54"
+        app:layout_constraintHorizontal_bias="0.562"
         app:layout_constraintStart_toEndOf="@+id/rating_bar"
         app:layout_constraintTop_toBottomOf="@+id/textViewRating" />
 
@@ -157,5 +240,27 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextComment"
         app:layout_constraintVertical_bias="0.0" />
 
+    <Button
+        android:id="@+id/submitChangesBttn"
+        android:layout_width="97dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/save_changes"
+        android:textSize="9sp"
+        app:layout_constraintEnd_toEndOf="@+id/editTextDur"
+        app:layout_constraintHorizontal_bias="0.849"
+        app:layout_constraintStart_toStartOf="@+id/editTextDur"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDur" />
 
+    <ImageButton
+        android:id="@+id/deleteActBttn"
+        android:layout_width="64dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="300dp"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="@android:color/transparent"
+        android:src="@drawable/ic_fi_rr_trash"
+        android:textSize="9sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline5" />
 </androidx.constraintlayout.widget.ConstraintLayout>

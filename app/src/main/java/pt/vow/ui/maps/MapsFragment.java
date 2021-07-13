@@ -30,8 +30,10 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
+/*import com.firebase.geofire.GeoFireUtils;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQueryBounds;*/
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,11 +58,18 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+/*import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;*/
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
@@ -68,9 +77,7 @@ import pt.vow.databinding.FragmentMapsBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.feed.GetActivitiesViewModel;
-import pt.vow.ui.feed.GetActivitiesViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.profile.ProfileRecyclerViewAdapter;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
@@ -129,7 +136,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     protected String start;
     protected String end;
 
-
+//    private static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public MapsFragment() {
     }
@@ -711,4 +718,83 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private void showGetRouteCoordFailed(@StringRes Integer errorString) {
         Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
+
+   /* public void addGeoHash() {
+        // [START fs_geo_add_hash]
+        // Compute the GeoHash for a lat/lng point
+        //colocar lat e lng da localizacao atual do user
+        double lat = lastKnownLocation.getLatitude();
+        double lng = lastKnownLocation.getLongitude();
+        String hash = GeoFireUtils.getGeoHashForLocation(new GeoLocation(lat, lng));
+
+        // Add the hash and the lat/lng to the document. We will use the hash
+        // for queries and the lat/lng for distance comparisons.
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("geohash", hash);
+        updates.put("lat", lat);
+        updates.put("lng", lng);
+
+        DocumentReference londonRef = db.collection("cities").document("LON");
+        londonRef.update(updates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // ...
+                    }
+                });
+        // [END fs_geo_add_hash]
+    }
+
+    public void queryHashes() {
+        // [START fs_geo_query_hashes]
+        // Find cities within 50km of current location
+
+        final GeoLocation center = new GeoLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        final double radiusInM = 50 * 1000;
+
+        // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
+        // a separate query for each pair. There can be up to 9 pairs of bounds
+        // depending on overlap, but in most cases there are 4.
+        List<GeoQueryBounds> bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInM);
+        final List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+        for (GeoQueryBounds b : bounds) {
+            Query q = db.collection("cities")
+                    .orderBy("geohash")
+                    .startAt(b.startHash)
+                    .endAt(b.endHash);
+
+            tasks.add(q.get());
+        }
+
+        // Collect all the query results together into a single list
+        Tasks.whenAllComplete(tasks)
+                .addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
+                    @Override
+                    public void onComplete(@NonNull Task<List<Task<?>>> t) {
+                        List<DocumentSnapshot> matchingDocs = new ArrayList<>();
+
+                        for (Task<QuerySnapshot> task : tasks) {
+                            QuerySnapshot snap = task.getResult();
+                            for (DocumentSnapshot doc : snap.getDocuments()) {
+                                double lat = doc.getDouble("lat");
+                                double lng = doc.getDouble("lng");
+
+                                // We have to filter out a few false positives due to GeoHash
+                                // accuracy, but most will match
+                                GeoLocation docLocation = new GeoLocation(lat, lng);
+                                double distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center);
+                                if (distanceInM <= radiusInM) {
+                                    matchingDocs.add(doc);
+                                }
+                            }
+                        }
+
+                        // matchingDocs contains the results
+                        // ...
+                    }
+                });
+        // [END fs_geo_query_hashes]
+    }*/
+
+
 }
