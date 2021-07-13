@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="48dp"
-            android:src="@drawable/ic_settings_black_24dp" />
+            android:src="@drawable/ic_fi_rr_settings" />
 
     </LinearLayout>
 
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="48dp"
-            android:src="@drawable/ic_baseline_equalizer_24" />
+            android:src="@drawable/ic_fi_rr_stats" />
 
     </LinearLayout>
 
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="48dp"
-            android:src="@drawable/ic_baseline_power_settings_new_24" />
+            android:src="@drawable/ic_fi_rr_power" />
 
     </LinearLayout>
 

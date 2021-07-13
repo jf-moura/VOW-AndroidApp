@@ -13,7 +13,6 @@ import pt.vow.data.model.RegisteredActivity;
 import pt.vow.data.registerActivity.NewActivityRepository;
 
 public class NewActivityViewModel extends ViewModel {
-
     private MutableLiveData<NewActivityFormState> newActFormState = new MutableLiveData<>();
     private MutableLiveData<NewActivityResult> newActResult = new MutableLiveData<>();
     private NewActivityRepository newActivityRepository;

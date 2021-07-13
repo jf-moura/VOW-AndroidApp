@@ -7,6 +7,6 @@ import retrofit2.http.POST;
 
 public interface ApiNewRoute {
 
-    @POST("rest/register/route/")
+    @POST("rest/register/route")
     Call<Void> newRoute(@Body RouteRegistration route);
 }

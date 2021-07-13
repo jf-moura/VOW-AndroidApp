@@ -143,6 +143,7 @@
     <string name="title_new_route">New Route</string>
     <string name="title_my_activities">My Activities</string>
     <string name="title_enrolled_activities">Enrolled Activities</string>
+    <string name="title_future_activities">Future Activities</string>
     <string name="set_rating_failed">Error setting rating</string>
     <string name="choose_image">Add a picture</string>
     <string name="set_image_failed">Please insert the activities name before choosing an image.</string>
@@ -156,6 +157,7 @@
     <string name="date_no_valid">Cannot create activities for the past</string>
     <string name="commit_rating">Thank you for your rating</string>
     <string name="get_rating_failed">Error getting rating</string>
+    <string name="get_route_coord_failed">Error getting route coordinates</string>
 
     <string-array name="filter">
         <item>Health</item>

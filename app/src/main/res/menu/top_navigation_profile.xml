@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/navigation_future_activities"
+        android:title="@string/title_future_activities"
+        android:icon="@drawable/ic_fi_rr_calendar"/>
+    <item
         android:id="@+id/navigation_enrolled_activities"
-        android:title="@string/title_enrolled_activities"/>
+        android:title="@string/title_enrolled_activities"
+        android:icon="@drawable/ic_fi_rr_checkbox"/>
     <item
         android:id="@+id/navigation_my_activities"
-        android:title="@string/title_my_activities" />
+        android:title="@string/title_my_activities"
+        android:icon="@drawable/ic_fi_rr_archive"/>
 </menu>
