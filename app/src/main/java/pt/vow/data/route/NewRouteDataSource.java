@@ -1,6 +1,7 @@
 package pt.vow.data.route;
 
 import java.io.IOException;
+import java.util.List;
 
 import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredRoute;
@@ -22,7 +23,7 @@ public class NewRouteDataSource {
         this.service = retrofit.create(ApiNewRoute.class);
     }
 
-    public Result<RegisteredRoute> registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, String[] coordinateArray) {
+    public Result<RegisteredRoute> registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray) {
 
         Call<Void> activityRegistrationCall = service.newRoute(new RouteRegistration(username, tokenID, name, address, time, type, participantNum, durationInMinutes, coordinateArray));
         try {

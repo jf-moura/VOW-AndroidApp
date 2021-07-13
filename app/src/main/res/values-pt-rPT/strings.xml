@@ -77,7 +77,8 @@
     <string name="nature">natureza</string>
     <string name="elderly">idosos</string>
     <string name="health">saúde</string>
-    <string name="house_building">contrução de casas</string>
+    <string name="all">tudo</string>
+    <string name="disabled">pessoas incapacitadas</string>
     <string name="finish">Terminar</string>
     <!--front page-->
     <string name="login">Iniciar sessão</string>
@@ -168,10 +169,10 @@
         <item>Saúde</item>
         <item>Crianças</item>
         <item>Natureza</item>
-        <item>Construção de Casas</item>
+        <item>Pessoas Incapacitadas</item>
         <item>Idosos</item>
         <item>Animais</item>
-        <item> All</item>
+        <item>Tudo</item>
     </string-array>
 
 

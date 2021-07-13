@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import pt.vow.R;
@@ -31,7 +32,7 @@ public class NewRouteViewModel extends ViewModel {
         return newRouteResult;
     }
 
-    public void registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes,  String[] coordinateArray) {
+    public void registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes,  List<String> coordinateArray) {
         executor.execute(new Runnable() {
             @Override
             public void run() {

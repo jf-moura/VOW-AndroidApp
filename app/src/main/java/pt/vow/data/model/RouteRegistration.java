@@ -1,5 +1,7 @@
 package pt.vow.data.model;
 
+import java.util.List;
+
 public class RouteRegistration {
     String username;
     String tokenID;
@@ -8,11 +10,11 @@ public class RouteRegistration {
     String type;
     String participantNum;
     String durationInMinutes;
-    String[] coordinateArray;
+    List<String> coordinateArray;
     String address;
 
 
-    public RouteRegistration(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, String[] coordinateArray) {
+    public RouteRegistration(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray) {
         this.username = username;
         this.tokenID = tokenID;
         this.name = name;
@@ -36,7 +38,7 @@ public class RouteRegistration {
         return name;
     }
 
-    public String[] getCoordinatesArray() {
+    public List<String> getCoordinatesArray() {
         return coordinateArray;
     }
 

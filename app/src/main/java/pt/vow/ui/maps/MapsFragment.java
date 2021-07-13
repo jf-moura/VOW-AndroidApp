@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,13 +33,14 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -59,7 +63,6 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 
 import pt.vow.R;
@@ -68,9 +71,7 @@ import pt.vow.databinding.FragmentMapsBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.feed.GetActivitiesViewModel;
-import pt.vow.ui.feed.GetActivitiesViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.profile.ProfileRecyclerViewAdapter;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
@@ -128,7 +129,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private View root;
     protected String start;
     protected String end;
-
 
 
     public MapsFragment() {
@@ -570,25 +570,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         if (activitiesList != null) {
             for (Activity a : activitiesList) {
-
-                //TODO: check if activities are all for the future.
+                if (a.getCoordinates() != null && !a.getCoordinates().isEmpty()) {
+                    //TODO: check if activities are all for the future.
                /* String[] time = a.getTime().split(" ");
                 String timeMonth = time[0];
                 int currTimeM = Calendar.getInstance().get(Calendar.MONTH);
                 int auxTimeMonth = this.monthToInteger(timeMonth);*/
 
-                Calendar currentTime = Calendar.getInstance();
+                    Calendar currentTime = Calendar.getInstance();
 
-                String[] dateTime = a.getTime().split(" ");
-                String[] hours = dateTime[3].split(":");
+                    String[] dateTime = a.getTime().split(" ");
+                    String[] hours = dateTime[3].split(":");
 
-                Calendar beginTime = Calendar.getInstance();
-                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
-                long startMillis = beginTime.getTimeInMillis();
+                    Calendar beginTime = Calendar.getInstance();
+                    beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+                    long startMillis = beginTime.getTimeInMillis();
 
-                if (startMillis > currentTime.getTimeInMillis()) {
+                    if (startMillis > currentTime.getTimeInMillis()) {
 
-                    if (a.getCoordinates() != null && !a.getCoordinates().isEmpty()) {
                         String[] latlng = a.getCoordinates().split(",");
                         final double lat = Double.parseDouble(latlng[0]);
                         final double lng = Double.parseDouble(latlng[1]);
@@ -596,45 +595,112 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
                         String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum() + "_" + a.getDurationInMinutes() + "_" + a.getId();
 
-                        Marker act = mMap.addMarker(
-                                new MarkerOptions()
+                        Marker act = null;
+                        switch (a.getType()) {
+                            case "animals":
+                                act = mMap.addMarker(new MarkerOptions()
                                         .position(activityLocation)
-                                        .title(title));
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_animals)));
+                                break;
+                            case "elderly":
+                                act = mMap.addMarker(new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_elderly)));
+                                break;
+                            case "children":
+                                act = mMap.addMarker(new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_children)));
+                                break;
+                            case "houseBuilding":
+                                act = mMap.addMarker(new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_disabled)));
+                                break;
+                            case "health":
+                                act = mMap.addMarker(new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_health)));
+                                break;
+                            case "nature":
+                                act = mMap.addMarker(new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_nature)));
+                                break;
+                        }
                     }
-                    else {
-                        getRouteCoordinatesViewModel.getCoordinates(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
+                } else {
+                    getRouteCoordinatesViewModel.getCoordinates(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
 
-                        getRouteCoordinatesViewModel.getRouteCoordResult().observe(this, new Observer<GetRouteCoordResult>() {
-                            @Override
-                            public void onChanged(GetRouteCoordResult getRouteCoordResult) {
-                                if (getRouteCoordResult == null) {
-                                    return;
-                                }
-                                if (getRouteCoordResult.getError() != null) {
-                                    showGetRouteCoordFailed(getRouteCoordResult.getError());
-                                }
-                                if (getRouteCoordResult.getSuccess() != null) {
-                                    for (String coord: getRouteCoordResult.getSuccess().getCoordinates()) {
-                                        String[] latlng = coord.split(",");
-                                        final double lat = Double.parseDouble(latlng[0]);
-                                        final double lng = Double.parseDouble(latlng[1]);
-                                        final LatLng activityLocation = new LatLng(lat, lng);
+                    getRouteCoordinatesViewModel.getRouteCoordResult().observe(this, new Observer<GetRouteCoordResult>() {
+                        @Override
+                        public void onChanged(GetRouteCoordResult getRouteCoordResult) {
+                            if (getRouteCoordResult == null) {
+                                return;
+                            }
+                            if (getRouteCoordResult.getError() != null) {
+                                showGetRouteCoordFailed(getRouteCoordResult.getError());
+                            }
+                            if (getRouteCoordResult.getSuccess() != null) {
+                                for (String coord : getRouteCoordResult.getSuccess().getCoordinates()) {
+                                    String[] latlng = coord.split(",");
+                                    final double lat = Double.parseDouble(latlng[0]);
+                                    final double lng = Double.parseDouble(latlng[1]);
+                                    final LatLng activityLocation = new LatLng(lat, lng);
 
-                                        String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum() + "_" + a.getDurationInMinutes() + "_" + a.getId();
-
-                                        Marker act = mMap.addMarker(
-                                                new MarkerOptions()
-                                                        .position(activityLocation)
-                                                        .title(title));
+                                    String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum() + "_" + a.getDurationInMinutes() + "_" + a.getId();
+                                    Marker act = null;
+                                    switch (a.getType()) {
+                                        case "animals":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                    .position(activityLocation)
+                                                    .title(title)
+                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_animals)));
+                                            break;
+                                        case "elderly":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                    .position(activityLocation)
+                                                    .title(title)
+                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_elderly)));
+                                            break;
+                                        case "children":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                    .position(activityLocation)
+                                                    .title(title)
+                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_children)));
+                                            break;
+                                        case "houseBuilding":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                            .position(activityLocation)
+                                                            .title(title)
+                                                            .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_disabled)));
+                                            break;
+                                        case "health":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                            .position(activityLocation)
+                                                            .title(title)
+                                                            .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_health)));
+                                            break;
+                                        case "nature":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                            .position(activityLocation)
+                                                            .title(title)
+                                                            .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_nature)));
+                                            break;
                                     }
                                 }
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             }
         }
-
 
         this.mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
@@ -667,6 +733,28 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
+    }
+
+    private BitmapDescriptor BitmapFromVector(Context context, int vectorResId) {
+        // below line is use to generate a drawable.
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+
+        // below line is use to set bounds to our vector drawable.
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+
+        // below line is use to create a bitmap for our
+        // drawable which we have added.
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+        // below line is use to add bitmap in our canvas.
+        Canvas canvas = new Canvas(bitmap);
+
+        // below line is use to draw our
+        // vector drawable in canvas.
+        vectorDrawable.draw(canvas);
+
+        // after generating our bitmap we are returning our bitmap.
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     @Override

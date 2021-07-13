@@ -76,7 +76,8 @@
     <string name="nature">nature</string>
     <string name="elderly">elderly</string>
     <string name="health">health</string>
-    <string name="house_building">house building</string>
+    <string name="disabled">disabled</string>
+    <string name="all">all</string>
     <string name="finish">Finish</string>
     <string name="login">Login</string>
     <string name="create_account">Create Account</string>
@@ -163,9 +164,9 @@
         <item>Health</item>
         <item>Children</item>
         <item>Nature</item>
-        <item>House Building</item>
+        <item>Disabled</item>
         <item>Elderly</item>
         <item>Animals</item>
-        <item> All</item>
+        <item>All</item>
     </string-array>
 </resources>

@@ -24,6 +24,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 import pt.vow.R;
@@ -43,7 +44,7 @@ public class NewRouteFragment extends Fragment {
     private String type;
     private RadioGroup rg1, rg2;
     private NewRouteViewModel newRouteViewModel;
-    private String[] coordinateArray;
+    private List<String> coordinates;
 
     private FragmentNewRouteBinding binding;
 
@@ -59,7 +60,7 @@ public class NewRouteFragment extends Fragment {
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
-        coordinateArray = getArguments().getStringArray("CoordinateArray");
+        coordinates = getArguments().getStringArrayList("CoordinateArray");
         type = "";
 
         editTextName = root.findViewById(R.id.editTextNameRoute);
@@ -184,7 +185,7 @@ public class NewRouteFragment extends Fragment {
             public void onClick(View v) {
                 //TODO: change address
                 newRouteViewModel.registerRoute(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                        "lisbon", date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinateArray);
+                        "lisbon", date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinates);
 
             }
         });

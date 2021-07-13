@@ -38,8 +38,8 @@ public class GetRouteCoordinatesViewModel extends ViewModel {
             public void run() {
                 Result<RouteCoordinatesView> result = getRouteCoordRepository.getRouteCoordinates(username, tokenID, actOwner, actId);
                 if (result instanceof Result.Success) {
-                    List<String> data = ((Result.Success<List<String>>) result).getData();
-                    getRouteCoordResult.postValue(new GetRouteCoordResult(new RouteCoordinatesView(data)));
+                    RouteCoordinatesView data = ((Result.Success<RouteCoordinatesView>) result).getData();
+                    getRouteCoordResult.postValue(new GetRouteCoordResult(new RouteCoordinatesView(data.getCoordinates())));
                 } else {
                     getRouteCoordResult.postValue(new GetRouteCoordResult(R.string.get_route_coord_failed));
                 }
