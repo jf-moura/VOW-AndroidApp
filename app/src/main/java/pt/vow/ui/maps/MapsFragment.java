@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -27,7 +28,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -56,14 +59,18 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentMapsBinding;
+import pt.vow.ui.VOW;
 import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.feed.GetActivitiesViewModel;
+import pt.vow.ui.feed.GetActivitiesViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.profile.ProfileRecyclerViewAdapter;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
@@ -74,6 +81,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private List<Activity> activitiesList;
     private GetActivitiesViewModel activitiesViewModel;
+    private GetRouteCoordinatesViewModel getRouteCoordinatesViewModel;
 
     private FragmentMapsBinding binding;
 
@@ -131,6 +139,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                              ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_maps, container, false);
+
+        getRouteCoordinatesViewModel = new ViewModelProvider(this, new GetRouteCoordViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(GetRouteCoordinatesViewModel.class);
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
@@ -577,17 +588,49 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
                 if (startMillis > currentTime.getTimeInMillis()) {
 
-                    String[] latlng = a.getCoordinates().split(",");
-                    final double lat = Double.parseDouble(latlng[0]);
-                    final double lng = Double.parseDouble(latlng[1]);
-                    final LatLng activityLocation = new LatLng(lat, lng);
+                    if (a.getCoordinates() != null && !a.getCoordinates().isEmpty()) {
+                        String[] latlng = a.getCoordinates().split(",");
+                        final double lat = Double.parseDouble(latlng[0]);
+                        final double lng = Double.parseDouble(latlng[1]);
+                        final LatLng activityLocation = new LatLng(lat, lng);
 
-                    String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum() + "_" + a.getDurationInMinutes() + "_" + a.getId();
+                        String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum() + "_" + a.getDurationInMinutes() + "_" + a.getId();
 
-                    Marker act = mMap.addMarker(
-                            new MarkerOptions()
-                                    .position(activityLocation)
-                                    .title(title));
+                        Marker act = mMap.addMarker(
+                                new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title));
+                    }
+                    else {
+                        getRouteCoordinatesViewModel.getCoordinates(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
+
+                        getRouteCoordinatesViewModel.getRouteCoordResult().observe(this, new Observer<GetRouteCoordResult>() {
+                            @Override
+                            public void onChanged(GetRouteCoordResult getRouteCoordResult) {
+                                if (getRouteCoordResult == null) {
+                                    return;
+                                }
+                                if (getRouteCoordResult.getError() != null) {
+                                    showGetRouteCoordFailed(getRouteCoordResult.getError());
+                                }
+                                if (getRouteCoordResult.getSuccess() != null) {
+                                    for (String coord: getRouteCoordResult.getSuccess().getCoordinates()) {
+                                        String[] latlng = coord.split(",");
+                                        final double lat = Double.parseDouble(latlng[0]);
+                                        final double lng = Double.parseDouble(latlng[1]);
+                                        final LatLng activityLocation = new LatLng(lat, lng);
+
+                                        String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum() + "_" + a.getDurationInMinutes() + "_" + a.getId();
+
+                                        Marker act = mMap.addMarker(
+                                                new MarkerOptions()
+                                                        .position(activityLocation)
+                                                        .title(title));
+                                    }
+                                }
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -663,5 +706,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         } catch (ActivityNotFoundException e) {
             Toast.makeText(getActivity().getApplicationContext(), "error", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void showGetRouteCoordFailed(@StringRes Integer errorString) {
+        Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 }

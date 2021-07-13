@@ -170,7 +170,7 @@ public class ProfileFragment extends Fragment {
         });
 
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        Fragment fragment = new EnrolledActivitiesFragment();
+        Fragment fragment = new FutureActivitiesFragment();
         fragmentTransaction.replace(R.id.activities_layout, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -180,15 +180,21 @@ public class ProfileFragment extends Fragment {
             public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 switch (item.getItemId()) {
-                    case R.id.navigation_enrolled_activities:
-                        Fragment fragment = new EnrolledActivitiesFragment();
+                    case R.id.navigation_future_activities:
+                        Fragment fragment = new FutureActivitiesFragment();
                         fragmentTransaction.replace(R.id.activities_layout, fragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;
-                    case R.id.navigation_my_activities:
-                        Fragment afragment = new MyActivitiesFragment();
+                    case R.id.navigation_enrolled_activities:
+                        Fragment afragment = new EnrolledActivitiesFragment();
                         fragmentTransaction.replace(R.id.activities_layout, afragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                        break;
+                    case R.id.navigation_my_activities:
+                        Fragment bfragment = new MyActivitiesFragment();
+                        fragmentTransaction.replace(R.id.activities_layout, bfragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;

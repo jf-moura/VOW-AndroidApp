@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/map_menu"
-        android:icon="@drawable/ic_compass"
+        android:icon="@drawable/ic_fi_rr_marker"
         android:iconTint="@color/white"
         android:title="Map"
         app:showAsAction="always" />
