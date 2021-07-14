@@ -10,11 +10,11 @@
         android:name="pt.vow.ui.feed.FeedFragment"
         android:label="@string/title_feed"
         tools:layout="@layout/fragment_feed" />
-    <!--<fragment
+    <fragment
         android:id="@+id/navigation_activities_data"
-        android:name="pt.vow.ui.activitiesData.MyActivitiesDataFragment"
+        android:name="pt.vow.ui.graphics.GraphicFragment"
         android:label="@string/title_activities_data"
-        tools:layout="@layout/fragment_activities_data" />-->
+        tools:layout="@layout/fragment_activities_data" />
     <fragment
         android:id="@+id/navigation_choose_type"
         android:name="pt.vow.ui.route.ChooseType"

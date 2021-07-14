@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +39,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -44,6 +49,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -56,6 +62,7 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -116,7 +123,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private TextView searchView;
 
-    private Polyline currentPolyline;
     //polyline object
     private List<Polyline> polylines = null;
     private Boolean getDirections;
@@ -472,49 +478,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         binding = null;
     }
 
-    private int monthToInteger(String month) {
-        int result = 0;
-        switch (month) {
-            case "January":
-                result = 1;
-                break;
-            case "February":
-                result = 2;
-                break;
-            case "March":
-                result = 3;
-                break;
-            case "April":
-                result = 4;
-                break;
-            case "May":
-                result = 5;
-                break;
-            case "June":
-                result = 6;
-                break;
-            case "July":
-                result = 7;
-                break;
-            case "August":
-                result = 8;
-                break;
-            case "September":
-                result = 9;
-                break;
-            case "October":
-                result = 10;
-                break;
-            case "November":
-                result = 11;
-                break;
-            case "December":
-                result = 12;
-                break;
-        }
-        return result;
-    }
-
     private int monthToIntegerShort(String month) {
         int result = 0;
         switch (month) {
@@ -631,7 +594,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                         }
                     }
                 } else {
-                    getRouteCoordinatesViewModel.getCoordinates(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
+                    getRouteCoordinatesViewModel.getCoordinates(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId(), a);
 
                     getRouteCoordinatesViewModel.getRouteCoordResult().observe(this, new Observer<GetRouteCoordResult>() {
                         @Override
@@ -643,15 +606,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                                 showGetRouteCoordFailed(getRouteCoordResult.getError());
                             }
                             if (getRouteCoordResult.getSuccess() != null) {
+                                List<LatLng> routeLatLngs = new ArrayList<>(10);
+                                Activity curAct = getRouteCoordResult.getSuccess().getActivity();
+                                String title = curAct.getName() + "_" + curAct.getOwner() + "_" + curAct.getAddress() + "_" + curAct.getTime() + "_" + curAct.getParticipantNum() + "_" + curAct.getDurationInMinutes() + "_" + curAct.getId();
+                                Marker act = null;
+
                                 for (String coord : getRouteCoordResult.getSuccess().getCoordinates()) {
                                     String[] latlng = coord.split(",");
                                     final double lat = Double.parseDouble(latlng[0]);
                                     final double lng = Double.parseDouble(latlng[1]);
                                     final LatLng activityLocation = new LatLng(lat, lng);
+                                    routeLatLngs.add(activityLocation);
 
-                                    String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum() + "_" + a.getDurationInMinutes() + "_" + a.getId();
-                                    Marker act = null;
-                                    switch (a.getType()) {
+                                    switch (curAct.getType()) {
                                         case "animals":
                                             act = mMap.addMarker(new MarkerOptions()
                                                     .position(activityLocation)
@@ -690,6 +657,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                                             break;
                                     }
                                 }
+                                Polyline polyline = googleMap.addPolyline(new PolylineOptions().color(ContextCompat.getColor(getContext(), R.color.logo_darker_blue)));
+                                polyline.setPoints(routeLatLngs);
+
                             }
                         }
                     });
@@ -731,24 +701,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     private BitmapDescriptor BitmapFromVector(Context context, int vectorResId) {
-        // below line is use to generate a drawable.
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
-
-        // below line is use to set bounds to our vector drawable.
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
-
-        // below line is use to create a bitmap for our
-        // drawable which we have added.
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-
-        // below line is use to add bitmap in our canvas.
         Canvas canvas = new Canvas(bitmap);
-
-        // below line is use to draw our
-        // vector drawable in canvas.
         vectorDrawable.draw(canvas);
-
-        // after generating our bitmap we are returning our bitmap.
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 

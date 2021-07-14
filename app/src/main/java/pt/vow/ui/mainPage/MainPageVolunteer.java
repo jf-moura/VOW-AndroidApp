@@ -11,8 +11,6 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -26,22 +24,17 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.List;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.ui.VOW;
 import pt.vow.databinding.ActivityMainPagePersonBinding;
-import pt.vow.ui.activityInfo.ActivityInfo;
+import pt.vow.ui.activityInfo.ActivityInfoActivity;
 import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.feed.GetActivitiesViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.newActivity.NewActivityViewModel;
-import pt.vow.ui.newActivity.NewActivityViewModelFactory;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;
@@ -181,7 +174,7 @@ public class MainPageVolunteer extends AppCompatActivity {
 
     private void triggerNotification(Activity a, String name) {
         // Create an explicit intent for an Activity in your app
-        Intent intent = new Intent(this, ActivityInfo.class);
+        Intent intent = new Intent(this, ActivityInfoActivity.class);
         intent.putExtra("NOTIFICATION", true);
         intent.putExtra("UserLogged", user);
         intent.putExtra("Activity", a);

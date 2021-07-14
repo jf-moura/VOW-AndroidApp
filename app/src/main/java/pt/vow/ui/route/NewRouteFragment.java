@@ -3,6 +3,8 @@ package pt.vow.ui.route;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -45,6 +48,7 @@ public class NewRouteFragment extends Fragment {
     private RadioGroup rg1, rg2;
     private NewRouteViewModel newRouteViewModel;
     private List<String> coordinates;
+    private Geocoder geocoder;
 
     private FragmentNewRouteBinding binding;
 
@@ -62,6 +66,7 @@ public class NewRouteFragment extends Fragment {
 
         coordinates = getArguments().getStringArrayList("CoordinateArray");
         type = "";
+        geocoder = new Geocoder(getActivity());
 
         editTextName = root.findViewById(R.id.editTextNameRoute);
         editTextPartNum = root.findViewById(R.id.editTextParticipantNumRoute);
@@ -184,8 +189,22 @@ public class NewRouteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //TODO: change address
+                String[] addressCoord = coordinates.get(0).split(",");
+                Double lat = Double.parseDouble(addressCoord[0]);
+                Double lng = Double.parseDouble(addressCoord[1]);
+                String address = null;
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+                    if (addresses.size() > 0)
+                        address = addresses.get(0).getAddressLine(0);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (address == null)
+                    address = "Lisboa";
                 newRouteViewModel.registerRoute(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                        "lisbon", date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinates);
+                        address, date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinates);
 
             }
         });

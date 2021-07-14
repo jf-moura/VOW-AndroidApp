@@ -21,7 +21,7 @@ public class GetRatingViewModel extends ViewModel {
         this.executor = executor;
     }
 
-    LiveData<GetRatingResult> getRatingResult() {
+    public LiveData<GetRatingResult> getRatingResult() {
         return getRatingResult;
     }
 

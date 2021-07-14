@@ -69,6 +69,8 @@ dependencies {
     implementation 'com.google.cloud:google-cloud-storage:1.117.1'
     implementation 'com.github.jd-alexander:library:1.1.0'
 
+    implementation 'com.jjoe64:graphview:4.2.2'
+
     //implementation 'com.google.firebase:firebase-firestore:21.6.0'
     //implementation 'com.firebase:geofire-android-common:3.1.0'
 }

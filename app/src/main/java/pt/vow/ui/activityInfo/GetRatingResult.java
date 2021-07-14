@@ -17,12 +17,12 @@ public class GetRatingResult {
     }
 
     @Nullable
-    GetRatingView getSuccess() {
+    public GetRatingView getSuccess() {
         return success;
     }
 
     @Nullable
-    Integer getError() {
+    public Integer getError() {
         return error;
     }
 }

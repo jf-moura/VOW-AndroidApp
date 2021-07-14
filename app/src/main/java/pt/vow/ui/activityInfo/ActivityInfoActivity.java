@@ -14,8 +14,6 @@ import android.widget.Toast;
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.ui.VOW;
-import pt.vow.ui.enroll.EnrollActivity;
-import pt.vow.ui.enroll.Pop;
 import pt.vow.ui.login.LoggedInUserView;
 
 
@@ -35,9 +33,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class ActivityInfo extends AppCompatActivity {
+public class ActivityInfoActivity extends AppCompatActivity {
 
-    private ActivityInfo mActivity;
+    private ActivityInfoActivity mActivity;
     private TextView textViewRating, textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
     private EditText editTextDuration, editTextNumPart, editTextTime, editTextActName, editTextActOwner, editTextAddress;
     private Button submitBttn, saveUpdateBttn;
@@ -126,7 +124,7 @@ public class ActivityInfo extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable GetRatingResult getRatingResult) {
                 if (getRatingResult == null) {
-                    totalRate = 0;
+                    totalRate = 0.0;
                     return;
                 }
                 if (getRatingResult.getError() != null) {
@@ -135,9 +133,9 @@ public class ActivityInfo extends AppCompatActivity {
                 if (getRatingResult.getSuccess() != null) {
                     rate = getRatingResult.getSuccess().getRating();
                     //activityRatingSum/activityRatingCounter
-                    double activityRatingSum = Integer.parseInt(getRatingResult.getSuccess().getActivityRatingSum());
-                    double activityRatingCounter = Integer.parseInt(getRatingResult.getSuccess().getActivityRatingCounter());
-                    if (activityRatingCounter != 0) {
+                    double activityRatingSum = Double.parseDouble(getRatingResult.getSuccess().getActivityRatingSum());
+                    double activityRatingCounter = Double.parseDouble(getRatingResult.getSuccess().getActivityRatingCounter());
+                    if (activityRatingCounter != 0.0) {
                         totalRate = activityRatingSum / activityRatingCounter;
                     }
                     if (rate != null) {
@@ -203,7 +201,7 @@ public class ActivityInfo extends AppCompatActivity {
         deleteActBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentPop = new Intent(ActivityInfo.this, PopDelete.class);
+                Intent intentPop = new Intent(ActivityInfoActivity.this, PopDelete.class);
                 startActivity(intentPop);
             }
         });

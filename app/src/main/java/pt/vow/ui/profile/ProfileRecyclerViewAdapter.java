@@ -14,8 +14,7 @@ import java.util.List;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
-import pt.vow.ui.activityInfo.ActivityInfo;
-import pt.vow.ui.enroll.EnrollActivity;
+import pt.vow.ui.activityInfo.ActivityInfoActivity;
 import pt.vow.ui.login.LoggedInUserView;
 
 public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecyclerViewAdapter.ViewHolder> {
@@ -48,7 +47,7 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
                 public void onClick(View v) {
                     String activity = activityList.get(position).getName() + "_" + activityList.get(position).getOwner() + "_" + activityList.get(position).getAddress() + "_" + activityList.get(position).getTime() + "_" + activityList.get(position).getParticipantNum() + "_" + activityList.get(position).getDurationInMinutes() + "_" + activityList.get(position).getId();
                     //Intent intent = new Intent(context, EnrollActivity.class);
-                    Intent intent = new Intent(context, ActivityInfo.class);
+                    Intent intent = new Intent(context, ActivityInfoActivity.class);
                     intent.putExtra("ActivityInfo", activity);
                     intent.putExtra("UserLogged", user);
                     context.startActivity(intent);

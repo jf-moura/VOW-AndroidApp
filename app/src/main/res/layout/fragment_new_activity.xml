@@ -221,7 +221,7 @@
                     android:layout_width="128dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="30dp"
-                    android:text="@string/house_building"
+                    android:text="@string/disabled"
                     tools:layout_editor_absoluteX="20dp"
                     tools:layout_editor_absoluteY="200dp" />
 

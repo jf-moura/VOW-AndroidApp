@@ -10,6 +10,7 @@ import java.util.concurrent.Executor;
 import pt.vow.R;
 import pt.vow.data.Result;
 import pt.vow.data.getActivities.GetActivitiesRepository;
+import pt.vow.data.model.Activity;
 import pt.vow.data.model.RegisteredActivity;
 import pt.vow.data.registerActivity.NewActivityRepository;
 import pt.vow.data.route.GetRouteCoordRepository;
@@ -32,14 +33,14 @@ public class GetRouteCoordinatesViewModel extends ViewModel {
         return getRouteCoordResult;
     }
 
-    public void getCoordinates(String username, String tokenID, String actOwner, String actId) {
+    public void getCoordinates(String username, String tokenID, String actOwner, String actId, Activity activity) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 Result<RouteCoordinatesView> result = getRouteCoordRepository.getRouteCoordinates(username, tokenID, actOwner, actId);
                 if (result instanceof Result.Success) {
                     RouteCoordinatesView data = ((Result.Success<RouteCoordinatesView>) result).getData();
-                    getRouteCoordResult.postValue(new GetRouteCoordResult(new RouteCoordinatesView(data.getCoordinates())));
+                    getRouteCoordResult.postValue(new GetRouteCoordResult(new RouteCoordinatesView(data.getCoordinates(), activity)));
                 } else {
                     getRouteCoordResult.postValue(new GetRouteCoordResult(R.string.get_route_coord_failed));
                 }
