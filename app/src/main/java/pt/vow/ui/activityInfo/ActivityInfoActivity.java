@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +54,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private String rate;
     private Observer<GetRatingResult> rateObs;
     private ImageButton deleteActBttn;
+    private ImageView imageType;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,11 +91,14 @@ public class ActivityInfoActivity extends AppCompatActivity {
         textViewRating = findViewById(R.id.textViewRating);
 
         deleteActBttn = findViewById(R.id.deleteActBttn);
+        imageType = findViewById(R.id.imageViewType2);
 
 
         // activityInfoFromNotification = (Activity) getIntent().getSerializableExtra("Activity");
         activityInfoTitle = (String) getIntent().getSerializableExtra("ActivityInfo");
         activityInfo = activityInfoTitle.split("_");
+
+       // showImageType();
 
         //if the user is not the owner of the activity
         if (!user.getTokenID().equals(activityInfo[1])) {
@@ -215,6 +220,29 @@ public class ActivityInfoActivity extends AppCompatActivity {
             editTextAddress.setText(pl.getAddress());
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             Status status = Autocomplete.getStatusFromIntent(data);
+        }
+    }
+
+    private void showImageType() {
+        switch (activityInfo[7]) {
+            case "animals":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_animals, getApplicationContext().getTheme()));
+                break;
+            case "elderly":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_elderly, getApplicationContext().getTheme()));
+                break;
+            case "children":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_children, getApplicationContext().getTheme()));
+                break;
+            case "houseBuilding":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_disabled, getApplicationContext().getTheme()));
+                break;
+            case "health":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_health, getApplicationContext().getTheme()));
+                break;
+            case "nature":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_nature, getApplicationContext().getTheme()));
+                break;
         }
     }
 }

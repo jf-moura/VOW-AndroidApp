@@ -34,10 +34,11 @@
                 android:id="@+id/editTextDur"
                 android:layout_width="272dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
                 android:drawableRight="@drawable/ic_fi_rr_pencil"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.769"
                 app:layout_constraintStart_toEndOf="@+id/textViewDuration2"
                 app:layout_constraintTop_toBottomOf="@+id/editTextPartNum" />
 
@@ -55,12 +56,13 @@
 
             <EditText
                 android:id="@+id/editTextPartNum"
-                android:layout_width="170dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="150dp"
+                android:layout_height="27dp"
+                android:layout_marginTop="12dp"
                 android:background="@android:color/transparent"
                 android:drawableRight="@drawable/ic_fi_rr_pencil"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.85"
                 app:layout_constraintStart_toEndOf="@+id/textViewNumParticipants2"
                 app:layout_constraintTop_toBottomOf="@+id/editTextTime2" />
 
@@ -81,10 +83,11 @@
                 android:layout_width="300dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="14dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="12dp"
                 android:background="@android:color/transparent"
                 android:drawableRight="@drawable/ic_fi_rr_pencil"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.6"
                 app:layout_constraintStart_toEndOf="@+id/textViewTime2"
                 app:layout_constraintTop_toBottomOf="@+id/editTextAddress2" />
 
@@ -102,12 +105,13 @@
 
             <EditText
                 android:id="@+id/editTextActName"
-                android:layout_width="224dp"
+                android:layout_width="204dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="48dp"
                 android:background="@android:color/transparent"
                 android:drawableRight="@drawable/ic_fi_rr_pencil"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.869"
                 app:layout_constraintStart_toEndOf="@+id/textViewActName2"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -128,11 +132,11 @@
                 android:layout_width="220dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="26dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="12dp"
                 android:background="@android:color/transparent"
-
                 android:drawableRight="@drawable/ic_fi_rr_pencil"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.538"
                 app:layout_constraintStart_toEndOf="@+id/textViewActOwner2"
                 app:layout_constraintTop_toBottomOf="@+id/editTextActName" />
 
@@ -153,10 +157,11 @@
                 android:layout_width="262dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
                 android:drawableRight="@drawable/ic_fi_rr_pencil"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/textViewAddress2"
                 app:layout_constraintTop_toBottomOf="@+id/editTextOrganization" />
 
@@ -261,6 +266,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/button"
                 app:layout_constraintVertical_bias="1.0" />
 
+            <ImageView
+                android:id="@+id/imageViewType2"
+                android:layout_width="45dp"
+                android:layout_height="38dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.004" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

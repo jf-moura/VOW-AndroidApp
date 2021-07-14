@@ -170,7 +170,12 @@
     <string name="get_rating_failed">Erro ao obter a pontuação</string>
     <string name="act_participants_failed">Erro ao obter os participantes</string>
     <string name="get_route_coord_failed">Erro ao obter as coordenadas da rota</string>
-
+    <string name="delete_activity">Apagar atividade</string>
+    <string name="confirm_delete">Tem a certeza que pretende apagar esta atividade?</string>
+    <string name="settings">Definições</string>
+    <string name="register">Registo</string>
+    <string name="info">Informações</string>
+    <string name="owner">Organização:</string>
 
     <string-array name="filter">
         <item>Saúde</item>

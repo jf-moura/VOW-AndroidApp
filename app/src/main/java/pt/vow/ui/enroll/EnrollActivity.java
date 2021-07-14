@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
 import java.util.List;
@@ -53,6 +56,7 @@ public class EnrollActivity extends AppCompatActivity {
     private ActivityParticipantsViewModel actParticipantsViewModel;
     private Activity aux;
     private EnrollActivity mActivity;
+    private ImageView imageType;
 
     private Observer<GetActivitiesByUserResult> actByUserObs;
 
@@ -70,6 +74,8 @@ public class EnrollActivity extends AppCompatActivity {
 
         enrollButton = findViewById(R.id.enrollButton);
         directionsButton = findViewById(R.id.btnDirections);
+
+        imageType = findViewById(R.id.imageViewType);
 
         enrollViewModel = new ViewModelProvider(this, new EnrollViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(EnrollViewModel.class);
@@ -114,6 +120,7 @@ public class EnrollActivity extends AppCompatActivity {
                         for (Activity a : activitiesList) {
                             if (a.getId().equals(activityInfo[6])) {
                                 aux = a;
+                                showImageType();
                             }
                         }
                     }
@@ -242,4 +249,28 @@ public class EnrollActivity extends AppCompatActivity {
     private void showGetActivitiesFailed(@StringRes Integer errorString) {
         Toast.makeText(this.getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
+
+    private void showImageType() {
+        switch (aux.getType()) {
+            case "animals":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_animals, getApplicationContext().getTheme()));
+                break;
+            case "elderly":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_elderly, getApplicationContext().getTheme()));
+                break;
+            case "children":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_children, getApplicationContext().getTheme()));
+                break;
+            case "houseBuilding":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_disabled, getApplicationContext().getTheme()));
+                break;
+            case "health":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_health, getApplicationContext().getTheme()));
+                break;
+            case "nature":
+                imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_nature, getApplicationContext().getTheme()));
+                break;
+        }
+    }
+
 }

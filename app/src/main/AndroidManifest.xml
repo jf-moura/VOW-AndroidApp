@@ -58,23 +58,24 @@
             android:label="@string/title_activity_main_page"></activity>
         <activity
             android:name=".ui.update.UpdateActivity"
-            android:label="Settings" />
+            android:label="@string/settings" />
         <activity
             android:name=".ui.activityInfo.PopDelete"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.customPop" />
 
-        <activity android:name=".ui.enroll.Pop"
+        <activity
+            android:name=".ui.enroll.Pop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.customPop" />
 
         <activity
             android:name=".ui.register.RegisterActivity"
-            android:label="Register" />
+            android:label="@string/register" />
         <activity
             android:name=".ui.activityInfo.ActivityInfoActivity"
-            android:label="Info" />
+            android:label="@string/info" />
         <activity
             android:name=".ui.login.LoginActivity"
-            android:label="Login" />
+            android:label="@string/login" />
 
         <activity
             android:name=".ui.frontPage.FrontPageActivity"
