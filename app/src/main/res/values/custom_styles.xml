@@ -5,6 +5,11 @@
         <item name="cornerSize">15%</item>
     </style>
 
+    <style name="Circular">
+        <item name="cornerSize">50%</item>
+    </style>
+
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"/>
 
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.DarkActionBar"/>

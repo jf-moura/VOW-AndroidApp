@@ -45,10 +45,8 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String activity = activityList.get(position).getName() + "_" + activityList.get(position).getOwner() + "_" + activityList.get(position).getAddress() + "_" + activityList.get(position).getTime() + "_" + activityList.get(position).getParticipantNum() + "_" + activityList.get(position).getDurationInMinutes() + "_" + activityList.get(position).getId();
-                    //Intent intent = new Intent(context, EnrollActivity.class);
                     Intent intent = new Intent(context, ActivityInfoActivity.class);
-                    intent.putExtra("ActivityInfo", activity);
+                    intent.putExtra("Activity", activityList.get(position));
                     intent.putExtra("UserLogged", user);
                     context.startActivity(intent);
                 }

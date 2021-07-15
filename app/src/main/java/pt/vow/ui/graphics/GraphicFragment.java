@@ -1,12 +1,12 @@
 package pt.vow.ui.graphics;
 
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,21 +18,13 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import pt.vow.R;
 import pt.vow.databinding.FragmentGraphicsBinding;
-import pt.vow.databinding.FragmentNewActivityBinding;
 import pt.vow.ui.VOW;
-import pt.vow.ui.activityInfo.ActivityParticipantsViewModel;
-import pt.vow.ui.activityInfo.ActivityParticipantsViewModelFactory;
 import pt.vow.ui.activityInfo.GetRatingResult;
 import pt.vow.ui.activityInfo.GetRatingViewModel;
 import pt.vow.ui.activityInfo.GetRatingViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.newActivity.NewActivityViewModel;
-import pt.vow.ui.newActivity.NewActivityViewModelFactory;
-import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 
 public class GraphicFragment extends Fragment {
     private FragmentGraphicsBinding binding;
@@ -54,7 +46,8 @@ public class GraphicFragment extends Fragment {
         xRate = new ArrayList<>();
         yRate = new ArrayList<>();
 
-        getRatingViewModel = new ViewModelProvider(this, new GetRatingViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+        // TODO: verificar com o getRating da ActivityInfoActivity
+        /*getRatingViewModel = new ViewModelProvider(this, new GetRatingViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetRatingViewModel.class);
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
@@ -90,7 +83,7 @@ public class GraphicFragment extends Fragment {
         graphView.setTitle(String.valueOf(R.string.rating));
         graphView.setTitleColor(R.color.logo_darker_blue);
         graphView.setTitleTextSize(18);
-        graphView.addSeries(series);
+        graphView.addSeries(series);*/
 
         return root;
     }

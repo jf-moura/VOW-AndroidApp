@@ -18,7 +18,7 @@ import pt.vow.R;
 public class DownloadImageViewModel extends ViewModel {
     private final Executor executor;
     private MutableLiveData<GetImageResult> downloadResult = new MutableLiveData<>();
-    private MutableLiveData<byte[]> image = new MutableLiveData<>();
+    private MutableLiveData<Image> image = new MutableLiveData<>();
 
     DownloadImageViewModel(Executor executor) {
         this.executor = executor;
@@ -39,9 +39,9 @@ public class DownloadImageViewModel extends ViewModel {
                     blob.downloadTo(out);
                     byte[] imageInByte = out.toByteArray();
                     if (imageInByte != null) {
-                        Image img = new Image(imageInByte);
-                        image.postValue(img.getImage());
-                        downloadResult.postValue(new GetImageResult(new Image(imageInByte)));
+                        Image img = new Image(imageInByte, objectName);
+                        image.postValue(img);
+                        downloadResult.postValue(new GetImageResult(new Image(imageInByte, objectName)));
                     } else {
                         downloadResult.postValue(new GetImageResult(R.string.image_download_failed));
                     }
@@ -51,6 +51,6 @@ public class DownloadImageViewModel extends ViewModel {
         out.close();
     }
 
-    public MutableLiveData<byte[]> getImage() { return image; }
+    public MutableLiveData<Image> getImage() { return image; }
 
 }

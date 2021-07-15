@@ -10,13 +10,13 @@ import pt.vow.R;
 import pt.vow.data.Result;
 import pt.vow.data.rating.RatingRepository;
 
-public class RatingViewModel  extends ViewModel {
+public class SetRatingViewModel extends ViewModel {
 
     private MutableLiveData<SetRatingResult> ratingResult = new MutableLiveData<>();
     private RatingRepository ratingRepository;
     private final Executor executor;
 
-    public RatingViewModel(RatingRepository ratingRepository, Executor executor) {
+    public SetRatingViewModel(RatingRepository ratingRepository, Executor executor) {
         this.ratingRepository = ratingRepository;
         this.executor = executor;
     }
@@ -30,10 +30,10 @@ public class RatingViewModel  extends ViewModel {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RatingView> result = ratingRepository.setRating(username, tokenID, owner, activityid, rating);
+                Result<SetRatingView> result = ratingRepository.setRating(username, tokenID, owner, activityid, rating);
                 if (result instanceof Result.Success) {
-                    RatingView data = ((Result.Success<RatingView>) result).getData();
-                    ratingResult.postValue(new SetRatingResult(new RatingView(data.getUsername(), data.getActivityID(), data.getRating())));
+                    SetRatingView data = ((Result.Success<SetRatingView>) result).getData();
+                    ratingResult.postValue(new SetRatingResult(new SetRatingView(data.getUsername(), data.getActivityID(), data.getRating())));
                 } else {
                     ratingResult.postValue(new SetRatingResult(R.string.set_rating_failed));
                 }

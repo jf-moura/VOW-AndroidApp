@@ -1,5 +1,7 @@
 package pt.vow.data.model;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 public class Activity implements Serializable {
@@ -13,6 +15,7 @@ public class Activity implements Serializable {
     String participantNum;
     String durationInMinutes;
     String type;
+    byte[] image;
 
     public Activity(String owner, String id, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes) {
         this.owner = owner;
@@ -24,6 +27,7 @@ public class Activity implements Serializable {
         this.type = type;
         this.participantNum = participantNum;
         this.durationInMinutes = durationInMinutes;
+        this.image = null;
     }
 
     public String getOwner() {
@@ -61,5 +65,9 @@ public class Activity implements Serializable {
     public String getType() {
         return type;
     }
+
+    public byte[] getImage() { return image; }
+
+    public void setImage(byte[] img) { image = img; }
 
 }

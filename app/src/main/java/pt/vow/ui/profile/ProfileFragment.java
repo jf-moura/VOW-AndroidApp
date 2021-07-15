@@ -36,6 +36,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -60,7 +61,7 @@ import static androidx.core.app.ActivityCompat.invalidateOptionsMenu;
 public class ProfileFragment extends Fragment {
     private static final int RESULT_OK = -1;
 
-    private ImageButton profileImage;
+    private ShapeableImageView profileImage;
     private EditText aboutMeEditText;
     private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, linearLayoutPrincipal;
     private DrawerLayout drawerLayout;
@@ -99,6 +100,8 @@ public class ProfileFragment extends Fragment {
         profileImage = root.findViewById(R.id.profileImage);
         aboutMeEditText = root.findViewById(R.id.aboutMeEditText);
         topNavigationProfile = root.findViewById(R.id.topNavigationProfile);
+
+
 
         loginPreferences = getContext().getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
@@ -210,17 +213,17 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        downloadImageViewModel = new ViewModelProvider(requireActivity()).get(DownloadImageViewModel.class);
+        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         downloadImageViewModel.getDownloadResult().observeForever(imgObs = new Observer<GetImageResult>() {
             @Override
             public void onChanged(@Nullable GetImageResult downloadResult) {
                 if (downloadResult == null) {
                     return;
                 }
-                //if (downloadResult.getError() != null) {
-                // TODO:
-                //}
-                if (downloadResult.getSuccess() != null) {
+                if (downloadResult.getError() != null) {
+                    return;
+                }
+                if (downloadResult.getSuccess() != null && downloadResult.getSuccess().getObjName().split("_").length == 1) {
                     byte[] img = downloadResult.getSuccess().getImage();
                     bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
                     profileImage.setImageBitmap(bitmap);

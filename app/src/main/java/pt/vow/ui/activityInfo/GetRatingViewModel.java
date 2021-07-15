@@ -13,6 +13,7 @@ import pt.vow.data.rating.RatingRepository;
 
 public class GetRatingViewModel extends ViewModel {
     private MutableLiveData<GetRatingResult> getRatingResult = new MutableLiveData<>();
+    private MutableLiveData<GetRatingView> rating = new MutableLiveData<>();
     private GetRatingRepository getRatingRepository;
     private final Executor executor;
 
@@ -25,7 +26,6 @@ public class GetRatingViewModel extends ViewModel {
         return getRatingResult;
     }
 
-
     public void getRating(String username, String tokenID, String owner, String activityid) {
         executor.execute(new Runnable() {
             @Override
@@ -33,11 +33,17 @@ public class GetRatingViewModel extends ViewModel {
                 Result<GetRatingView> result = getRatingRepository.getRating(username, tokenID, owner, activityid);
                 if (result instanceof Result.Success) {
                     GetRatingView data = ((Result.Success<GetRatingView>) result).getData();
-                    getRatingResult.postValue(new GetRatingResult(new GetRatingView(data.getRating(), data.getActivityRatingSum(), data.getActivityRatingCounter())));
+                    rating.postValue(data);
+                    getRatingResult.postValue(new GetRatingResult(new GetRatingView(data.getUsername(), data.getActivityID(), data.getRating(), data.getActivityRatingSum(), data.getActivityRatingCounter())));
                 } else {
                     getRatingResult.postValue(new GetRatingResult(R.string.get_rating_failed));
                 }
             }
         });
     }
+
+    public LiveData<GetRatingView> rating() {
+        return rating;
+    }
+
 }

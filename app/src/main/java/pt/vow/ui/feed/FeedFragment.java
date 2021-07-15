@@ -30,30 +30,36 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentFeedBinding;
-import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.mainPage.DownloadImageViewModel;
-import pt.vow.ui.mainPage.GetImageResult;
 import pt.vow.ui.maps.MapsFragment;
+import pt.vow.ui.profile.ActivitiesByUserView;
+import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 
 public class FeedFragment extends Fragment {
-    private RecyclerView recyclerView;
-    private List<Activity> activitiesList;
+    private FeedFragment mActivity;
     private GetActivitiesViewModel activitiesViewModel;
+    private DownloadImageViewModel downloadImageViewModel;
+    private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
-    private TextView activitiesTextView;
-    private TextInputLayout textInputLayout;
-    private AutoCompleteTextView autoCompleteTextView;
 
-    private Observer<GetActivitiesResult> actObs;
+    private Map<String, Activity> aux;
+    private ActivitiesByUserView enrolledActivities;
+
+    private RecyclerView recyclerView;
+    private TextView activitiesTextView;
+    private AutoCompleteTextView autoCompleteTextView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -64,10 +70,14 @@ public class FeedFragment extends Fragment {
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
+        mActivity = this;
+        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
+        getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
+        enrolledActivities = getActivitiesByUserViewModel.getActivitiesList().getValue();
+
         recyclerView = root.findViewById(R.id.activities_recycler_view);
         activitiesTextView = root.findViewById(R.id.activitiesTextView);
 
-        textInputLayout = root.findViewById(R.id.textInputLayout2);
         autoCompleteTextView = root.findViewById(R.id.autoCompleteTextView2);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
@@ -83,58 +93,54 @@ public class FeedFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        activitiesViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesViewModel.class);
+        activitiesViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesViewModel.class);
+        activitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
 
-        activitiesViewModel.getActivitiesResult().observeForever(actObs = new Observer<GetActivitiesResult>() {
-            @Override
-            public void onChanged(@Nullable GetActivitiesResult getActivitiesResult) {
-                if (getActivitiesResult == null) {
-                    return;
-                }
-                if (getActivitiesResult.getError() != null) {
-                    activitiesTextView.setText(R.string.no_activities_available);
-                }
-                if (getActivitiesResult.getSuccess() != null) {
-                    activitiesList = getActivitiesResult.getSuccess().getActivities();
-                    if (activitiesList.size() == 0) {
-                        activitiesTextView.setText(R.string.no_activities_available);
-                    }
-                    if (activitiesList != null) {
-                        List<Activity> aux = new LinkedList<>();
-                        for (Activity a : activitiesList) {
+        activitiesViewModel.getActivitiesList().observe(getActivity(), activities -> {
+            if (activities.size() == 0)
+                activitiesTextView.setText(R.string.no_activities_available);
+            else if (activities != null) {
+                aux = new HashMap<>();
+                for (Activity a : activities) {
 
-                            long currentTime = Calendar.getInstance().getTimeInMillis();
+                    long currentTime = Calendar.getInstance().getTimeInMillis();
 
-                            String[] dateTime = a.getTime().split(" ");
-                            String[] hours = dateTime[3].split(":");
+                    String[] dateTime = a.getTime().split(" ");
+                    String[] hours = dateTime[3].split(":");
 
-                            Calendar beginTime = Calendar.getInstance();
-                            if (dateTime[4].equals("PM"))
-                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
-                            else
-                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+                    Calendar beginTime = Calendar.getInstance();
+                    if (dateTime[4].equals("PM"))
+                        beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
+                    else
+                        beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
 
-                            long startMillis = beginTime.getTimeInMillis();
-                            if (startMillis > currentTime) {
-                                aux.add(a);
-                            }
+                    long startMillis = beginTime.getTimeInMillis();
+                    if (startMillis > currentTime) {
+                        aux.put(a.getOwner() + "_" + a.getName(), a);
+                        try {
+                            downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getOwner() + "_" + a.getName());
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-
-                        showFilteredAct(aux);
-
-                        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), aux, user);
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     }
                 }
+
+                List<Activity> list = new ArrayList<>(aux.values());
+                showFilteredAct(list);
+
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), list, user, enrolledActivities);
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             }
         });
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        activitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
+        downloadImageViewModel.getImage().observe(getActivity(), image -> {
+            if (image.getObjName().split("_").length == 2) {
+                byte[] img = image.getImage();
+                String objName = image.getObjName();
+                aux.get(objName).setImage(img);
+            }
+        });
     }
 
     @Override
@@ -145,7 +151,10 @@ public class FeedFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("EnrolledActivities", enrolledActivities);
         Fragment fragment = new MapsFragment();
+        fragment.setArguments(bundle);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.feedFragment, fragment);
@@ -160,8 +169,6 @@ public class FeedFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-        if (actObs != null)
-            activitiesViewModel.getActivitiesResult().removeObserver(actObs);
     }
 
     private void showFilteredAct(List<Activity> aux) {
@@ -208,12 +215,12 @@ public class FeedFragment extends Fragment {
                         }
                         break;
                     case 6:
-                        for(Activity act : aux){
+                        for (Activity act : aux) {
                             filter.add(act);
                         }
                         break;
                 }
-                RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), filter, user);
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), filter, user, enrolledActivities);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             }

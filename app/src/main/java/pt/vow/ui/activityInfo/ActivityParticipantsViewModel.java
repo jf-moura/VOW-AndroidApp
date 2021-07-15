@@ -27,7 +27,6 @@ public class ActivityParticipantsViewModel extends ViewModel {
         return activityParticipantsResult;
     }
 
-
     public void getParticipants(String username, String tokenID, String owner, String activityId) {
         executor.execute(new Runnable() {
             @Override

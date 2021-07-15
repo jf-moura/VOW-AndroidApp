@@ -2,20 +2,16 @@ package pt.vow.ui.mainPage;
 
 public class Image {
     private byte[] image;
-    private int pos;
+    private String objName;
 
-    Image (byte[] image) {
+    Image (byte[] image, String objName) {
         this.image = image;
-    }
-
-    Image (byte[] image, int pos) {
-        this.image = image;
-        this.pos = pos;
+        this.objName = objName;
     }
 
     public byte[] getImage() {
         return image;
     }
 
-    public int getPosition() { return pos; }
+    public String getObjName() { return objName; }
 }

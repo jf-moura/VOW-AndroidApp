@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 
 public class SetRatingResult {
     @Nullable
-    private RatingView success;
+    private SetRatingView success;
     @Nullable
     private Integer error;
 
@@ -12,12 +12,12 @@ public class SetRatingResult {
         this.error = error;
     }
 
-    SetRatingResult(@Nullable RatingView success) {
+    SetRatingResult(@Nullable SetRatingView success) {
         this.success = success;
     }
 
     @Nullable
-    RatingView getSuccess() {
+    SetRatingView getSuccess() {
         return success;
     }
 

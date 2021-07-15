@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import pt.vow.data.Result;
-import pt.vow.data.model.Activity;
-import pt.vow.data.rating.ApiSetRating;
 import pt.vow.ui.activityInfo.ActivityParticipantsView;
-import pt.vow.ui.activityInfo.RatingView;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;

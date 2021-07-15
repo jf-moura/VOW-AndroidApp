@@ -86,6 +86,7 @@ import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.geofencing.GeofenceHelper;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.profile.ActivitiesByUserView;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
@@ -97,6 +98,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private List<Activity> activitiesList;
     private GetActivitiesViewModel activitiesViewModel;
     private GetRouteCoordinatesViewModel getRouteCoordinatesViewModel;
+    private ActivitiesByUserView enrolledActivities;
 
     private FragmentMapsBinding binding;
 
@@ -149,6 +151,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
 
+    public MapsFragment() {
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -158,6 +163,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 .get(GetRouteCoordinatesViewModel.class);
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
+
+        enrolledActivities = (ActivitiesByUserView) getArguments().getSerializable("EnrolledActivities");
 
         geofencingClient = LocationServices.getGeofencingClient(getActivity());
         geofenceHelper = new GeofenceHelper(getContext());
@@ -563,7 +570,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-
         if (activitiesList != null) {
             for (Activity a : activitiesList) {
                 if (a.getCoordinates() != null && !a.getCoordinates().isEmpty()) {
@@ -589,8 +595,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                         final double lng = Double.parseDouble(latlng[1]);
                         final LatLng activityLocation = new LatLng(lat, lng);
 
-                        String title = a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum()
-                                + "_" + a.getDurationInMinutes() + "_" + a.getId() + "_" + a.getType() + "_" + a.getCoordinates();
+                        String title = a.getName() + "_" + a.getOwner() + "_" + a.getId();
 
                         Marker act = null;
                         switch (a.getType()) {
@@ -647,9 +652,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                             if (getRouteCoordResult.getSuccess() != null) {
                                 List<LatLng> routeLatLngs = new ArrayList<>(10);
                                 Activity curAct = getRouteCoordResult.getSuccess().getActivity();
-                                String title = curAct.getName() + "_" + curAct.getOwner() + "_" + curAct.getAddress() + "_" + curAct.getTime() + "_"
-                                        + curAct.getParticipantNum() + "_" + curAct.getDurationInMinutes() + "_" + curAct.getId()
-                                        + "_" + curAct.getType() + "_" + curAct.getCoordinates();
+                                String title = curAct.getName() + "_" + curAct.getOwner() + "_" + curAct.getId();
                                 Marker act = null;
 
                                 for (String coord : getRouteCoordResult.getSuccess().getCoordinates()) {
@@ -773,10 +776,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     public void onInfoWindowClick(Marker marker) {
+        Activity activity = null;
+        for (Activity curAct: activitiesList)
+            if (curAct.getId().equals(marker.getTitle().split("_")[2])) {
+                activity = curAct;
+                break;
+            }
         Toast.makeText(getActivity().getApplicationContext(), "Info window", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getActivity(), EnrollActivity.class);
         intent.putExtra("UserLogged", user);
-        intent.putExtra("ActivityInfo", marker.getTitle());
+        intent.putExtra("Activity", activity);
+        intent.putExtra("EnrolledActivities", enrolledActivities);
         startActivity(intent);
     }
 

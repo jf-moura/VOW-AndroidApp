@@ -9,10 +9,10 @@ import java.util.concurrent.Executor;
 import pt.vow.data.rating.RatingDataSource;
 import pt.vow.data.rating.RatingRepository;
 
-public class RatingViewModelFactory implements ViewModelProvider.Factory {
+public class SetRatingViewModelFactory implements ViewModelProvider.Factory {
     private Executor executor;
 
-    public RatingViewModelFactory(Executor executor) {
+    public SetRatingViewModelFactory(Executor executor) {
         this.executor = executor;
     }
 
@@ -20,8 +20,8 @@ public class RatingViewModelFactory implements ViewModelProvider.Factory {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(RatingViewModel.class)) {
-            return (T) new RatingViewModel(RatingRepository.getInstance(new RatingDataSource()),executor);
+        if (modelClass.isAssignableFrom(SetRatingViewModel.class)) {
+            return (T) new SetRatingViewModel(RatingRepository.getInstance(new RatingDataSource()),executor);
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class");
         }

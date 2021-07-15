@@ -2,7 +2,6 @@ package pt.vow.data.rating;
 
 import pt.vow.data.Result;
 import pt.vow.ui.activityInfo.GetRatingView;
-import pt.vow.ui.activityInfo.RatingView;
 
 public class GetRatingRepository {
     private static volatile GetRatingRepository instance;

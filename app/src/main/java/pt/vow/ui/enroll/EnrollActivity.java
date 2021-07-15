@@ -38,6 +38,7 @@ import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.ui.VOW;
 import pt.vow.ui.activityInfo.ActivityParticipantsResult;
+import pt.vow.ui.activityInfo.ActivityParticipantsView;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModel;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
@@ -45,28 +46,23 @@ import pt.vow.ui.maps.GetRouteCoordResult;
 import pt.vow.ui.maps.GetRouteCoordViewModelFactory;
 import pt.vow.ui.maps.GetRouteCoordinatesViewModel;
 import pt.vow.ui.maps.MapsFragment;
+import pt.vow.ui.profile.ActivitiesByUserView;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;
 
 public class EnrollActivity extends AppCompatActivity {
-
     private TextView textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
     private Button enrollButton, directionsButton;
     private EnrollViewModel enrollViewModel;
     private CancelEnrollViewModel cancelEnrollViewModel;
     private LoggedInUserView user;
-    private String[] activityInfo;
-    private String activityInfoTitle;
-    private List<Activity> activitiesList;
-    private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
+    private Activity activity;
+    private ActivitiesByUserView activitiesList;
     private ActivityParticipantsViewModel actParticipantsViewModel;
     private Activity aux;
     private EnrollActivity mActivity;
     private ImageView imageType;
-    private GetRouteCoordinatesViewModel getRouteCoordinatesViewModel;
-private String dest;
-    private Observer<GetActivitiesByUserResult> actByUserObs;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,130 +83,97 @@ private String dest;
 
         enrollViewModel = new ViewModelProvider(this, new EnrollViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(EnrollViewModel.class);
-
         cancelEnrollViewModel = new ViewModelProvider(this, new CancelEnrollViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(CancelEnrollViewModel.class);
-
-        getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getApplication()).getExecutorService()))
-                .get(GetActivitiesByUserViewModel.class);
-
         actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(ActivityParticipantsViewModel.class);
 
-        getRouteCoordinatesViewModel = new ViewModelProvider(this, new GetRouteCoordViewModelFactory(((VOW) getApplication()).getExecutorService()))
-                .get(GetRouteCoordinatesViewModel.class);
-
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
-        activityInfoTitle = (String) getIntent().getSerializableExtra("ActivityInfo");
+        activity = (Activity) getIntent().getSerializableExtra("Activity");
+        activitiesList = (ActivitiesByUserView) getIntent().getSerializableExtra("EnrolledActivities");
 
-        activityInfo = activityInfoTitle.split("_");
+        textViewActName.setText(Html.fromHtml("<b>" + getResources().getString(R.string.activity_name) + "</b>" + " " + activity.getName()));
+        textViewActOwner.setText(Html.fromHtml("<b>" + getResources().getString(R.string.organization) + "</b>" + " " + activity.getOwner()));
+        textViewAddress.setText(Html.fromHtml("<b>" + getResources().getString(R.string.address) + "</b>" + " " + activity.getAddress()));
+        textViewTime.setText(Html.fromHtml("<b>" + getResources().getString(R.string.time) + "</b>" + " " + activity.getTime()));
+        textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + "</b>" + " " + activity.getParticipantNum()));
+        textViewDuration.setText(Html.fromHtml("<b>" + getResources().getString(R.string.duration) + "</b>" + " " + Integer.parseInt(activity.getDurationInMinutes()) / 60 + "h" + Integer.parseInt(activity.getDurationInMinutes()) % 60));
 
-
-        textViewActName.setText(Html.fromHtml("<b>" + getResources().getString(R.string.activity_name) + "</b>" + " " + activityInfo[0]));
-        textViewActOwner.setText(Html.fromHtml("<b>" + getResources().getString(R.string.organization) + "</b>" + " " + activityInfo[1]));
-        textViewAddress.setText(Html.fromHtml("<b>" + getResources().getString(R.string.address) + "</b>" + " " + activityInfo[2]));
-        textViewTime.setText(Html.fromHtml("<b>" + getResources().getString(R.string.time) + "</b>" + " " + activityInfo[3]));
-        textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + "</b>" + " " + activityInfo[4]));
-        textViewDuration.setText(Html.fromHtml("<b>" + getResources().getString(R.string.duration) + "</b>" + " " + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60));
-
-        getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
-        getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
-            @Override
-            public void onChanged(@Nullable GetActivitiesByUserResult getActivitiesResult) {
-                if (getActivitiesResult == null) {
-                    return;
-                }
-                if (getActivitiesResult.getError() != null) {
-                    showGetActivitiesFailed(getActivitiesResult.getError());
-                }
-                if (getActivitiesResult.getSuccess() != null) {
-                    getActivitiesByUserViewModel.getActivitiesList().observe(mActivity, list -> {
-                        activitiesList = list;
-                    });
-                    if (activitiesList != null) {
-                        for (Activity a : activitiesList) {
-                            if (a.getId().equals(activityInfo[6])) {
-                                aux = a;
-                                showImageType();
-                            }
-                        }
-                    }
-                    if (aux != null) { //it means that user already joined the activity
-                        enrollButton.setText(getResources().getString(R.string.unjoin));
-                    }
-                    setResult(android.app.Activity.RESULT_OK);
+        // TODO: perceber pq quando saiu o botao nao fica logo bem e tenho de mudar de frag
+        if (activitiesList != null) {
+            for (Activity a : activitiesList.getActivities()) {
+                if (a.getId().equals(activity.getId())) {
+                    aux = a;
+                    showImageType();
                 }
             }
-        });
+        }
+        if (aux != null) { //it means that user already joined the activity
+            enrollButton.setText(getResources().getString(R.string.unjoin));
+        }
 
-        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
-        actParticipantsViewModel.getParticipantsResult().observeForever(new Observer<ActivityParticipantsResult>() {
-            @Override
-            public void onChanged(ActivityParticipantsResult activityParticipantsResult) {
-                if (activityParticipantsResult == null) {
-                    return;
-                }
-                if (activityParticipantsResult.getError() != null) {
-                    return;
-                }
-                if (activityParticipantsResult.getSuccess() != null) {
-                    List<String> participants = activityParticipantsResult.getSuccess().getParticipants();
-                    textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + " </b>" + participants.size() + "/" + activityInfo[4]));
-                    if (participants.size() == Integer.parseInt(activityInfo[4])) {
-                        enrollButton.setEnabled(false);
-                    } else enrollButton.setEnabled(true);
-                }
-            }
+        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+
+        actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
+            textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + " </b>" + participants.size() + "/" + activity.getParticipantNum()));
+            if (participants.size() == Integer.parseInt(activity.getParticipantNum())) {
+                enrollButton.setEnabled(false);
+            } else enrollButton.setEnabled(true);
         });
 
         enrollViewModel.getEnrollResult().observe(this, new Observer<EnrollResult>() {
-
             @Override
             public void onChanged(EnrollResult enrollResult) {
                 if (enrollResult == null) {
                     return;
                 }
                 if (enrollResult.getError() != null) {
-                    showEnrollFailed(enrollResult.getError());
+                    showActionFailed(enrollResult.getError());
+                    return;
                 }
                 if (enrollResult.getSuccess() != null) {
-                    // updateUiWithActivities(enrollResult.getSuccess());
-                    setResult(android.app.Activity.RESULT_OK);
-                    // getActivity().finish();
+                    Toast.makeText(getApplicationContext(), "Joined Activity!", Toast.LENGTH_SHORT).show();
+                    enrollButton.setText(getResources().getString(R.string.unjoin));
+                    actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
                 }
-                //Complete and destroy login activity once successful
-                //finish();
             }
+        });
 
-            private void showEnrollFailed(@StringRes Integer error) {
-                Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-
+        cancelEnrollViewModel.getCancelEnrollResult().observe(this, new Observer<CancelEnrollResult>() {
+            @Override
+            public void onChanged(CancelEnrollResult cancelEnrollResult) {
+                if (cancelEnrollResult == null) {
+                    return;
+                }
+                if (cancelEnrollResult.getError() != null) {
+                    showActionFailed(cancelEnrollResult.getError());
+                    return;
+                }
+                if (cancelEnrollResult.getSuccess() != null) {
+                    enrollButton.setText(getResources().getString(R.string.join));
+                    Toast.makeText(getApplicationContext(), "Unjoined Activity!", Toast.LENGTH_SHORT).show();
+                    actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+                }
             }
         });
 
         enrollButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (enrollButton.getText().equals(getResources().getString(R.string.join))) {
-                    enrollViewModel.enrollInActivity(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
-                    Toast.makeText(getApplicationContext(), "Joined Activity!", Toast.LENGTH_SHORT).show();
-                    enrollButton.setText(getResources().getString(R.string.unjoin));
-                    //enrollButton.setEnabled(false);
+                    enrollViewModel.enrollInActivity(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
                     // TODO: Falta ver os erros
                     Intent intentPop = new Intent(EnrollActivity.this, Pop.class);
-                    intentPop.putExtra("title", activityInfo[0]);
-                    intentPop.putExtra("location", activityInfo[2]);
-                    intentPop.putExtra("time", activityInfo[3]);
-                    intentPop.putExtra("duration", Integer.parseInt(activityInfo[5]) / 60 + ":" + Integer.parseInt(activityInfo[5]) % 60);
+                    intentPop.putExtra("title", activity.getName());
+                    intentPop.putExtra("location", activity.getAddress());
+                    intentPop.putExtra("time", activity.getTime());
+                    intentPop.putExtra("duration", Integer.parseInt(activity.getDurationInMinutes()) / 60 + ":" + Integer.parseInt(activity.getDurationInMinutes()) % 60);
                     startActivity(intentPop);
                 }
                 //if a user is already in join and user wants to cancel
                 else {
-                    cancelEnrollViewModel.cancelEnrollInActivity(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
-                    enrollButton.setText(getResources().getString(R.string.join));
-                    Toast.makeText(getApplicationContext(), "Unjoined Activity!", Toast.LENGTH_SHORT).show();
-                }
+                    cancelEnrollViewModel.cancelEnrollInActivity(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+                    }
             }
         });
 
@@ -218,7 +181,7 @@ private String dest;
             @Override
             public void onClick(View v) {
                 //quer dizer que e uma rota por isso temos de ir buscar o getRouteCoordinates
-                if (activityInfo[8].equals("")) {
+                /*if (activityInfo[8].equals("")) {
                     Activity a = new Activity(activityInfo[1], activityInfo[6], activityInfo[0], activityInfo[2], activityInfo[8]
                             , activityInfo[3], activityInfo[7], activityInfo[4], activityInfo[5]);
                     getRouteCoordinatesViewModel.getCoordinates(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6], a);
@@ -243,10 +206,10 @@ private String dest;
                 }
                 else{
                     dest = activityInfo[2];
-                }
+                }*/
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("getDirections", true);
-                bundle.putString("destination", dest);
+                bundle.putString("destination", activity.getAddress());
                 Fragment fragment = new MapsFragment();
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getSupportFragmentManager();
@@ -262,8 +225,6 @@ private String dest;
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (actByUserObs != null)
-            getActivitiesByUserViewModel.getActivitiesResult().removeObserver(actByUserObs);
     }
 
     @Override
@@ -311,7 +272,8 @@ private String dest;
         }
     }
 
-    private void showGetRouteCoordFailed(@StringRes Integer errorString) {
-        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    private void showActionFailed(@StringRes Integer error) {
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
     }
+
 }

@@ -32,8 +32,6 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 public class ActivityInfoActivity extends AppCompatActivity {
 
     private ActivityInfoActivity mActivity;
@@ -44,14 +42,12 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private RatingBar ratingBar;
 
     private LoggedInUserView user;
-    private String activityInfoTitle;
-    private String[] activityInfo;
-    private Activity activityInfoFromNotification;
-    private RatingViewModel ratingViewModel;
+    private Activity activity;
     private GetRatingViewModel getRatingViewModel;
+    private SetRatingViewModel setRatingViewModel;
     private ActivityParticipantsViewModel actParticipantsViewModel;
     private double totalRate;
-    private String rate;
+    //private long rate;
     private Observer<GetRatingResult> rateObs;
     private ImageButton deleteActBttn;
     private ImageView imageType;
@@ -62,10 +58,10 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
         mActivity = this;
 
-        ratingViewModel = new ViewModelProvider(this, new RatingViewModelFactory(((VOW) getApplication()).getExecutorService()))
-                .get(RatingViewModel.class);
         getRatingViewModel = new ViewModelProvider(this, new GetRatingViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetRatingViewModel.class);
+        setRatingViewModel = new ViewModelProvider(this, new SetRatingViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(SetRatingViewModel.class);
         actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(ActivityParticipantsViewModel.class);
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
@@ -95,96 +91,91 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
 
         // activityInfoFromNotification = (Activity) getIntent().getSerializableExtra("Activity");
-        activityInfoTitle = (String) getIntent().getSerializableExtra("ActivityInfo");
-        activityInfo = activityInfoTitle.split("_");
+        activity = (Activity) getIntent().getSerializableExtra("Activity");
 
-       // showImageType();
+        // showImageType();
 
         //if the user is not the owner of the activity
-        if (!user.getTokenID().equals(activityInfo[1])) {
+        if (!user.getUsername().equals(activity.getOwner())) {
             editTextActName.setFocusable(false);
             editTextActName.setClickable(false);
-            editTextActName.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            editTextActName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             editTextActOwner.setFocusable(false);
             editTextActOwner.setClickable(false);
-            editTextActOwner.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            editTextActOwner.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             editTextAddress.setFocusable(false);
             editTextAddress.setClickable(false);
-            editTextAddress.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            editTextAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             editTextNumPart.setFocusable(false);
             editTextNumPart.setClickable(false);
-            editTextNumPart.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            editTextNumPart.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             editTextTime.setFocusable(false);
             editTextTime.setClickable(false);
-            editTextTime.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            editTextTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             editTextDuration.setFocusable(false);
             editTextDuration.setClickable(false);
-            editTextDuration.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            editTextDuration.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             saveUpdateBttn.setVisibility(View.GONE);
         }
 
-        getRatingViewModel.getRating(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
+        getRatingViewModel.getRating(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
 
-        getRatingViewModel.getRatingResult().observeForever(rateObs = new Observer<GetRatingResult>() {
-            @Override
-            public void onChanged(@Nullable GetRatingResult getRatingResult) {
-                if (getRatingResult == null) {
-                    totalRate = 0.0;
-                    return;
-                }
-                if (getRatingResult.getError() != null) {
-                    return;
-                }
-                if (getRatingResult.getSuccess() != null) {
-                    rate = getRatingResult.getSuccess().getRating();
-                    //activityRatingSum/activityRatingCounter
-                    double activityRatingSum = Double.parseDouble(getRatingResult.getSuccess().getActivityRatingSum());
-                    double activityRatingCounter = Double.parseDouble(getRatingResult.getSuccess().getActivityRatingCounter());
-                    if (activityRatingCounter != 0.0) {
-                        totalRate = activityRatingSum / activityRatingCounter;
-                    }
-                    if (rate != null) {
-                        submitBttn.setVisibility(View.GONE);
-                        ratingBar.setRating((float) Integer.parseInt(rate));
-                        ratingBar.setFocusable(false);
-                        ratingBar.setIsIndicator(true);
-                    }
-
-                }
-                textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b> " + totalRate + "/5.0"));
+        getRatingViewModel.rating().observe(this, rate -> {
+            double activityRatingSum = Double.parseDouble(rate.getActivityRatingSum());
+            double activityRatingCounter = Double.parseDouble(rate.getActivityRatingCounter());
+            if (activityRatingCounter != 0.0) {
+                totalRate = activityRatingSum / activityRatingCounter;
             }
+            if (rate.getUsername().equals(user.getUsername()) && Integer.parseInt(rate.getRating()) > 0) {
+                submitBttn.setVisibility(View.GONE);
+                ratingBar.setRating(Float.parseFloat(rate.getRating()));
+                ratingBar.setFocusable(false);
+                ratingBar.setIsIndicator(true);
+                getRatingViewModel.getRating(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+
+            }
+            textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b> " + totalRate + "/5.0"));
         });
 
-        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6]);
-        actParticipantsViewModel.getParticipantsResult().observeForever(new Observer<ActivityParticipantsResult>() {
-            @Override
-            public void onChanged(ActivityParticipantsResult activityParticipantsResult) {
-                if (activityParticipantsResult == null) {
-                    return;
-                }
-                if (activityParticipantsResult.getError() != null) {
-                    return;
-                }
-                if (activityParticipantsResult.getSuccess() != null) {
-                    List<String> participants = activityParticipantsResult.getSuccess().getParticipants();
-                    editTextNumPart.setText(participants.size() + "/" + activityInfo[4]);
-                }
-            }
+        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+        actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
+            editTextNumPart.setText(participants.size() + "/" + activity.getParticipantNum());
         });
 
-        editTextActName.setText(" " + activityInfo[0]);
-        editTextActOwner.setText(" " + activityInfo[1]);
-        editTextAddress.setText( " " + activityInfo[2]);
-        editTextTime.setText(" " + activityInfo[3]);
-       // editTextNumPart.setText(" " + activityInfo[4]);
-        editTextDuration.setText(" " + Integer.parseInt(activityInfo[5]) / 60 + "h" + Integer.parseInt(activityInfo[5]) % 60);
+        editTextActName.setText(" " + activity.getName());
+        editTextActOwner.setText(" " + activity.getOwner());
+        editTextAddress.setText(" " + activity.getAddress());
+        editTextTime.setText(" " + activity.getTime());
+        // editTextNumPart.setText(" " + activityInfo[4]);
+        editTextDuration.setText(" " + Integer.parseInt(activity.getDurationInMinutes()) / 60 + "h" + Integer.parseInt(activity.getDurationInMinutes()) % 60);
         textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b> " + totalRate + "/5.0"));
 
         submitBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ratingViewModel.setRating(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6], (long) ratingBar.getRating());
-                Toast.makeText(getApplicationContext(), R.string.commit_rating, Toast.LENGTH_SHORT).show();
+                setRatingViewModel.setRating(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId(), (long) ratingBar.getRating());
+            }
+        });
+
+        setRatingViewModel.getRatingResult().observe(this, new Observer<SetRatingResult>() {
+            @Override
+            public void onChanged(SetRatingResult ratingResult) {
+                if (ratingResult == null) {
+                    return;
+                }
+                if (ratingResult.getError() != null) {
+                    Toast.makeText(getApplicationContext(), R.string.set_rating_failed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (ratingResult.getSuccess() != null) {
+                    Toast.makeText(getApplicationContext(), R.string.commit_rating, Toast.LENGTH_SHORT).show();
+                    submitBttn.setVisibility(View.GONE);
+                    ratingBar.setRating((float) ratingResult.getSuccess().getRating());
+                    ratingBar.setFocusable(false);
+                    ratingBar.setIsIndicator(true);
+
+                    getRatingViewModel.getRating(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+                }
             }
         });
 
@@ -224,7 +215,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
     }
 
  /*   private void showImageType() {
-        switch (activityInfo[7]) {
+        switch (activity.getType()) {
             case "animals":
                 imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_animals, getApplicationContext().getTheme()));
                 break;

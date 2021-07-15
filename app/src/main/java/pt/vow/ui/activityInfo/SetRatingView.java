@@ -1,11 +1,11 @@
 package pt.vow.ui.activityInfo;
 
-public class RatingView {
+public class SetRatingView {
     private String username;
     private String activityid;
     private long rating;
 
-    public RatingView(String username, String activityid, long rating) {
+    public SetRatingView(String username, String activityid, long rating) {
         this.username = username;
         this.activityid = activityid;
         this.rating = rating;

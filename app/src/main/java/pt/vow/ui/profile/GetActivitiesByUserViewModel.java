@@ -14,7 +14,7 @@ import pt.vow.data.model.Activity;
 
 public class GetActivitiesByUserViewModel extends ViewModel {
     private MutableLiveData<GetActivitiesByUserResult> getActivitiesResult = new MutableLiveData<>();
-    private MutableLiveData<List<Activity>> activities = new MutableLiveData<>();
+    private MutableLiveData<ActivitiesByUserView> activities = new MutableLiveData<>();
     private GetActivitiesByUserRepository activitiesInfoRepository;
     private final Executor executor;
 
@@ -34,7 +34,7 @@ public class GetActivitiesByUserViewModel extends ViewModel {
                 Result<ActivitiesByUserView> result = activitiesInfoRepository.getActivitiesByUser(username, tokenID);
                 if (result instanceof Result.Success) {
                     ActivitiesByUserView data = ((Result.Success<ActivitiesByUserView>) result).getData();
-                    activities.postValue(data.getActivities());
+                    activities.postValue(data);
                     getActivitiesResult.postValue(new GetActivitiesByUserResult(new ActivitiesByUserView(data.activities)));
                 } else {
                     getActivitiesResult.postValue(new GetActivitiesByUserResult(R.string.get_activities_failed));
@@ -43,7 +43,7 @@ public class GetActivitiesByUserViewModel extends ViewModel {
         });
     }
 
-    public LiveData<List<Activity>> getActivitiesList() {
+    public LiveData<ActivitiesByUserView> getActivitiesList() {
         return activities;
     }
 }
