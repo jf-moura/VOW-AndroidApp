@@ -187,6 +187,11 @@
         <item>Tudo</item>
     </string-array>
 
+    <string name="near_activity">Está perto de uma atividade!</string>
+    <string name="rate_activity">Avalie a atividade que acabou de fazer.</string>
+    <string name="join_activity">Quer se inscrever nesta atividade?</string>
+
+
 
 
 </resources>

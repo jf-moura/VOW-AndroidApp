@@ -19,12 +19,12 @@ public class GetRouteCoordResult {
     }
 
     @Nullable
-    RouteCoordinatesView getSuccess() {
+    public RouteCoordinatesView getSuccess() {
         return success;
     }
 
     @Nullable
-    Integer getError() {
+    public Integer getError() {
         return error;
     }
 }

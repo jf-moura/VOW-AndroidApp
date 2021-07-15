@@ -223,7 +223,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         }
     }
 
-    private void showImageType() {
+ /*   private void showImageType() {
         switch (activityInfo[7]) {
             case "animals":
                 imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_animals, getApplicationContext().getTheme()));
@@ -244,5 +244,5 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_nature, getApplicationContext().getTheme()));
                 break;
         }
-    }
+    }*/
 }

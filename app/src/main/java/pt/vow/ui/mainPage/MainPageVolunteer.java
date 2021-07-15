@@ -186,7 +186,7 @@ public class MainPageVolunteer extends AppCompatActivity {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.icon)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.icon_foreground))
-                .setContentTitle("Rate your Activity")
+                .setContentTitle(getResources().getString( R.string.rate_activity))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentText(message + " " + name)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))

@@ -1,5 +1,6 @@
 package pt.vow.ui.enroll;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.net.Uri;
@@ -25,9 +26,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.vow.R;
@@ -37,6 +41,9 @@ import pt.vow.ui.activityInfo.ActivityParticipantsResult;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModel;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.maps.GetRouteCoordResult;
+import pt.vow.ui.maps.GetRouteCoordViewModelFactory;
+import pt.vow.ui.maps.GetRouteCoordinatesViewModel;
 import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
@@ -57,7 +64,8 @@ public class EnrollActivity extends AppCompatActivity {
     private Activity aux;
     private EnrollActivity mActivity;
     private ImageView imageType;
-
+    private GetRouteCoordinatesViewModel getRouteCoordinatesViewModel;
+private String dest;
     private Observer<GetActivitiesByUserResult> actByUserObs;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +96,9 @@ public class EnrollActivity extends AppCompatActivity {
 
         actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(ActivityParticipantsViewModel.class);
+
+        getRouteCoordinatesViewModel = new ViewModelProvider(this, new GetRouteCoordViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetRouteCoordinatesViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         activityInfoTitle = (String) getIntent().getSerializableExtra("ActivityInfo");
@@ -206,9 +217,36 @@ public class EnrollActivity extends AppCompatActivity {
         directionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //quer dizer que e uma rota por isso temos de ir buscar o getRouteCoordinates
+                if (activityInfo[8].equals("")) {
+                    Activity a = new Activity(activityInfo[1], activityInfo[6], activityInfo[0], activityInfo[2], activityInfo[8]
+                            , activityInfo[3], activityInfo[7], activityInfo[4], activityInfo[5]);
+                    getRouteCoordinatesViewModel.getCoordinates(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6], a);
+                    getRouteCoordinatesViewModel.getRouteCoordResult().observe(mActivity, new Observer<GetRouteCoordResult>() {
+                        @Override
+                        public void onChanged(GetRouteCoordResult getRouteCoordResult) {
+                            if (getRouteCoordResult == null) {
+                                return;
+                            }
+                            if (getRouteCoordResult.getError() != null) {
+                                showGetRouteCoordFailed(getRouteCoordResult.getError());
+                            }
+                            if (getRouteCoordResult.getSuccess() != null) {
+                               // Activity curAct = getRouteCoordResult.getSuccess().getActivity();
+
+                                for (String coord : getRouteCoordResult.getSuccess().getCoordinates()) {
+                                    dest += coord + "/";
+                                }
+                            }
+                        }
+                    });
+                }
+                else{
+                    dest = activityInfo[2];
+                }
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("getDirections", true);
-                bundle.putString("destination", activityInfo[2]);
+                bundle.putString("destination", dest);
                 Fragment fragment = new MapsFragment();
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getSupportFragmentManager();
@@ -273,4 +311,7 @@ public class EnrollActivity extends AppCompatActivity {
         }
     }
 
+    private void showGetRouteCoordFailed(@StringRes Integer errorString) {
+        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
 }

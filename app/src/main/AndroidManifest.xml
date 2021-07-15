@@ -10,15 +10,13 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <uses-feature android:name="android.hardware.type.watch" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <queries>
-        <package android:name="com.google.android.apps.maps" />
-    </queries>
 
     <application
         android:name=".ui.VOW"
@@ -28,6 +26,11 @@
         android:roundIcon="@mipmap/icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VOW">
+
+        <receiver
+            android:name=".ui.geofencing.GeofenceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

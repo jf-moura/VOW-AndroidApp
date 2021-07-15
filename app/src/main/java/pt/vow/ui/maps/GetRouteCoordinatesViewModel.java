@@ -29,7 +29,7 @@ public class GetRouteCoordinatesViewModel extends ViewModel {
         this.executor = executor;
     }
 
-    LiveData<GetRouteCoordResult> getRouteCoordResult() {
+    public LiveData<GetRouteCoordResult> getRouteCoordResult() {
         return getRouteCoordResult;
     }
 

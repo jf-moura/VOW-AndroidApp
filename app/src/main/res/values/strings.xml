@@ -166,6 +166,9 @@
     <string name="register">Register</string>
     <string name="info">Info</string>
     <string name="owner">Owner:</string>
+    <string name="near_activity">You are near an activity!</string>
+    <string name="rate_activity">Rate the activity you just finished.</string>
+    <string name="join_activity">Do you want to join this activity?</string>
 
     <string-array name="filter">
         <item>Health</item>
