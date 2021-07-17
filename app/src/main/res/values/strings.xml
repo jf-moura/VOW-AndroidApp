@@ -173,6 +173,7 @@
     <string name="get_profile_failed">Get profile failed</string>
     <string name="name_invalid">Not a valid name</string>
     <string name="bio_invalid">Bio must be at least one character</string>
+    <string name="activity_deleted">Activity Deleted!</string>
 
     <string-array name="filter">
         <item>Health</item>

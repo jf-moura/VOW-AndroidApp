@@ -113,13 +113,13 @@ public class ProfileFragment extends Fragment {
         getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetProfileViewModel.class);
 
-        if (user.getRole() == 0) { //volunteer
+      /*  if (user.getRole() == 0) { //volunteer
             statsLinearLayout.setVisibility(LinearLayout.GONE);
             ViewGroup.LayoutParams params = linearLayoutPrincipal.getLayoutParams();
             int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
             params.height = height;
             linearLayoutPrincipal.setLayoutParams(params);
-        }
+        }*/
 
         settingsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

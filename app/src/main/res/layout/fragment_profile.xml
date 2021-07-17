@@ -21,8 +21,27 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="20dp"
             android:adjustViewBounds="true"
-            app:shapeAppearanceOverlay="@style/Circular"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/Circular" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-35dp"
+            android:layout_marginTop="-20dp">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="100dp"
+                android:clickable="false"
+                android:src="@drawable/ic_fi_rr_camera"
+                android:tint="#F8F5F5"
+                android:backgroundTint="@color/white"
+                app:fabSize="mini"
+                app:layout_anchorGravity="bottom|right" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/aboutMeTextView"
@@ -30,9 +49,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
-            android:textSize="20dp"
             android:hint="@string/about_me"
-            android:inputType="text" />
+            android:inputType="text"
+            android:textSize="20dp" />
 
     </LinearLayout>
 

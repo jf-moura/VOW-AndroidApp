@@ -15,6 +15,8 @@ import android.widget.Toast;
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.ui.VOW;
+import pt.vow.ui.disableActivity.DeleteActivityViewModel;
+import pt.vow.ui.disableActivity.DeleteActivityViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 
 
@@ -45,6 +47,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private Activity activity;
     private GetRatingViewModel getRatingViewModel;
     private SetRatingViewModel setRatingViewModel;
+    private DeleteActivityViewModel deleteActivityViewModel;
     private ActivityParticipantsViewModel actParticipantsViewModel;
     private double totalRate;
     //private long rate;
@@ -64,6 +67,9 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 .get(SetRatingViewModel.class);
         actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(ActivityParticipantsViewModel.class);
+        deleteActivityViewModel = new ViewModelProvider(this, new DeleteActivityViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(DeleteActivityViewModel.class);
+
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
         textViewActName = findViewById(R.id.textViewActName2);
@@ -198,6 +204,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intentPop = new Intent(ActivityInfoActivity.this, PopDelete.class);
+                intentPop.putExtra("UserLogged", user);
+                intentPop.putExtra("Activity", activity);
                 startActivity(intentPop);
             }
         });
