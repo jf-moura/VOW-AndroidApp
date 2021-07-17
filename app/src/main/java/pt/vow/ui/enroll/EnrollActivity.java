@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
 import java.util.List;
 
 import pt.vow.R;
@@ -44,6 +45,7 @@ public class EnrollActivity extends AppCompatActivity {
     private Button enrollButton, directionsButton;
     private EnrollViewModel enrollViewModel;
     private CancelEnrollViewModel cancelEnrollViewModel;
+    private GetRouteCoordinatesViewModel getRouteCoordinatesViewModel;
     private LoggedInUserView user;
     private Activity activity;
     private ActivitiesByUserView activitiesList;
@@ -51,12 +53,14 @@ public class EnrollActivity extends AppCompatActivity {
     private Activity aux;
     private EnrollActivity mActivity;
     private ImageView imageType;
+    private String dest;
+    private Boolean possible;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enroll);
         mActivity = this;
-
+        possible = true;
         textViewActName = findViewById(R.id.textViewActName);
         textViewActOwner = findViewById(R.id.textViewActOwner);
         textViewAddress = findViewById(R.id.textViewAddress);
@@ -69,12 +73,17 @@ public class EnrollActivity extends AppCompatActivity {
 
         imageType = findViewById(R.id.imageViewType);
 
+        dest = "";
+
         enrollViewModel = new ViewModelProvider(this, new EnrollViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(EnrollViewModel.class);
         cancelEnrollViewModel = new ViewModelProvider(this, new CancelEnrollViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(CancelEnrollViewModel.class);
         actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(ActivityParticipantsViewModel.class);
+
+        getRouteCoordinatesViewModel = new ViewModelProvider(this, new GetRouteCoordViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetRouteCoordinatesViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         activity = (Activity) getIntent().getSerializableExtra("Activity");
@@ -161,50 +170,22 @@ public class EnrollActivity extends AppCompatActivity {
                 //if a user is already in join and user wants to cancel
                 else {
                     cancelEnrollViewModel.cancelEnrollInActivity(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
-                    }
+                }
             }
         });
+
 
         directionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                possible = true;
                 //quer dizer que e uma rota por isso temos de ir buscar o getRouteCoordinates
-                /*if (activityInfo[8].equals("")) {
-                    Activity a = new Activity(activityInfo[1], activityInfo[6], activityInfo[0], activityInfo[2], activityInfo[8]
-                            , activityInfo[3], activityInfo[7], activityInfo[4], activityInfo[5]);
-                    getRouteCoordinatesViewModel.getCoordinates(user.getUsername(), user.getTokenID(), activityInfo[1], activityInfo[6], a);
-                    getRouteCoordinatesViewModel.getRouteCoordResult().observe(mActivity, new Observer<GetRouteCoordResult>() {
-                        @Override
-                        public void onChanged(GetRouteCoordResult getRouteCoordResult) {
-                            if (getRouteCoordResult == null) {
-                                return;
-                            }
-                            if (getRouteCoordResult.getError() != null) {
-                                showGetRouteCoordFailed(getRouteCoordResult.getError());
-                            }
-                            if (getRouteCoordResult.getSuccess() != null) {
-                               // Activity curAct = getRouteCoordResult.getSuccess().getActivity();
-
-                                for (String coord : getRouteCoordResult.getSuccess().getCoordinates()) {
-                                    dest += coord + "/";
-                                }
-                            }
-                        }
-                    });
+                if (activity.getCoordinates().isEmpty()) {
+                    getCoordinates();
+                } else { //atividade unica
+                    dest = activity.getAddress();
+                    doDirections();
                 }
-                else{
-                    dest = activityInfo[2];
-                }*/
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("getDirections", true);
-                bundle.putString("destination", activity.getAddress());
-                Fragment fragment = new MapsFragment();
-                fragment.setArguments(bundle);
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.enroll_activity, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
             }
         });
     }
@@ -261,6 +242,45 @@ public class EnrollActivity extends AppCompatActivity {
 
     private void showActionFailed(@StringRes Integer error) {
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    private void doDirections() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("getDirections", true);
+        bundle.putString("destination", dest);
+        Fragment fragment = new MapsFragment();
+        fragment.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.enroll_activity, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    private void getCoordinates() {
+        getRouteCoordinatesViewModel.getCoordinates(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId(), activity);
+        getRouteCoordinatesViewModel.getRouteCoordResult().observe(mActivity, new Observer<GetRouteCoordResult>() {
+            @Override
+            public void onChanged(GetRouteCoordResult getRouteCoordResult) {
+                if (getRouteCoordResult == null) {
+                    return;
+                }
+                if (getRouteCoordResult.getError() != null) {
+                    showActionFailed(getRouteCoordResult.getError());
+                }
+                if (getRouteCoordResult.getSuccess() != null) {
+                    if (getRouteCoordResult.getSuccess().getCoordinates().size() < 10) {
+                        for (String coord : getRouteCoordResult.getSuccess().getCoordinates()) {
+                            dest += coord + "/";
+                        }
+                        doDirections();
+                    } else {
+                        possible = false;
+                        Toast.makeText(getApplicationContext(), R.string.route_too_big, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
 
 }
