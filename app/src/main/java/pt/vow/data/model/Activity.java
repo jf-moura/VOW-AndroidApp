@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 
 import java.io.Serializable;
 
+import pt.vow.ui.mainPage.Image;
+
 public class Activity implements Serializable {
 
     String owner;
@@ -15,7 +17,7 @@ public class Activity implements Serializable {
     String participantNum;
     String durationInMinutes;
     String type;
-    byte[] image;
+    Image image;
 
     public Activity(String owner, String id, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes) {
         this.owner = owner;
@@ -66,8 +68,10 @@ public class Activity implements Serializable {
         return type;
     }
 
-    public byte[] getImage() { return image; }
+    public Image getImage() { return image; }
 
-    public void setImage(byte[] img) { image = img; }
+    public void setImage(Image img) {
+        image = img;
+    }
 
 }

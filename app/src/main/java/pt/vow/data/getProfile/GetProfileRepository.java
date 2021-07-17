@@ -1,14 +1,14 @@
 package pt.vow.data.getProfile;
 
 import pt.vow.data.Result;
-import pt.vow.ui.profile.UserInfoView;
+import pt.vow.ui.profile.ProfileInfoView;
 
 public class GetProfileRepository {
     private static volatile GetProfileRepository instance;
 
     private GetProfileDataSource dataSource;
 
-    private UserInfoView info = null;
+    private ProfileInfoView info = null;
 
     private GetProfileRepository(GetProfileDataSource dataSource) {
         this.dataSource = dataSource;
@@ -25,14 +25,14 @@ public class GetProfileRepository {
         return info != null;
     }
 
-    private void setInfo(UserInfoView info) {
+    private void setInfo(ProfileInfoView info) {
         this.info = info;
     }
 
-    public Result<UserInfoView> getProfile(String username, String tokenID) {
-        Result<UserInfoView> result = dataSource.getProfile(username, tokenID);
+    public Result<ProfileInfoView> getProfile(String username, String tokenID) {
+        Result<ProfileInfoView> result = dataSource.getProfile(username, tokenID);
         if (result instanceof Result.Success) {
-            setInfo(((Result.Success<UserInfoView>) result).getData());
+            setInfo(((Result.Success<ProfileInfoView>) result).getData());
         }
         return result;
     }

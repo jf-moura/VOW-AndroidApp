@@ -3,6 +3,7 @@ package pt.vow.ui.feed;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,6 +31,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -42,6 +44,7 @@ import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentFeedBinding;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.mainPage.DownloadImageViewModel;
+import pt.vow.ui.mainPage.Image;
 import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.profile.ActivitiesByUserView;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
@@ -56,6 +59,7 @@ public class FeedFragment extends Fragment {
 
     private Map<String, Activity> aux;
     private ActivitiesByUserView enrolledActivities;
+    private List<Activity> activityList;
 
     private RecyclerView recyclerView;
     private TextView activitiesTextView;
@@ -71,9 +75,6 @@ public class FeedFragment extends Fragment {
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         mActivity = this;
-        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
-        getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
-        enrolledActivities = getActivitiesByUserViewModel.getActivitiesList().getValue();
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
         activitiesTextView = root.findViewById(R.id.activitiesTextView);
@@ -93,10 +94,14 @@ public class FeedFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
+        getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
+        enrolledActivities = getActivitiesByUserViewModel.getActivitiesList().getValue();
         activitiesViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesViewModel.class);
         activitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
 
         activitiesViewModel.getActivitiesList().observe(getActivity(), activities -> {
+            activityList = activities;
             if (activities.size() == 0)
                 activitiesTextView.setText(R.string.no_activities_available);
             else if (activities != null) {
@@ -125,10 +130,10 @@ public class FeedFragment extends Fragment {
                     }
                 }
 
-                List<Activity> list = new ArrayList<>(aux.values());
-                showFilteredAct(list);
+                activityList = new ArrayList<>(aux.values());
+                showFilteredAct(activityList);
 
-                RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), list, user, enrolledActivities);
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             }
@@ -136,9 +141,8 @@ public class FeedFragment extends Fragment {
 
         downloadImageViewModel.getImage().observe(getActivity(), image -> {
             if (image.getObjName().split("_").length == 2) {
-                byte[] img = image.getImage();
                 String objName = image.getObjName();
-                aux.get(objName).setImage(img);
+                aux.get(objName).setImage(image);
             }
         });
     }
@@ -153,6 +157,7 @@ public class FeedFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("EnrolledActivities", enrolledActivities);
+        bundle.putSerializable("Activities", (Serializable) activityList);
         Fragment fragment = new MapsFragment();
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

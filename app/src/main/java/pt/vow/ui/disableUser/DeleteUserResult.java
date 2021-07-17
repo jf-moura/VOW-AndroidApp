@@ -17,12 +17,12 @@ public class DeleteUserResult {
     }
 
     @Nullable
-    DeleteUserView getSuccess() {
+    public DeleteUserView getSuccess() {
         return success;
     }
 
     @Nullable
-    Integer getError() {
+    public Integer getError() {
         return error;
     }
 }

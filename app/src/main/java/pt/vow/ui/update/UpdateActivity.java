@@ -19,9 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import pt.vow.R;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.profile.GetProfileResult;
 import pt.vow.ui.profile.GetProfileViewModelFactory;
-import pt.vow.ui.profile.UserInfoView;
 import pt.vow.ui.profile.GetProfileViewModel;
 
 public class UpdateActivity extends AppCompatActivity {

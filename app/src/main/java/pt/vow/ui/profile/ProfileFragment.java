@@ -46,6 +46,8 @@ import pt.vow.R;
 
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.VOW;
+import pt.vow.ui.activityInfo.ActivityInfoActivity;
+import pt.vow.ui.activityInfo.PopDelete;
 import pt.vow.ui.frontPage.FrontPageActivity;
 import pt.vow.ui.mainPage.DownloadImageViewModel;
 import pt.vow.ui.mainPage.GetImageResult;
@@ -61,7 +63,7 @@ public class ProfileFragment extends Fragment {
 
     private ShapeableImageView profileImage;
     private TextView aboutMeTextView;
-    private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, linearLayoutPrincipal;
+    private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, deleteAccountLinearLayout;
     private DrawerLayout drawerLayout;
     private BottomNavigationView topNavigationProfile;
 
@@ -80,7 +82,7 @@ public class ProfileFragment extends Fragment {
 
     private Observer<GetImageResult> imgObs;
     private GetProfileViewModel getProfileViewModel;
-
+    private ProfileInfoView profileInfo;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -108,24 +110,22 @@ public class ProfileFragment extends Fragment {
         settingsLinearLayout = root.findViewById(R.id.settingsLinearLayout);
         statsLinearLayout = root.findViewById(R.id.statsLinearLayout);
         logoutLinearLayout = root.findViewById(R.id.logoutLinearLayout);
-        linearLayoutPrincipal = root.findViewById(R.id.linearLayoutPrincipal);
+        deleteAccountLinearLayout = root.findViewById(R.id.deleteAccountLinearLayout);
 
         getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetProfileViewModel.class);
 
-      /*  if (user.getRole() == 0) { //volunteer
+        //TODO: escolher se queremos continuar com o stats
+        if (user.getRole() == 0) { //volunteer
             statsLinearLayout.setVisibility(LinearLayout.GONE);
-            ViewGroup.LayoutParams params = linearLayoutPrincipal.getLayoutParams();
-            int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
-            params.height = height;
-            linearLayoutPrincipal.setLayoutParams(params);
-        }*/
+        }
 
         settingsLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), UpdateActivity.class);
                 intent.putExtra("UserLogged", user);
+                intent.putExtra("ProfileInfo", profileInfo);
                 startActivity(intent);
             }
         });
@@ -153,6 +153,15 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        deleteAccountLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentPop = new Intent(getActivity(), PopDeleteAccount.class);
+                intentPop.putExtra("UserLogged", user);
+                startActivity(intentPop);
+            }
+        });
+
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,6 +176,7 @@ public class ProfileFragment extends Fragment {
         getProfileViewModel.getProfile(user.getUsername(), user.getTokenID());
 
         getProfileViewModel.profile().observe(getActivity(), profile -> {
+            profileInfo = profile;
             String bio = profile.getBio();
             aboutMeTextView.setText(bio);
         });
@@ -224,7 +234,7 @@ public class ProfileFragment extends Fragment {
                     return;
                 }
                 if (downloadResult.getSuccess() != null && downloadResult.getSuccess().getObjName().split("_").length == 1) {
-                    byte[] img = downloadResult.getSuccess().getImage();
+                    byte[] img = downloadResult.getSuccess().getImageBytes();
                     bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
                     profileImage.setImageBitmap(bitmap);
                 }

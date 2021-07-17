@@ -1,15 +1,17 @@
 package pt.vow.ui.mainPage;
 
-public class Image {
+import java.io.Serializable;
+
+public class Image implements Serializable {
     private byte[] image;
     private String objName;
 
-    Image (byte[] image, String objName) {
+    public Image (byte[] image, String objName) {
         this.image = image;
         this.objName = objName;
     }
 
-    public byte[] getImage() {
+    public byte[] getImageBytes() {
         return image;
     }
 

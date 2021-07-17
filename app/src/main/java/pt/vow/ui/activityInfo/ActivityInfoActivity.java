@@ -32,6 +32,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 public class ActivityInfoActivity extends AppCompatActivity {
@@ -124,24 +125,43 @@ public class ActivityInfoActivity extends AppCompatActivity {
             saveUpdateBttn.setVisibility(View.GONE);
         }
 
-        getRatingViewModel.getRating(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+        Calendar currentTime = Calendar.getInstance();
+        String[] dateTime = activity.getTime().split(" ");
+        String[] hours = dateTime[3].split(":");
 
-        getRatingViewModel.rating().observe(this, rate -> {
-            double activityRatingSum = Double.parseDouble(rate.getActivityRatingSum());
-            double activityRatingCounter = Double.parseDouble(rate.getActivityRatingCounter());
-            if (activityRatingCounter != 0.0) {
-                totalRate = activityRatingSum / activityRatingCounter;
-            }
-            if (rate.getUsername().equals(user.getUsername()) && Integer.parseInt(rate.getRating()) > 0) {
-                submitBttn.setVisibility(View.GONE);
-                ratingBar.setRating(Float.parseFloat(rate.getRating()));
-                ratingBar.setFocusable(false);
-                ratingBar.setIsIndicator(true);
-                getRatingViewModel.getRating(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+        Calendar beginTime = Calendar.getInstance();
+        ;
+        if (dateTime[4].equals("PM"))
+            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
+        else
+            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
 
-            }
-            textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b> " + totalRate + "/5.0"));
-        });
+        long startMillis = beginTime.getTimeInMillis();
+        // Activity hasn't occured or the user is the owner of the activity
+        if (startMillis >= currentTime.getTimeInMillis() || activity.getOwner().equals(user.getUsername())) {
+            ratingBar.setVisibility(View.INVISIBLE);
+            submitBttn.setVisibility(View.INVISIBLE);
+        } else {
+            getRatingViewModel.getRating(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+
+            getRatingViewModel.rating().observe(this, rate -> {
+                double activityRatingSum = Double.parseDouble(rate.getActivityRatingSum());
+                double activityRatingCounter = Double.parseDouble(rate.getActivityRatingCounter());
+                if (activityRatingCounter != 0.0) {
+                    totalRate = activityRatingSum / activityRatingCounter;
+                }
+                if (rate.getUsername().equals(user.getUsername()) && Integer.parseInt(rate.getRating()) > 0) {
+                    submitBttn.setVisibility(View.GONE);
+                    ratingBar.setRating(Float.parseFloat(rate.getRating()));
+                    ratingBar.setFocusable(false);
+                    ratingBar.setIsIndicator(true);
+                    getRatingViewModel.getRating(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+
+                }
+                textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b> " + totalRate + "/5.0"));
+            });
+        }
+
 
         actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
         actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
@@ -244,4 +264,47 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 break;
         }
     }*/
+
+    private int monthToIntegerShort(String month) {
+        int result = 0;
+        switch (month) {
+            case "Jan":
+                result = 0;
+                break;
+            case "Fev":
+                result = 1;
+                break;
+            case "Mar":
+                result = 2;
+                break;
+            case "Apr":
+                result = 3;
+                break;
+            case "May":
+                result = 4;
+                break;
+            case "Jun":
+                result = 5;
+                break;
+            case "Jul":
+                result = 6;
+                break;
+            case "Aug":
+                result = 7;
+                break;
+            case "Sep":
+                result = 8;
+                break;
+            case "Oct":
+                result = 9;
+                break;
+            case "Nov":
+                result = 10;
+                break;
+            case "Dec":
+                result = 11;
+                break;
+        }
+        return result;
+    }
 }

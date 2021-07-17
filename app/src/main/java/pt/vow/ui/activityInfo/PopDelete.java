@@ -1,6 +1,5 @@
 package pt.vow.ui.activityInfo;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -23,7 +22,6 @@ import pt.vow.ui.disableActivity.DeleteActivityResult;
 import pt.vow.ui.disableActivity.DeleteActivityViewModel;
 import pt.vow.ui.disableActivity.DeleteActivityViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.profile.FutureActivitiesFragment;
 import pt.vow.ui.profile.ProfileFragment;
 
 public class PopDelete extends AppCompatActivity {
@@ -37,7 +35,9 @@ public class PopDelete extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.popwindow);
+
         mActivity = this;
+
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         activity = (Activity) getIntent().getSerializableExtra("Activity");
 
@@ -46,7 +46,7 @@ public class PopDelete extends AppCompatActivity {
 
         buttonYes = findViewById(R.id.buttonYes);
         buttonNo = findViewById(R.id.buttonNo);
-        textView = findViewById(R.id.textView5);
+        textView = findViewById(R.id.textViewPopUp);
         textView.setText(R.string.confirm_delete);
         textView.setGravity(Gravity.CENTER);
 
@@ -62,6 +62,7 @@ public class PopDelete extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //delete the activity
+                deleteActivityViewModel.deleteActivity(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
                 deleteActivityViewModel.getDeleteActivityResult().observe(mActivity, new Observer<DeleteActivityResult>() {
                     @Override
                     public void onChanged(DeleteActivityResult deleteActivityResult) {
@@ -73,7 +74,6 @@ public class PopDelete extends AppCompatActivity {
                             return;
                         }
                         if (deleteActivityResult.getSuccess() != null) {
-                            deleteActivityViewModel.deleteActivity(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
                             Toast.makeText(getApplicationContext(), R.string.activity_deleted, Toast.LENGTH_SHORT).show();
 
                             //go back to profile fragment
@@ -85,8 +85,6 @@ public class PopDelete extends AppCompatActivity {
                         }
                     }
                 });
-
-
             }
         });
 

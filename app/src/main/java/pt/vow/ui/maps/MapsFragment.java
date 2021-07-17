@@ -96,7 +96,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private final LatLng defaultLocation = new LatLng(38.738762, -9.143528);
 
     private List<Activity> activitiesList;
-    private GetActivitiesViewModel activitiesViewModel;
     private GetRouteCoordinatesViewModel getRouteCoordinatesViewModel;
     private ActivitiesByUserView enrolledActivities;
 
@@ -165,6 +164,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         enrolledActivities = (ActivitiesByUserView) getArguments().getSerializable("EnrolledActivities");
+        activitiesList = (List<Activity>) getArguments().getSerializable("Activities");
 
         geofencingClient = LocationServices.getGeofencingClient(getActivity());
         geofenceHelper = new GeofenceHelper(getContext());
@@ -245,14 +245,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return v;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        activitiesViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesViewModel.class);
-        activitiesViewModel.getActivitiesList().observe(getActivity(), list -> {
-            activitiesList = list;
-        });
-    }
 
     //MARKER WITH BUTTON
     public static int getPixelsFromDp(Context context, float dp) {

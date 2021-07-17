@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 
 public class GetProfileResult {
     @Nullable
-    private UserInfoView success;
+    private ProfileInfoView success;
     @Nullable
     private Integer error;
 
@@ -12,12 +12,12 @@ public class GetProfileResult {
         this.error = error;
     }
 
-    GetProfileResult(@Nullable UserInfoView success) {
+    GetProfileResult(@Nullable ProfileInfoView success) {
         this.success = success;
     }
 
     @Nullable
-    public UserInfoView getSuccess() {
+    public ProfileInfoView getSuccess() {
         return success;
     }
 

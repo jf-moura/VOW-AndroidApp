@@ -1,15 +1,10 @@
 package pt.vow.data.getProfile;
 
 import java.io.IOException;
-import java.util.List;
 
 import pt.vow.data.Result;
-import pt.vow.data.getActivities.ApiGetAct;
-import pt.vow.data.model.Activity;
-import pt.vow.data.model.ActivityCredentials;
 import pt.vow.data.model.UserInfo;
-import pt.vow.ui.feed.ActivitiesRegisteredView;
-import pt.vow.ui.profile.UserInfoView;
+import pt.vow.ui.profile.ProfileInfoView;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -27,13 +22,13 @@ public class GetProfileDataSource {
         this.service = retrofit.create(ApiGetProfile.class);
     }
 
-    public Result<UserInfoView> getProfile(String username, String tokenID) {
+    public Result<ProfileInfoView> getProfile(String username, String tokenID) {
         Call<UserInfo> getProfileCall = service.getProfile(username, tokenID);
         try {
             Response<UserInfo> response = getProfileCall.execute();
             if (response.isSuccessful()) {
                 UserInfo ua = response.body();
-                return new Result.Success<>(new UserInfoView(ua.getUsername(), tokenID, ua.getName(), ua.getEmail(), ua.getPhoneNumber(), ua.getDateBirth(), ua.getBio(), ua.getWebsite()));
+                return new Result.Success<>(new ProfileInfoView(ua.getUsername(), tokenID, ua.getName(), ua.getEmail(), ua.getPhoneNumber(), ua.getDateBirth(), ua.getBio(), ua.getWebsite()));
             }
             return new Result.Error(new Exception(response.errorBody().toString()));
         } catch (IOException e) {

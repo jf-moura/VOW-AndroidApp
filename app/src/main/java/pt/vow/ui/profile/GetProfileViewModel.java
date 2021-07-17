@@ -9,13 +9,11 @@ import java.util.concurrent.Executor;
 import pt.vow.R;
 import pt.vow.data.Result;
 import pt.vow.data.getProfile.GetProfileRepository;
-import pt.vow.data.model.UserInfo;
-import pt.vow.ui.activityInfo.GetRatingView;
 
 
 public class GetProfileViewModel extends ViewModel {
     private MutableLiveData<GetProfileResult> getProfileResult = new MutableLiveData<>();
-    private MutableLiveData<UserInfoView> info = new MutableLiveData<>();
+    private MutableLiveData<ProfileInfoView> info = new MutableLiveData<>();
     private GetProfileRepository getProfileRepository;
     private final Executor executor;
 
@@ -33,11 +31,11 @@ public class GetProfileViewModel extends ViewModel {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<UserInfoView> result = getProfileRepository.getProfile(username, tokenID);
+                Result<ProfileInfoView> result = getProfileRepository.getProfile(username, tokenID);
                 if (result instanceof Result.Success) {
-                    UserInfoView data = ((Result.Success<UserInfoView>) result).getData();
+                    ProfileInfoView data = ((Result.Success<ProfileInfoView>) result).getData();
                     info.postValue(data);
-                    getProfileResult.postValue(new GetProfileResult(new UserInfoView(data.getUsername(), data.getTokenID(), data.getName(), data.getEmail(), data.getPhoneNumber(), data.getDateBirth(), data.getBio(), data.getWebsite())));
+                    getProfileResult.postValue(new GetProfileResult(new ProfileInfoView(data.getUsername(), data.getTokenID(), data.getName(), data.getEmail(), data.getPhoneNumber(), data.getDateBirth(), data.getBio(), data.getWebsite())));
                 } else {
                     getProfileResult.postValue(new GetProfileResult(R.string.get_profile_failed));
                 }
@@ -45,7 +43,7 @@ public class GetProfileViewModel extends ViewModel {
         });
     }
 
-    public LiveData<UserInfoView> profile() {
+    public LiveData<ProfileInfoView> profile() {
         return info;
     }
 }

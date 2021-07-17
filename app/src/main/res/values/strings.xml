@@ -174,6 +174,10 @@
     <string name="name_invalid">Not a valid name</string>
     <string name="bio_invalid">Bio must be at least one character</string>
     <string name="activity_deleted">Activity Deleted!</string>
+    <string name="editProfile">Edit Profile</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="confirm_delete_user">Are you sure you want to delete your account</string>
+    <string name="user_deleted">User deleted with success</string>
 
     <string-array name="filter">
         <item>Health</item>

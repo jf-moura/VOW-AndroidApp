@@ -28,7 +28,7 @@ public class Pop extends AppCompatActivity {
 
         buttonYes = findViewById(R.id.buttonYes);
         buttonNo = findViewById(R.id.buttonNo);
-        textView1 = findViewById(R.id.textView5);
+        textView1 = findViewById(R.id.textViewPopUp);
         textView1.setText(R.string.add_calendar);
 
         DisplayMetrics dm = new DisplayMetrics();

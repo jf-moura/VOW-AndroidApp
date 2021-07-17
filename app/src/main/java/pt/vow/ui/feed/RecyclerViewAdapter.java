@@ -58,9 +58,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.owner.setVisibility(View.GONE);
             holder.time.setVisibility(View.GONE);
             holder.duration.setVisibility(View.GONE);
-            byte[] img = activityList.get(position).getImage();
+            byte[] img = activityList.get(position).getImage().getImageBytes();
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             holder.activityImage.setImageBitmap(bitmap);
+            activityList.get(position).setImage(null);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

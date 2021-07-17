@@ -40,6 +40,8 @@ import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;
 import pt.vow.ui.profile.GetMyActivitiesViewModel;
 import pt.vow.ui.profile.GetMyActivitiesViewModelFactory;
+import pt.vow.ui.profile.GetProfileViewModel;
+import pt.vow.ui.profile.GetProfileViewModelFactory;
 import pt.vow.ui.profile.ProfileFragment;
 
 public class MainPageVolunteer extends AppCompatActivity {
@@ -53,6 +55,9 @@ public class MainPageVolunteer extends AppCompatActivity {
     private DownloadImageViewModel downloadImageViewModel;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
+    private GetProfileViewModel getProfileViewModel;
+
+    private String profileName;
     private List<Activity> activitiesList;
     private byte[] profileImageInByte;
 
@@ -75,17 +80,25 @@ public class MainPageVolunteer extends AppCompatActivity {
                 .get(GetActivitiesByUserViewModel.class);
         getMyActivitiesViewModel = new ViewModelProvider(this, new GetMyActivitiesViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetMyActivitiesViewModel.class);
+        getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetProfileViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
+        profileName = null;
 
         activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getMyActivitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getTokenID());
+        getProfileViewModel.getProfile(user.getUsername(), user.getTokenID());
         try {
             downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        getProfileViewModel.profile().observe(this, profile -> {
+            profileName = profile.getName();
+        });
 
         notificationId = 0;
         createNotificationChannel();
@@ -98,6 +111,12 @@ public class MainPageVolunteer extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main_page_person);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.navigation_profile && profileName != null) {
+                destination.setLabel(profileName);
+            }
+        });
 
         /*downloadImageViewModel.getDownloadResult().observe(this, new Observer<GetImageResult>() {
             @Override

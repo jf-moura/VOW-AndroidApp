@@ -22,7 +22,7 @@ public class DeleteUserViewModel extends ViewModel {
         this.executor = executor;
     }
 
-    LiveData<DeleteUserResult> getDeleteUserResult() {
+    public LiveData<DeleteUserResult> getDeleteUserResult() {
         return deleteUserResult;
     }
 

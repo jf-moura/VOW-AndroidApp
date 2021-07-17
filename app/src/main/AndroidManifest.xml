@@ -65,7 +65,9 @@
         <activity
             android:name=".ui.activityInfo.PopDelete"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.customPop" />
-
+        <activity
+            android:name=".ui.profile.PopDeleteAccount"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.customPop" />
         <activity
             android:name=".ui.enroll.Pop"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.customPop" />

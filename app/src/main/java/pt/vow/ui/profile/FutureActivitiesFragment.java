@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -49,7 +51,6 @@ public class FutureActivitiesFragment extends Fragment {
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         enrolledActRecyclerView = root.findViewById(R.id.activities_recycler_view_profile);
-
         relativeLayout = root.findViewById(R.id.empty_state);
 
         //if (user.getRole() == 0) { // volunteer
