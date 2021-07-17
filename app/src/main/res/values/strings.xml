@@ -169,6 +169,10 @@
     <string name="near_activity">You are near an activity!</string>
     <string name="rate_activity">Rate the activity you just finished.</string>
     <string name="join_activity">Do you want to join this activity?</string>
+    <string name="private_account">Private Account</string>
+    <string name="get_profile_failed">Get profile failed</string>
+    <string name="name_invalid">Not a valid name</string>
+    <string name="bio_invalid">Bio must be at least one character</string>
 
     <string-array name="filter">
         <item>Health</item>

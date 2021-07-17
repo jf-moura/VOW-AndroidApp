@@ -861,7 +861,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 double lat = Double.parseDouble(aux[0]);
                 double lon = Double.parseDouble(aux[1]);
                 LatLng latLng = new LatLng(lat, lon);
-               addCircle(latLng, GEOFENCE_RADIUS);
+                addCircle(latLng, GEOFENCE_RADIUS);
                 geofenceHelper.addActivityInfo(a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum()
                         + "_" + a.getDurationInMinutes() + "_" + a.getId() + "_" + a.getType() + "_" + a.getCoordinates());
                 addGeofence(latLng, GEOFENCE_RADIUS);

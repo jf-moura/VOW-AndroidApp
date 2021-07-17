@@ -24,9 +24,9 @@ public class RegisterDataSource {
         this.service = retrofit.create(ApiCreateAcc.class);
     }
 
-    public Result<RegisteredUser> registerOrganization(String name, String username, String email, String password, String phoneNumber, String website) {
+    public Result<RegisteredUser> registerOrganization(String name, String username, String email, String password, String phoneNumber, String website, Boolean visibility, String bio) {
 
-        Call<Void> userRegistrationCall = service.createUserOrganization(new UserRegistrationOrganization(name, username, email, password, phoneNumber, website));
+        Call<Void> userRegistrationCall = service.createUserOrganization(new UserRegistrationOrganization(name, username, email, password, phoneNumber, website, visibility, bio));
         try {
             Response<Void> response = userRegistrationCall.execute();
             if (response.isSuccessful()) {
@@ -38,9 +38,9 @@ public class RegisterDataSource {
         }
     }
 
-    public Result<RegisteredUser> registerVolunteer(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
+    public Result<RegisteredUser> registerVolunteer(String name, String username, String email, String password, String phoneNumber, String dateBirth, Boolean visibility, String bio) {
 
-        Call<Void> userRegistrationCall = service.createUserVolunteer(new UserRegistrationVolunteer(name, username, email, password, phoneNumber, dateBirth));
+        Call<Void> userRegistrationCall = service.createUserVolunteer(new UserRegistrationVolunteer(name, username, email, password, phoneNumber, dateBirth, visibility, bio));
         try {
             Response<Void> response = userRegistrationCall.execute();
             if (response.isSuccessful()) {

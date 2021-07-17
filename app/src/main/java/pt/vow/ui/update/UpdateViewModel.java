@@ -31,11 +31,11 @@ public class UpdateViewModel extends ViewModel {
         return updateResult;
     }
 
-    public void update(String username, String tokenID, String name, String password, String phoneNumber, String dateBirth, String website) {
+    public void update(String username, String tokenID, String name, String oldPassword, String password, String phoneNumber, String dateBirth, String bio, String website) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredUser> result = updateRepository.update(username, tokenID, name, password, phoneNumber, dateBirth, website);
+                Result<RegisteredUser> result = updateRepository.update(username, tokenID, name, oldPassword, password, phoneNumber, dateBirth, bio, website);
                 if (result instanceof Result.Success) {
                     updateResult.postValue(new UpdateResult(new UpdatedUserView(name)));
                 } else {
@@ -45,15 +45,19 @@ public class UpdateViewModel extends ViewModel {
         });
     }
 
-    public void updateDataChanged(String password, String newPassword, String confirmPassword, String phoneNumber) {
-        if (!isPasswordAvailable(password, newPassword))
-            updateFormState.setValue(new UpdateFormState(R.string.password_not_available, null, null));
+    public void updateDataChanged(String name, String bio, String password, String newPassword, String confirmPassword, String phoneNumber) {
+        if (!isNameValid(name))
+            updateFormState.setValue(new UpdateFormState(R.string.name_invalid, null, null, null, null, null));
+        else if (!isBioValid(bio))
+            updateFormState.setValue(new UpdateFormState(null, R.string.bio_invalid, null, null, null, null));
+        else if (!isPasswordAvailable(password, newPassword))
+            updateFormState.setValue(new UpdateFormState(null, null, R.string.password_not_available, null, null, null));
         else if (!isPasswordValid(password, newPassword))
-            updateFormState.setValue(new UpdateFormState(R.string.invalid_password, null,null));
+            updateFormState.setValue(new UpdateFormState(null, null, null, R.string.invalid_password, null, null));
         else if (!isConfirmPasswordValid(newPassword, confirmPassword))
-            updateFormState.setValue(new UpdateFormState(null, R.string.invalid_password_confirmation, null));
+            updateFormState.setValue(new UpdateFormState(null, null, null, R.string.invalid_password_confirmation, null, null));
         else if (!isPhoneNumberValid(phoneNumber))
-            updateFormState.setValue(new UpdateFormState(null, null, R.string.invalid_phone_number));
+            updateFormState.setValue(new UpdateFormState(null, null, null, null, null, R.string.invalid_phone_number));
         else
             updateFormState.setValue(new UpdateFormState(true));
     }
@@ -82,6 +86,16 @@ public class UpdateViewModel extends ViewModel {
     private boolean isPhoneNumberValid(String phoneNumber) {
         if (phoneNumber != null && !phoneNumber.isEmpty())
             return phoneNumber.trim().length() == 9 || phoneNumber.trim().length() == 0;
+        return true;
+    }
+
+    // A placeholder name validation check
+    private boolean isNameValid(String name) {
+        return true;
+    }
+
+    // A placeholder bio validation check
+    private boolean isBioValid(String bio) {
         return true;
     }
 

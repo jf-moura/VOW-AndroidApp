@@ -1,13 +1,8 @@
 package pt.vow.ui.enroll;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.Html;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,13 +20,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import pt.vow.R;
@@ -219,7 +207,6 @@ public class EnrollActivity extends AppCompatActivity {
                 fragmentTransaction.commit();
             }
         });
-
     }
 
     @Override

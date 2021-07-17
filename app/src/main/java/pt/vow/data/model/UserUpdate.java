@@ -4,19 +4,23 @@ public class UserUpdate {
     String name;
     String username;
     String tokenID;
+    String oldPassword;
     String password;
     String phoneNumber;
     String dateBirth;
+    String bio;
     String website;
 
-    public UserUpdate(String username, String tokenID, String name, String password, String phoneNumber, String dateBirth, String website) {
+    public UserUpdate(String username, String tokenID, String name, String oldPassword, String password, String phoneNumber, String dateBirth, String bio, String website) {
         this.name = name;
         this.username = username;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.dateBirth = dateBirth;
         this.website = website;
-        this.tokenID=tokenID;
+        this.tokenID = tokenID;
+        this.bio = bio;
+        this.oldPassword = oldPassword;
     }
 
     public String getName() {
@@ -34,6 +38,9 @@ public class UserUpdate {
     public String getPassword() {
         return password;
     }
+    public String getOldPassword() {
+        return oldPassword;
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -43,5 +50,8 @@ public class UserUpdate {
         return dateBirth;
     }
 
-    public String getWebsite(){return website;}
+    public String getWebsite() {
+        return website;
+    }
+    public String getBio(){return bio;}
 }

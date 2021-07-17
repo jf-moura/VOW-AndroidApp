@@ -34,11 +34,11 @@ public class RegisterViewModel extends ViewModel {
         return registerResult;
     }
 
-    public void registerOrganization(String name, String username, String email, String password, String phoneNumber, String website) {
+    public void registerOrganization(String name, String username, String email, String password, String phoneNumber, String website, Boolean visibility, String bio) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredUser> result = registerRepository.registerOrganization(name, username, email, password, phoneNumber, website);
+                Result<RegisteredUser> result = registerRepository.registerOrganization(name, username, email, password, phoneNumber, website, visibility, bio);
                 if (result instanceof Result.Success) {
                     RegisteredUser data = ((Result.Success<RegisteredUser>) result).getData();
                     registerResult.postValue(new RegisterResult(new RegisteredUserView(data.getDisplayName())));
@@ -49,11 +49,11 @@ public class RegisterViewModel extends ViewModel {
         });
     }
 
-    public void registerPerson(String name, String username, String email, String password, String phoneNumber, String dateBirth) {
+    public void registerPerson(String name, String username, String email, String password, String phoneNumber, String dateBirth, Boolean visibility, String bio) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredUser> result = registerRepository.registerVolunteer(name, username, email, password, phoneNumber, dateBirth);
+                Result<RegisteredUser> result = registerRepository.registerVolunteer(name, username, email, password, phoneNumber, dateBirth, visibility, bio);
                 if (result instanceof Result.Success) {
                     RegisteredUser data = ((Result.Success<RegisteredUser>) result).getData();
                     registerResult.postValue(new RegisterResult(new RegisteredUserView(data.getDisplayName())));

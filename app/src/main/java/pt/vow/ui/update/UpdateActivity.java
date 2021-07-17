@@ -1,7 +1,6 @@
 package pt.vow.ui.update;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,16 +17,19 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import pt.vow.R;
-import pt.vow.databinding.FragmentNewActivityBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.profile.ProfileFragment;
+import pt.vow.ui.profile.GetProfileResult;
+import pt.vow.ui.profile.GetProfileViewModelFactory;
+import pt.vow.ui.profile.UserInfoView;
+import pt.vow.ui.profile.GetProfileViewModel;
 
 public class UpdateActivity extends AppCompatActivity {
-    private EditText editTextName, editTextEntWebsite, editTextPassword, editTextConfirmation, editTextNewPassword, editTextPhoneNumber;
+    private EditText editTextName, editTextEntWebsite, editTextPassword, editTextConfirmation, editTextNewPassword, editTextPhoneNumber, editTextBio;
     private TextView textViewWebsiteSett;
     private UpdateViewModel updateViewModel;
     private LoggedInUserView user;
+    private GetProfileViewModel getProfileViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class UpdateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
+
 
         editTextName = findViewById(R.id.editTextName);
 
@@ -45,8 +48,10 @@ public class UpdateActivity extends AppCompatActivity {
         editTextConfirmation = findViewById(R.id.editTextConfirmPassword);
         editTextPhoneNumber = findViewById(R.id.editTextPhone);
         textViewWebsiteSett = findViewById(R.id.textViewWebsite);
+        editTextBio = findViewById(R.id.editTextBio);
 
-        editTextName.setHint(user.getUsername());
+        getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetProfileViewModel.class);
 
         if (user.getRole() == 1) {
             editTextEntWebsite.setVisibility(View.VISIBLE);
@@ -56,6 +61,16 @@ public class UpdateActivity extends AppCompatActivity {
         // TODO: Interests
 
         final Button confirmButton = findViewById(R.id.bttnSaveChanges);
+
+        getProfileViewModel.getProfile(user.getUsername(), user.getTokenID());
+
+        getProfileViewModel.profile().observe(this, profile -> {
+            String bio = profile.getBio();
+            editTextBio.setText(bio);
+            editTextName.setHint(profile.getName());
+            editTextPhoneNumber.setHint(profile.getPhoneNumber());
+        });
+
 
         updateViewModel = new ViewModelProvider(this, new UpdateViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(UpdateViewModel.class);
@@ -68,6 +83,12 @@ public class UpdateActivity extends AppCompatActivity {
                     return;
                 }
                 confirmButton.setEnabled(updateFormState.isDataValid());
+                if (updateFormState.getNameError() != null) {
+                    editTextName.setError(getString(updateFormState.getNameError()));
+                }
+                if (updateFormState.getBioError() != null) {
+                    editTextBio.setError(getString(updateFormState.getBioError()));
+                }
                 if (updateFormState.getNewPasswordError() != null) {
                     editTextNewPassword.setError(getString(updateFormState.getNewPasswordError()));
                 }
@@ -110,7 +131,7 @@ public class UpdateActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 updateViewModel.updateDataChanged(editTextPassword.getText().toString(), editTextNewPassword.getText().toString(),
-                        editTextConfirmation.getText().toString(), editTextPhoneNumber.getText().toString());
+                        editTextConfirmation.getText().toString(), editTextPhoneNumber.getText().toString(), editTextName.getText().toString(), editTextBio.getText().toString());
             }
         };
 
@@ -118,17 +139,17 @@ public class UpdateActivity extends AppCompatActivity {
         editTextNewPassword.addTextChangedListener(afterTextChangedListener);
         editTextConfirmation.addTextChangedListener(afterTextChangedListener);
         editTextPhoneNumber.addTextChangedListener(afterTextChangedListener);
-
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (user.getRole() == 0) { //person
-                    updateViewModel.update(user.getUsername(), user.getTokenID(), editTextName.getText().toString(), editTextNewPassword.getText().toString(),
-                             editTextPhoneNumber.getText().toString(), "", "");
+                    updateViewModel.update(user.getUsername(), user.getTokenID(), editTextName.getText().toString(), editTextPassword.getText().toString(), editTextNewPassword.getText().toString(),
+                            editTextPhoneNumber.getText().toString(), "", editTextBio.getText().toString(),
+                            "");
                 } else
-                    updateViewModel.update(user.getUsername(), user.getTokenID(), editTextName.getText().toString(), editTextNewPassword.getText().toString(),
-                             editTextPhoneNumber.getText().toString(),"", editTextEntWebsite.getText().toString());
+                    updateViewModel.update(user.getUsername(), user.getTokenID(), editTextName.getText().toString(), editTextPassword.getText().toString(), editTextNewPassword.getText().toString(),
+                            editTextPhoneNumber.getText().toString(), "", editTextBio.getText().toString(), editTextEntWebsite.getText().toString());
             }
         });
     }

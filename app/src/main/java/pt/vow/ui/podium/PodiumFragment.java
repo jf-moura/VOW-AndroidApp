@@ -10,13 +10,18 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import pt.vow.R;
 import pt.vow.databinding.FragmentPodiumBinding;
+import pt.vow.ui.feed.RecyclerViewAdapter;
 
 public class PodiumFragment extends Fragment {
 
     private PodiumViewModel podiumViewModel;
     private FragmentPodiumBinding binding;
+    private RecyclerView recyclerView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -29,6 +34,12 @@ public class PodiumFragment extends Fragment {
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setTitle(null);
+
+        recyclerView = root.findViewById(R.id.activities_recycler_view);
+
+       /* RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), list, user);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));*/
 
         return root;
     }

@@ -16,9 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -28,12 +27,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.annotation.StringRes;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -56,13 +55,12 @@ import pt.vow.ui.logout.LogoutViewModelFactory;
 import pt.vow.ui.update.UpdateActivity;
 
 import static android.content.Context.MODE_PRIVATE;
-import static androidx.core.app.ActivityCompat.invalidateOptionsMenu;
 
 public class ProfileFragment extends Fragment {
     private static final int RESULT_OK = -1;
 
     private ShapeableImageView profileImage;
-    private EditText aboutMeEditText;
+    private TextView aboutMeTextView;
     private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, linearLayoutPrincipal;
     private DrawerLayout drawerLayout;
     private BottomNavigationView topNavigationProfile;
@@ -81,6 +79,7 @@ public class ProfileFragment extends Fragment {
     private SharedPreferences.Editor loginPrefsEditor;
 
     private Observer<GetImageResult> imgObs;
+    private GetProfileViewModel getProfileViewModel;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -98,9 +97,8 @@ public class ProfileFragment extends Fragment {
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         profileImage = root.findViewById(R.id.profileImage);
-        aboutMeEditText = root.findViewById(R.id.aboutMeEditText);
+        aboutMeTextView = root.findViewById(R.id.aboutMeTextView);
         topNavigationProfile = root.findViewById(R.id.topNavigationProfile);
-
 
 
         loginPreferences = getContext().getSharedPreferences("loginPrefs", MODE_PRIVATE);
@@ -112,7 +110,8 @@ public class ProfileFragment extends Fragment {
         logoutLinearLayout = root.findViewById(R.id.logoutLinearLayout);
         linearLayoutPrincipal = root.findViewById(R.id.linearLayoutPrincipal);
 
-
+        getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(GetProfileViewModel.class);
 
         if (user.getRole() == 0) { //volunteer
             statsLinearLayout.setVisibility(LinearLayout.GONE);
@@ -165,12 +164,13 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        aboutMeEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                aboutMeEditText.setText(aboutMeEditText.getText().toString());
-            }
+        getProfileViewModel.getProfile(user.getUsername(), user.getTokenID());
+
+        getProfileViewModel.profile().observe(getActivity(), profile -> {
+            String bio = profile.getBio();
+            aboutMeTextView.setText(bio);
         });
+
 
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         Fragment fragment = new FutureActivitiesFragment();
@@ -307,4 +307,7 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    private void showProfileFailed(@StringRes Integer errorString) {
+        Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
 }

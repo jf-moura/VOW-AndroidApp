@@ -22,9 +22,9 @@ public class UpdateDataSource {
         this.service = retrofit.create(ApiUpdateUser.class);
     }
 
-    public Result<RegisteredUser> update(String username, String tokenID, String name, String password, String phoneNumber, String dateBirth, String website) {
+    public Result<RegisteredUser> update(String username, String tokenID, String name, String oldPassword, String password, String phoneNumber, String dateBirth, String bio, String website) {
 
-        Call<Void> updateCall = service.updateUser(new UserUpdate(username, tokenID, name, password, phoneNumber, dateBirth, website));
+        Call<Void> updateCall = service.updateUser(new UserUpdate(username, tokenID, name, oldPassword, password, phoneNumber, dateBirth, bio, website));
         try {
             Response<Void> response = updateCall.execute();
             if (response.isSuccessful()) {

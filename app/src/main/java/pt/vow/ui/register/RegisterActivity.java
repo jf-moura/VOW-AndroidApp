@@ -16,8 +16,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,8 @@ public class RegisterActivity extends AppCompatActivity {
     private RegisterViewModel registerViewModel;
     private String date;
     private TextInputLayout textInputLayout;
+    private Switch switchMode;
+    private Boolean mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         isOrganization = true;
         mActivity = this;
+        mode = false;
 
         editTextEmail = findViewById(R.id.emailAddress);
         editTextUsername = findViewById(R.id.username);
@@ -57,6 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
         textViewDateBirth = findViewById(R.id.textViewDateBirth);
         textInputLayout = findViewById(R.id.textInputLayout);
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
+        switchMode = findViewById(R.id.switch1);
 
         date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
                 .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
@@ -89,7 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-       // spinner.setOnItemSelectedListener(this);
+        // spinner.setOnItemSelectedListener(this);
         registerViewModel = new ViewModelProvider(this, new RegisterViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(RegisterViewModel.class);
 
@@ -178,15 +184,26 @@ public class RegisterActivity extends AppCompatActivity {
         editTextConfirmation.addTextChangedListener(afterTextChangedListener);
         editTextPhoneNumber.addTextChangedListener(afterTextChangedListener);
         editTextOrgWebsite.addTextChangedListener(afterTextChangedListener);
-        datePickerDateBirth.init( datePickerDateBirth.getYear(), datePickerDateBirth.getMonth(), datePickerDateBirth.getDayOfMonth(),
+        datePickerDateBirth.init(datePickerDateBirth.getYear(), datePickerDateBirth.getMonth(), datePickerDateBirth.getDayOfMonth(),
                 new DatePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(DatePicker view, int year, int month, int dayOfMonth) {
-                date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
-                        .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
-                }
-        });
+                    @Override
+                    public void onDateChanged(DatePicker view, int year, int month, int dayOfMonth) {
+                        date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
+                                .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
+                    }
+                });
 
+        switchMode.isChecked();
+        switchMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mode = true;
+                } else {
+                    mode = false;
+                }
+            }
+        });
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,13 +211,14 @@ public class RegisterActivity extends AppCompatActivity {
                 if (isOrganization)
                     registerViewModel.registerOrganization(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
                             editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(),
-                            editTextOrgWebsite.getText().toString());
+                            editTextOrgWebsite.getText().toString(), mode, "");
                 else
                     registerViewModel.registerPerson(editTextName.getText().toString(), editTextUsername.getText().toString(), editTextEmail.getText().toString(),
-                            editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(), date);
+                            editTextPassword.getText().toString(), editTextPhoneNumber.getText().toString(), date, mode, "");
             }
         });
     }
+
 
     private void registerUserSuccess(RegisteredUserView model) {
         String success = getString(R.string.register_success) + " " + model.getDisplayName();

@@ -24,12 +24,13 @@
             app:shapeAppearanceOverlay="@style/Circular"
             android:scaleType="centerCrop" />
 
-        <EditText
-            android:id="@+id/aboutMeEditText"
+        <TextView
+            android:id="@+id/aboutMeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
+            android:textSize="20dp"
             android:hint="@string/about_me"
             android:inputType="text" />
 
