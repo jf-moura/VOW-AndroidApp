@@ -86,10 +86,12 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 if (loginResult.getError() != null) {
                     showLoginFailed(loginResult.getError());
+                    progressBar.setVisibility(View.GONE);
                 }
                 if (loginResult.getSuccess() != null) {
                     updateUiWithUser(loginResult.getSuccess());
                     setResult(Activity.RESULT_OK);
+                    progressBar.setVisibility(View.GONE);
                     finish();
                 }
             }

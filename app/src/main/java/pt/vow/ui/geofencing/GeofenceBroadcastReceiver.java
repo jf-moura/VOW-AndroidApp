@@ -39,8 +39,8 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
         Bundle bundle = intent.getExtras();
       //  test = intent.getStringExtra("test");
-      //  activity = (Activity) intent.getSerializableExtra("Activity");
-      //  user = (LoggedInUserView) intent.getSerializableExtra("UserLogged");
+        activity = (Activity) intent.getSerializableExtra("Activity");
+        user = (LoggedInUserView) intent.getSerializableExtra("UserLogged");
 
         if (geofencingEvent.hasError()) {
             Log.d(TAG, "onReceive: Error receiving geofence event...");

@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,7 +24,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -46,15 +44,12 @@ import pt.vow.R;
 
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.VOW;
-import pt.vow.ui.activityInfo.ActivityInfoActivity;
-import pt.vow.ui.activityInfo.PopDelete;
 import pt.vow.ui.frontPage.FrontPageActivity;
 import pt.vow.ui.mainPage.DownloadImageViewModel;
 import pt.vow.ui.mainPage.GetImageResult;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.logout.LogoutViewModel;
 import pt.vow.ui.logout.LogoutViewModelFactory;
-import pt.vow.ui.mainPage.Image;
 import pt.vow.ui.update.UpdateActivity;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -199,7 +194,6 @@ public class ProfileFragment extends Fragment {
                 bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
                 profileImage.setImageBitmap(bitmap);
             }
-
         });
 
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
