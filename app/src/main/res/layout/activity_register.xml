@@ -116,7 +116,6 @@
                 android:ems="10"
                 android:hint="@string/website"
                 android:inputType="textUri"
-                android:visibility="gone"
                 tools:visibility="visible" />
 
             <TextView

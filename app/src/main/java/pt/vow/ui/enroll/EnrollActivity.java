@@ -1,6 +1,8 @@
 package pt.vow.ui.enroll;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
@@ -31,6 +33,7 @@ import pt.vow.ui.activityInfo.ActivityParticipantsView;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModel;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.mainPage.Image;
 import pt.vow.ui.maps.GetRouteCoordResult;
 import pt.vow.ui.maps.GetRouteCoordViewModelFactory;
 import pt.vow.ui.maps.GetRouteCoordinatesViewModel;
@@ -43,6 +46,8 @@ import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;
 public class EnrollActivity extends AppCompatActivity {
     private TextView textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
     private Button enrollButton, directionsButton;
+    private ImageView activityImage;
+
     private EnrollViewModel enrollViewModel;
     private CancelEnrollViewModel cancelEnrollViewModel;
     private GetRouteCoordinatesViewModel getRouteCoordinatesViewModel;
@@ -54,19 +59,19 @@ public class EnrollActivity extends AppCompatActivity {
     private EnrollActivity mActivity;
     private ImageView imageType;
     private String dest;
-    private Boolean possible;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enroll);
         mActivity = this;
-        possible = true;
+
         textViewActName = findViewById(R.id.textViewActName);
         textViewActOwner = findViewById(R.id.textViewActOwner);
         textViewAddress = findViewById(R.id.textViewAddress);
         textViewDuration = findViewById(R.id.textViewDuration);
         textViewNumPart = findViewById(R.id.textViewNumParticipants);
         textViewTime = findViewById(R.id.textViewTime);
+        activityImage = findViewById(R.id.activityImageEnroll);
 
         enrollButton = findViewById(R.id.enrollButton);
         directionsButton = findViewById(R.id.btnDirections);
@@ -101,13 +106,14 @@ public class EnrollActivity extends AppCompatActivity {
             for (Activity a : activitiesList.getActivities()) {
                 if (a.getId().equals(activity.getId())) {
                     aux = a;
-                    showImageType();
                 }
             }
         }
         if (aux != null) { //it means that user already joined the activity
             enrollButton.setText(getResources().getString(R.string.unjoin));
         }
+
+        showImageType();
 
         actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
 
@@ -117,6 +123,14 @@ public class EnrollActivity extends AppCompatActivity {
                 enrollButton.setEnabled(false);
             } else enrollButton.setEnabled(true);
         });
+
+        Image actImage = activity.getImage();
+        if (actImage != null) {
+            activityImage.setVisibility(View.VISIBLE);
+            byte[] img = actImage.getImageBytes();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+            activityImage.setImageBitmap(bitmap);
+        }
 
         enrollViewModel.getEnrollResult().observe(this, new Observer<EnrollResult>() {
             @Override
@@ -178,7 +192,6 @@ public class EnrollActivity extends AppCompatActivity {
         directionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                possible = true;
                 //quer dizer que e uma rota por isso temos de ir buscar o getRouteCoordinates
                 if (activity.getCoordinates().isEmpty()) {
                     getCoordinates();
@@ -218,7 +231,7 @@ public class EnrollActivity extends AppCompatActivity {
     }
 
     private void showImageType() {
-        switch (aux.getType()) {
+        switch (activity.getType()) {
             case "animals":
                 imageType.setImageDrawable(getResources().getDrawable(R.drawable.ic_animals, getApplicationContext().getTheme()));
                 break;
@@ -275,7 +288,6 @@ public class EnrollActivity extends AppCompatActivity {
                         }
                         doDirections();
                     } else {
-                        possible = false;
                         Toast.makeText(getApplicationContext(), R.string.route_too_big, Toast.LENGTH_SHORT).show();
                     }
                 }

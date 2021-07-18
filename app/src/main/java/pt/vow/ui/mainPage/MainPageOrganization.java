@@ -1,6 +1,13 @@
 package pt.vow.ui.mainPage;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -82,7 +89,7 @@ public class MainPageOrganization extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_profile, R.id.navigation_new_activity, R.id.navigation_podium, R.id.navigation_activities_data, R.id.navigation_feed)
+                R.id.navigation_profile, R.id.navigation_choose_type, R.id.navigation_podium, R.id.navigation_activities_data, R.id.navigation_feed)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main_page);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -94,24 +101,16 @@ public class MainPageOrganization extends AppCompatActivity {
             }
         });
 
-        /*downloadImageViewModel.getDownloadResult().observe(this, new Observer<GetImageResult>() {
-            @Override
-            public void onChanged(@Nullable GetImageResult downloadResult) {
-                if (downloadResult == null) {
-                    return;
-                }
-                if (downloadResult.getError() != null) {
-                    showImageDownloadFailed(downloadResult.getError());
-                }
-                if (downloadResult.getSuccess() != null) {
-                    profileImageInByte = downloadResult.getSuccess().getImage();
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(profileImageInByte, 0, profileImageInByte.length);
-                    Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                    Menu menu = navView.getMenu();
-                    menu.findItem(R.id.navigation_profile).setIcon(drawable);
-                }
+        downloadImageViewModel.getImage().observe(this, image -> {
+            if (image.getObjName().split("_").length == 1) {
+                profileImageInByte = image.getImageBytes();
+                Bitmap bitmap = BitmapFactory.decodeByteArray(profileImageInByte, 0, profileImageInByte.length);
+                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+                drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+                Menu menu = navView.getMenu();
+                menu.findItem(R.id.navigation_profile).setIcon(drawable);
             }
-        });*/
+        });
 
         /*NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.container);

@@ -4,13 +4,25 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.view.Menu;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -106,7 +118,7 @@ public class MainPageVolunteer extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_feed,
-                R.id.navigation_new_activity, R.id.navigation_podium, R.id.navigation_profile)
+                R.id.navigation_choose_type, R.id.navigation_podium, R.id.navigation_profile)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main_page_person);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -118,26 +130,18 @@ public class MainPageVolunteer extends AppCompatActivity {
             }
         });
 
-        /*downloadImageViewModel.getDownloadResult().observe(this, new Observer<GetImageResult>() {
-            @Override
-            public void onChanged(@Nullable GetImageResult downloadResult) {
-                if (downloadResult == null) {
-                    return;
-                }
-                if (downloadResult.getError() != null) {
-                    showImageDownloadFailed(downloadResult.getError());
-                }
-                if (downloadResult.getSuccess() != null) {
-                    profileImageInByte = downloadResult.getSuccess().getImage();
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(profileImageInByte, 0, profileImageInByte.length);
-                    Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                    Menu menu = navView.getMenu();
-                    menu.findItem(R.id.navigation_profile).setIcon(drawable);
-                }
+        downloadImageViewModel.getImage().observe(this, image -> {
+            if (image.getObjName().split("_").length == 1) {
+                profileImageInByte = image.getImageBytes();
+                Bitmap bitmap = BitmapFactory.decodeByteArray(profileImageInByte, 0, profileImageInByte.length);
+                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+                drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+                Menu menu = navView.getMenu();
+                menu.findItem(R.id.navigation_profile).setIcon(drawable);
             }
         });
 
-        getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
+        /*getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
             @Override
             public void onChanged(@Nullable GetActivitiesByUserResult getActivitiesResult) {
                 if (getActivitiesResult == null) {
@@ -205,7 +209,7 @@ public class MainPageVolunteer extends AppCompatActivity {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.icon)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.icon_foreground))
-                .setContentTitle(getResources().getString( R.string.rate_activity))
+                .setContentTitle(getResources().getString(R.string.rate_activity))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentText(message + " " + name)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))

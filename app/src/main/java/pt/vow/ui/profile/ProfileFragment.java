@@ -54,6 +54,7 @@ import pt.vow.ui.mainPage.GetImageResult;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.logout.LogoutViewModel;
 import pt.vow.ui.logout.LogoutViewModelFactory;
+import pt.vow.ui.mainPage.Image;
 import pt.vow.ui.update.UpdateActivity;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -95,6 +96,8 @@ public class ProfileFragment extends Fragment {
                 .get(LogoutViewModel.class);
         uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(UploadImageViewModel.class);
+        getProfileViewModel = new ViewModelProvider(getActivity()).get(GetProfileViewModel.class);
+        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
@@ -111,9 +114,6 @@ public class ProfileFragment extends Fragment {
         statsLinearLayout = root.findViewById(R.id.statsLinearLayout);
         logoutLinearLayout = root.findViewById(R.id.logoutLinearLayout);
         deleteAccountLinearLayout = root.findViewById(R.id.deleteAccountLinearLayout);
-
-        getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
-                .get(GetProfileViewModel.class);
 
         //TODO: escolher se queremos continuar com o stats
         if (user.getRole() == 0) { //volunteer
@@ -173,14 +173,24 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        getProfileViewModel.getProfile(user.getUsername(), user.getTokenID());
+        profileInfo = getProfileViewModel.profile().getValue();
+        String bio = profileInfo.getBio();
+        aboutMeTextView.setText(bio);
 
-        getProfileViewModel.profile().observe(getActivity(), profile -> {
-            profileInfo = profile;
-            String bio = profile.getBio();
-            aboutMeTextView.setText(bio);
-        });
-
+        if (profileInfo.getImage() == null)
+            downloadImageViewModel.getImage().observe(getViewLifecycleOwner(), image -> {
+                if (image.getObjName().split("_").length == 1) {
+                    profileInfo.setImage(image);
+                    byte[] img = image.getImageBytes();
+                    bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                    profileImage.setImageBitmap(bitmap);
+                }
+            });
+        else {
+            byte[] img = profileInfo.getImage().getImageBytes();
+            bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+            profileImage.setImageBitmap(bitmap);
+        }
 
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         Fragment fragment = new FutureActivitiesFragment();
@@ -221,29 +231,6 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
-        downloadImageViewModel.getDownloadResult().observeForever(imgObs = new Observer<GetImageResult>() {
-            @Override
-            public void onChanged(@Nullable GetImageResult downloadResult) {
-                if (downloadResult == null) {
-                    return;
-                }
-                if (downloadResult.getError() != null) {
-                    return;
-                }
-                if (downloadResult.getSuccess() != null && downloadResult.getSuccess().getObjName().split("_").length == 1) {
-                    byte[] img = downloadResult.getSuccess().getImageBytes();
-                    bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                    profileImage.setImageBitmap(bitmap);
-                }
-            }
-        });
-
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         menuInflater.inflate(R.menu.menu_nav_drawer, menu);
         super.onCreateOptionsMenu(menu, menuInflater);
@@ -262,18 +249,6 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-        if (imgObs != null)
-            downloadImageViewModel.getDownloadResult().removeObserver(imgObs);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        try {
-            downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private static void openDrawer(DrawerLayout drawerLayout) {
@@ -289,7 +264,6 @@ public class ProfileFragment extends Fragment {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
                         imageUri = data.getData();
-
                         try {
                             bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                             profileImage.setImageBitmap(bitmap);

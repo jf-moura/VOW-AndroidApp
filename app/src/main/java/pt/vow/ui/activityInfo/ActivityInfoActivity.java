@@ -1,6 +1,8 @@
 package pt.vow.ui.activityInfo;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
@@ -18,6 +20,7 @@ import pt.vow.ui.VOW;
 import pt.vow.ui.disableActivity.DeleteActivityViewModel;
 import pt.vow.ui.disableActivity.DeleteActivityViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.mainPage.Image;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,6 +46,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private Button submitBttn, saveUpdateBttn;
     private EditText editTextComment;
     private RatingBar ratingBar;
+    private ImageView activityImage;
 
     private LoggedInUserView user;
     private Activity activity;
@@ -95,6 +99,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
         deleteActBttn = findViewById(R.id.deleteActBttn);
         imageType = findViewById(R.id.imageViewType2);
+        activityImage = findViewById(R.id.activityImageInfo);
 
 
         // activityInfoFromNotification = (Activity) getIntent().getSerializableExtra("Activity");
@@ -229,6 +234,15 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 startActivity(intentPop);
             }
         });
+
+        Image actImage = activity.getImage();
+        if (actImage != null) {
+            activityImage.setVisibility(View.VISIBLE);
+            byte[] img = actImage.getImageBytes();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+            activityImage.setImageBitmap(bitmap);
+        }
+
     }
 
     @Override

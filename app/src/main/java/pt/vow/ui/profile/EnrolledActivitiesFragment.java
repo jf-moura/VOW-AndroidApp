@@ -22,15 +22,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.databinding.ScrollviewActivitiesBinding;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.mainPage.DownloadImageViewModel;
 
 public class EnrolledActivitiesFragment extends Fragment {
 
@@ -39,9 +44,11 @@ public class EnrolledActivitiesFragment extends Fragment {
     private RecyclerView enrolledActRecyclerView;
 
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
+    private DownloadImageViewModel downloadImageViewModel;
     private LoggedInUserView user;
 
     private List<Activity> activitiesByUserList;
+    private Map<String, Activity> aux;
 
     private Observer<GetActivitiesByUserResult> actByUserObs;
 
@@ -60,7 +67,7 @@ public class EnrolledActivitiesFragment extends Fragment {
 
         relativeLayout = root.findViewById(R.id.empty_state);
 
-        //if (user.getRole() == 0) { // volunteer
+        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesByUserViewModel.class);
         getActivitiesByUserViewModel.getActivitiesResult().observeForever(actByUserObs = new Observer<GetActivitiesByUserResult>() {
             @Override
@@ -77,7 +84,7 @@ public class EnrolledActivitiesFragment extends Fragment {
                         relativeLayout.setVisibility(View.VISIBLE);
                     }
                     if (activitiesByUserList != null) {
-                        List<Activity> aux = new LinkedList<>();
+                        aux = new HashMap<>();
                         for (Activity a : activitiesByUserList) {
                             Calendar currentTime = Calendar.getInstance();
 
@@ -92,13 +99,20 @@ public class EnrolledActivitiesFragment extends Fragment {
 
                             long startMillis = beginTime.getTimeInMillis();
                             if(startMillis <= currentTime.getTimeInMillis()){
-                                aux.add(a);
+                                aux.put(a.getOwner() + "_" + a.getName(), a);
+                                try {
+                                    downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getOwner() + "_" + a.getName());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                         if (aux.isEmpty())
                             relativeLayout.setVisibility(View.VISIBLE);
                         else {
-                            ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), aux, user);
+                            List<Activity> activityList = new ArrayList<>(aux.values());
+
+                            ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
                             enrolledActRecyclerView.setAdapter(adapter);
                             enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                         }
@@ -107,17 +121,17 @@ public class EnrolledActivitiesFragment extends Fragment {
                 }
             }
         });
-        //}
+
+        downloadImageViewModel.getImage().observe(getActivity(), image -> {
+            if (image.getObjName().split("_").length == 2) {
+                String objName = image.getObjName();
+                Activity a = aux.get(objName);
+                if (a != null)
+                    a.setImage(image);
+            }
+        });
 
         return root;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        //if (user.getRole() == 0) // volunteer
-        getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getTokenID());
     }
 
     @Override

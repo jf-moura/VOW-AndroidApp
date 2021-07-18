@@ -2,9 +2,12 @@ package pt.vow.ui.profile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -42,6 +45,14 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
             holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) +" "+ activityList.get(position).getName());
             holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) +" "+ activityList.get(position).getOwner());
 
+            if (activityList.get(position).getImage() != null) {
+                holder.activityImage.setVisibility(View.VISIBLE);
+                byte[] img = activityList.get(position).getImage().getImageBytes();
+                Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                holder.activityImage.setImageBitmap(bitmap);
+                //activityList.get(position).setImage(null);
+            }
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -61,11 +72,13 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
         public class ViewHolder extends RecyclerView.ViewHolder {
 
             TextView activityName, owner;
+            ImageView activityImage;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 activityName = itemView.findViewById(R.id.textViewActivityName);
                 owner = itemView.findViewById(R.id.textViewOwner);
+                activityImage = itemView.findViewById(R.id.activityImageProfile);
             }
         }
 }

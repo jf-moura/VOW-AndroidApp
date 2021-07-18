@@ -61,7 +61,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             byte[] img = activityList.get(position).getImage().getImageBytes();
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             holder.activityImage.setImageBitmap(bitmap);
-            activityList.get(position).setImage(null);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

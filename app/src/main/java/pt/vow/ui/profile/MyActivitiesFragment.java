@@ -17,13 +17,18 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.databinding.ScrollviewActivitiesBinding;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.mainPage.DownloadImageViewModel;
 
 public class MyActivitiesFragment extends Fragment {
     private ScrollviewActivitiesBinding binding;
@@ -31,9 +36,11 @@ public class MyActivitiesFragment extends Fragment {
     private RecyclerView myActRecyclerView;
 
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
+    private DownloadImageViewModel downloadImageViewModel;
     private LoggedInUserView user;
 
     private List<Activity> myActivitiesList;
+    private Map<String, Activity> aux;
 
     private Observer<GetMyActivitiesResult> myActObs;
 
@@ -51,6 +58,8 @@ public class MyActivitiesFragment extends Fragment {
 
         relativeLayout = root.findViewById(R.id.empty_state);
 
+
+        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getMyActivitiesViewModel = new ViewModelProvider(requireActivity()).get(GetMyActivitiesViewModel.class);
         getMyActivitiesViewModel.getActivitiesResult().observeForever(myActObs = new Observer<GetMyActivitiesResult>() {
             @Override
@@ -67,7 +76,18 @@ public class MyActivitiesFragment extends Fragment {
                         relativeLayout.setVisibility(View.VISIBLE);
                     }
                     if (myActivitiesList != null) {
-                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), myActivitiesList, user);
+                        for (Activity a : myActivitiesList) {
+                            aux = new HashMap<>();
+                            aux.put(a.getOwner() + "_" + a.getName(), a);
+                            try {
+                                downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getOwner() + "_" + a.getName());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        List<Activity> activityList = new ArrayList<>(aux.values());
+
+                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
                         myActRecyclerView.setAdapter(adapter);
                         myActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     }
@@ -76,13 +96,16 @@ public class MyActivitiesFragment extends Fragment {
             }
         });
 
-        return root;
-    }
+        downloadImageViewModel.getImage().observe(getActivity(), image -> {
+            if (image.getObjName().split("_").length == 2) {
+                String objName = image.getObjName();
+                Activity a = aux.get(objName);
+                if (a != null)
+                    a.setImage(image);
+            }
+        });
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getMyActivitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
+        return root;
     }
 
     @Override
