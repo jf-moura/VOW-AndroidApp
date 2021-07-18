@@ -9,18 +9,25 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.maps.model.LatLng;
+
 import android.content.Context;
+
+import pt.vow.data.model.Activity;
 import pt.vow.ui.login.LoggedInUserView;
 
 
 public class GeofenceHelper extends ContextWrapper {
     private static final String TAG = "GeofenceHelper";
     PendingIntent pendingIntent;
-    private String activityInfo;
+    private Activity activity;
     private LoggedInUserView user;
+    private NotificationHelper notificationHelper;
+    private GeofenceBroadcastReceiver geo;
 
     public GeofenceHelper(Context base) {
         super(base);
+        notificationHelper = new NotificationHelper(base);
+        geo = new GeofenceBroadcastReceiver();
 
     }
 
@@ -46,10 +53,13 @@ public class GeofenceHelper extends ContextWrapper {
         if (pendingIntent != null) {
             return pendingIntent;
         }
-        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        intent.putExtra("ActivityInfo", activityInfo);
+
+        Intent intent = new Intent().setClass(getApplicationContext(), GeofenceBroadcastReceiver.class);
+        intent.setAction("PlacesProximityHandlerService");
+        intent.putExtra("test", "test");
+        intent.putExtra("Activity", activity);
         intent.putExtra("UserLogged", user);
-        pendingIntent = PendingIntent.getBroadcast(this, 2607, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 2607, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         return pendingIntent;
     }
 
@@ -71,11 +81,18 @@ public class GeofenceHelper extends ContextWrapper {
         return e.getLocalizedMessage();
     }
 
-    public void addActivityInfo(String s) {
-        activityInfo = s;
+    public void addActivityInfo(Activity a) {
+        activity = a;
+        notificationHelper.addActivityInfo(activity);
+        geo.addActivityInfo(activity);
+
     }
 
     public void addUserLogged(LoggedInUserView user) {
         this.user = user;
+        notificationHelper.addUserLogged(user);
+        geo.addUserLogged(user);
     }
+
+
 }

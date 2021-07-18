@@ -24,7 +24,7 @@ public class GetActivitiesViewModel extends ViewModel {
         this.executor = executor;
     }
 
-    LiveData<GetActivitiesResult> getActivitiesResult() {
+    public LiveData<GetActivitiesResult> getActivitiesResult() {
         return getActivitiesResult;
     }
 

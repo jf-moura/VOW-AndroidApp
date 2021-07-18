@@ -27,11 +27,11 @@ public class GetProfileViewModel extends ViewModel {
     }
 
 
-    public void getProfile(String username, String tokenID) {
+    public void getProfile(String userToGet, String username, String tokenID) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<ProfileInfoView> result = getProfileRepository.getProfile(username, tokenID);
+                Result<ProfileInfoView> result = getProfileRepository.getProfile(userToGet, username, tokenID);
                 if (result instanceof Result.Success) {
                     ProfileInfoView data = ((Result.Success<ProfileInfoView>) result).getData();
                     info.postValue(data);

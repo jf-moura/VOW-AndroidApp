@@ -81,13 +81,15 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:label="@string/login" />
+        <activity android:name=".ui.geofencing.MapsGeofencing">
+
+        </activity>
 
         <activity
             android:name=".ui.frontPage.FrontPageActivity"
             android:label="VOW">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

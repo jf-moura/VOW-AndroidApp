@@ -1,9 +1,6 @@
 package pt.vow.data.model;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
-
 import pt.vow.ui.mainPage.Image;
 
 public class Activity implements Serializable {

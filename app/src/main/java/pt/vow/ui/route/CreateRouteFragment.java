@@ -394,6 +394,5 @@ public class CreateRouteFragment extends Fragment implements OnMapReadyCallback 
                 confirmBttn.setVisibility(View.VISIBLE);
             }
         });
-
     }
 }

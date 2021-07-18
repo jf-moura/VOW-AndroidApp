@@ -22,8 +22,8 @@ public class GetProfileDataSource {
         this.service = retrofit.create(ApiGetProfile.class);
     }
 
-    public Result<ProfileInfoView> getProfile(String username, String tokenID) {
-        Call<UserInfo> getProfileCall = service.getProfile(username, tokenID);
+    public Result<ProfileInfoView> getProfile(String userToGet, String username, String tokenID) {
+        Call<UserInfo> getProfileCall = service.getProfile(userToGet, username, tokenID);
         try {
             Response<UserInfo> response = getProfileCall.execute();
             if (response.isSuccessful()) {

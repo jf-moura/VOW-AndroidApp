@@ -60,7 +60,7 @@ public class UpdateActivity extends AppCompatActivity {
 
         final Button confirmButton = findViewById(R.id.bttnSaveChanges);
 
-        getProfileViewModel.getProfile(user.getUsername(), user.getTokenID());
+        getProfileViewModel.getProfile(user.getUsername(),user.getUsername(), user.getTokenID());
 
         getProfileViewModel.profile().observe(this, profile -> {
             String bio = profile.getBio();

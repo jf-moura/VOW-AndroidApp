@@ -75,7 +75,7 @@ public class MainPageOrganization extends AppCompatActivity {
         activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getMyActivitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
-        getProfileViewModel.getProfile(user.getUsername(), user.getTokenID());
+        getProfileViewModel.getProfile(user.getUsername(), user.getUsername(), user.getTokenID());
         try {
             downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
         } catch (IOException e) {

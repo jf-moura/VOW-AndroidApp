@@ -94,6 +94,7 @@ public class EnrollActivity extends AppCompatActivity {
         activity = (Activity) getIntent().getSerializableExtra("Activity");
         activitiesList = (ActivitiesByUserView) getIntent().getSerializableExtra("EnrolledActivities");
 
+
         textViewActName.setText(Html.fromHtml("<b>" + getResources().getString(R.string.activity_name) + "</b>" + " " + activity.getName()));
         textViewActOwner.setText(Html.fromHtml("<b>" + getResources().getString(R.string.organization) + "</b>" + " " + activity.getOwner()));
         textViewAddress.setText(Html.fromHtml("<b>" + getResources().getString(R.string.address) + "</b>" + " " + activity.getAddress()));
@@ -144,7 +145,7 @@ public class EnrollActivity extends AppCompatActivity {
                     return;
                 }
                 if (enrollResult.getSuccess() != null) {
-                    Toast.makeText(getApplicationContext(), "Joined Activity!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.joined_activity, Toast.LENGTH_SHORT).show();
                     enrollButton.setText(getResources().getString(R.string.unjoin));
                     actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
                 }
@@ -163,7 +164,7 @@ public class EnrollActivity extends AppCompatActivity {
                 }
                 if (cancelEnrollResult.getSuccess() != null) {
                     enrollButton.setText(getResources().getString(R.string.join));
-                    Toast.makeText(getApplicationContext(), "Unjoined Activity!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.unjoined_activity, Toast.LENGTH_SHORT).show();
                     actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
                 }
             }

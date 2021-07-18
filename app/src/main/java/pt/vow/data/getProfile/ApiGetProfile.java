@@ -8,6 +8,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Path;
 
 public interface ApiGetProfile {
-    @GET("rest/profile/{username}")
-    Call<UserInfo> getProfile(@Path ("username") String username , @Header("tokenID") String tokenID);
+    @GET("rest/profile/{usertoget}")
+    Call<UserInfo> getProfile(@Path("usertoget") String usertoget,
+                              @Header("username") String username, @Header("tokenID") String tokenID);
 }

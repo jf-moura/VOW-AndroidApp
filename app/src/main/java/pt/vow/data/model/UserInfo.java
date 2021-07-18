@@ -8,8 +8,13 @@ public class UserInfo {
     String dateBirth;
     String bio;
     String website;
+    String creationTime;
+    Boolean visibility;
+    Integer role;
+    Boolean status;
 
-    public UserInfo(String name, String username, String email, String phoneNumber, String dateBirth, String bio, String website) {
+
+    public UserInfo(String name, String username, String email, String phoneNumber, String dateBirth, String bio, String website, String creationTime, Boolean visibility, Integer role, Boolean status) {
         this.name = name;
         this.username = username;
         this.email = email;
@@ -17,6 +22,10 @@ public class UserInfo {
         this.dateBirth = dateBirth;
         this.bio = bio;
         this.website = website;
+        this.creationTime = creationTime;
+        this.visibility = visibility;
+        this.role = role;
+        this.status = status;
     }
 
     public String getName() {
@@ -45,5 +54,21 @@ public class UserInfo {
 
     public String getWebsite() {
         return website;
+    }
+
+    public String getCreationTime() {
+        return creationTime;
+    }
+
+    public Boolean getVisibility() {
+        return visibility;
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public Boolean getStatus() {
+        return status;
     }
 }

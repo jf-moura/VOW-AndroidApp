@@ -177,8 +177,13 @@
     <string name="route_too_big">Route is too big to get directions!</string>
     <string name="editProfile">Edit Profile</string>
     <string name="delete_account">Delete Account</string>
-    <string name="confirm_delete_user">Are you sure you want to delete your account</string>
+    <string name="confirm_delete_user">Are you sure you want to delete your account?</string>
     <string name="user_deleted">User deleted with success</string>
+    <string name="register_comment_failed">Register comment failed</string>
+    <string name="joined_activity">Joined Activity!</string>
+    <string name="unjoined_activity">Unjoined Activity!</string>
+    <string name="register_comment">Comment Registered!</string>
+    <string name="get_comments_failed">Get Comments Failed</string>
 
     <string-array name="filter">
         <item>Health</item>

@@ -29,8 +29,8 @@ public class GetProfileRepository {
         this.info = info;
     }
 
-    public Result<ProfileInfoView> getProfile(String username, String tokenID) {
-        Result<ProfileInfoView> result = dataSource.getProfile(username, tokenID);
+    public Result<ProfileInfoView> getProfile(String userToGet, String username, String tokenID) {
+        Result<ProfileInfoView> result = dataSource.getProfile(userToGet, username, tokenID);
         if (result instanceof Result.Success) {
             setInfo(((Result.Success<ProfileInfoView>) result).getData());
         }

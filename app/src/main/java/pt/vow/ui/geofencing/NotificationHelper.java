@@ -20,11 +20,14 @@ import androidx.core.graphics.drawable.IconCompat;
 import java.util.Random;
 
 import pt.vow.R;
+import pt.vow.data.model.Activity;
 import pt.vow.data.model.LoggedInUser;
 import pt.vow.ui.login.LoggedInUserView;
 
 public class NotificationHelper extends ContextWrapper {
     private static final String TAG = "NotificationHelper";
+    private Activity activity;
+    private LoggedInUserView user;
 
     public NotificationHelper(Context base) {
         super(base);
@@ -48,12 +51,13 @@ public class NotificationHelper extends ContextWrapper {
         manager.createNotificationChannel(notificationChannel);
     }
 
-    public void sendHighPriorityNotification(String title, String body, Class activityName, String titleString, LoggedInUserView user) {
+    public void sendHighPriorityNotification(String title, String body, Class activityName) {
 
         Intent intent = new Intent(this, activityName);
-        intent.putExtra("ActivityInfo", titleString);
+        intent.setAction("PlacesProximityHandlerService2");
+        intent.putExtra("Activity", activity);
         intent.putExtra("UserLogged",  user);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 267, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 267, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
 //                .setContentTitle(title)
@@ -69,4 +73,11 @@ public class NotificationHelper extends ContextWrapper {
         NotificationManagerCompat.from(this).notify(new Random().nextInt(), notification);
     }
 
+    public void addActivityInfo(Activity a) {
+        activity = a;
+    }
+
+    public void addUserLogged(LoggedInUserView user) {
+        this.user = user;
+    }
 }

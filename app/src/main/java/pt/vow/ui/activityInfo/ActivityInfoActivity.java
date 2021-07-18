@@ -16,16 +16,33 @@ import android.widget.Toast;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
+import pt.vow.data.model.Commentary;
 import pt.vow.ui.VOW;
+import pt.vow.ui.comments.CommentsRecyclerViewAdapter;
+import pt.vow.ui.comments.GetActCommentsResult;
+import pt.vow.ui.comments.GetActCommentsViewModel;
+import pt.vow.ui.comments.GetActCommentsViewModelFactory;
+import pt.vow.ui.comments.RegisterCommentResult;
+import pt.vow.ui.comments.RegisterCommentViewModel;
+import pt.vow.ui.comments.RegisterCommentViewModelFactory;
 import pt.vow.ui.disableActivity.DeleteActivityViewModel;
 import pt.vow.ui.disableActivity.DeleteActivityViewModelFactory;
+import pt.vow.ui.enroll.EnrollResult;
+import pt.vow.ui.enroll.EnrollViewModel;
+import pt.vow.ui.enroll.EnrollViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.mainPage.Image;
+import pt.vow.ui.profile.GetActivitiesByUserResult;
+import pt.vow.ui.profile.ProfileRecyclerViewAdapter;
 
 
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -34,8 +51,11 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class ActivityInfoActivity extends AppCompatActivity {
@@ -43,7 +63,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private ActivityInfoActivity mActivity;
     private TextView textViewRating, textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
     private EditText editTextDuration, editTextNumPart, editTextTime, editTextActName, editTextActOwner, editTextAddress;
-    private Button submitBttn, saveUpdateBttn;
+    private Button submitBttn, saveUpdateBttn, postCommentBttn;
     private EditText editTextComment;
     private RatingBar ratingBar;
     private ImageView activityImage;
@@ -59,6 +79,12 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private Observer<GetRatingResult> rateObs;
     private ImageButton deleteActBttn;
     private ImageView imageType;
+    private RegisterCommentViewModel registerCommentViewModel;
+    private GetActCommentsViewModel getActCommentsViewModel;
+
+    private Observer<GetActCommentsResult> actCommentsObs;
+    private List<Commentary> commentaryList;
+    private RecyclerView actCommentsRecyclerView;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +100,10 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 .get(ActivityParticipantsViewModel.class);
         deleteActivityViewModel = new ViewModelProvider(this, new DeleteActivityViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(DeleteActivityViewModel.class);
+        registerCommentViewModel = new ViewModelProvider(this, new RegisterCommentViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(RegisterCommentViewModel.class);
+        getActCommentsViewModel = new ViewModelProvider(this, new GetActCommentsViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetActCommentsViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
@@ -100,7 +130,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
         deleteActBttn = findViewById(R.id.deleteActBttn);
         imageType = findViewById(R.id.imageViewType2);
         activityImage = findViewById(R.id.activityImageInfo);
-
+        postCommentBttn = findViewById(R.id.buttonPostComment);
+        actCommentsRecyclerView = findViewById(R.id.comments_recycler_view);
 
         // activityInfoFromNotification = (Activity) getIntent().getSerializableExtra("Activity");
         activity = (Activity) getIntent().getSerializableExtra("Activity");
@@ -135,7 +166,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         String[] hours = dateTime[3].split(":");
 
         Calendar beginTime = Calendar.getInstance();
-        ;
+
         if (dateTime[4].equals("PM"))
             beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
         else
@@ -243,10 +274,46 @@ public class ActivityInfoActivity extends AppCompatActivity {
             activityImage.setImageBitmap(bitmap);
         }
 
+        registerCommentViewModel.getRegisterCommentResult().observe(this, new Observer<RegisterCommentResult>() {
+            @Override
+            public void onChanged(RegisterCommentResult registerCommentResult) {
+                if (registerCommentResult == null) {
+                    return;
+                }
+                if (registerCommentResult.getError() != null) {
+                    showActionFailed(registerCommentResult.getError());
+                    return;
+                }
+                if (registerCommentResult.getSuccess() != null) {
+                    Toast.makeText(getApplicationContext(), R.string.register_comment, Toast.LENGTH_SHORT).show();
+                    editTextComment.setText("");
+                }
+            }
+        });
+
+        postCommentBttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //register the comment
+                String comment = editTextComment.getText().toString();
+                registerCommentViewModel.registerComment(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId(), comment);
+            }
+        });
+
+        getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+
+        getActCommentsViewModel.getActCommentsList().observe(this, comments -> {
+            commentaryList = comments;
+            CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(getApplicationContext(), commentaryList);
+            actCommentsRecyclerView.setAdapter(adapter);
+            actCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        });
     }
 
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @androidx.annotation.Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode,
+                                 @androidx.annotation.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == AutocompleteActivity.RESULT_OK) {
             Place pl = Autocomplete.getPlaceFromIntent(data);
@@ -321,4 +388,9 @@ public class ActivityInfoActivity extends AppCompatActivity {
         }
         return result;
     }
+
+    private void showActionFailed(@StringRes Integer error) {
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
 }

@@ -22,8 +22,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -83,10 +88,11 @@ import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentMapsBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.enroll.EnrollActivity;
-import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.geofencing.GeofenceHelper;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.profile.ActivitiesByUserView;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
@@ -153,6 +159,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public MapsFragment() {
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -169,6 +176,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         geofencingClient = LocationServices.getGeofencingClient(getActivity());
         geofenceHelper = new GeofenceHelper(getContext());
         geofenceHelper.addUserLogged(user);
+
 
         try {
             getDirections = getArguments().getBoolean("getDirections");
@@ -240,7 +248,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (getDirections) {
             displayTrack(start, end);
         }
-
+        mPermissionResult.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         root = v;
         return v;
     }
@@ -288,7 +296,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (locationPermissionGranted) {
             // Use fields to define the data types to return.
             List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.ID, Place.Field.NAME);
-
 
             // Use the builder to create a FindCurrentPlaceRequest.
             FindCurrentPlaceRequest request =
@@ -405,16 +412,29 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
 
-    @Override
+    private ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            new ActivityResultCallback<Boolean>() {
+                @Override
+                public void onActivityResult(Boolean result) {
+                    if(result) {
+                        Log.e(TAG, "onActivityResult: PERMISSION GRANTED");
+                    } else {
+                        Log.e(TAG, "onActivityResult: PERMISSION DENIED");
+                    }
+                }
+            });
+
+    /*@Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        locationPermissionGranted = false;
+        // locationPermissionGranted = false;
         if (requestCode == FINE_LOCATION_ACCESS_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //We have the permission
-                locationPermissionGranted = true;
+                // locationPermissionGranted = true;
                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     mMap.setMyLocationEnabled(true);
                 } else {
@@ -428,7 +448,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 }
             } else {
                 //We do not have the permission..
-
             }
         }
 
@@ -441,14 +460,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 Toast.makeText(getActivity(), "Background location access is neccessary for geofences to trigger...", Toast.LENGTH_SHORT).show();
             }
         }
-
-        updateLocationUI();
-    }
+        //updateLocationUI();
+    }*/
 
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
      */
-    // [START maps_current_place_update_location_ui]
+// [START maps_current_place_update_location_ui]
     private void updateLocationUI() {
         if (mMap == null) {
             return;
@@ -471,7 +489,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     /**
      * Gets the current location of the device, and positions the map's camera.
      */
-    // [START maps_current_place_get_device_location]
+// [START maps_current_place_get_device_location]
     private void getDeviceLocation() {
         /*
          * Get the best and most recent location of the device, which may be null in rare
@@ -505,7 +523,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             Log.e("Exception: %s", e.getMessage(), e);
         }
     }
-    // [END maps_current_place_get_device_location]
+// [END maps_current_place_get_device_location]
 
 
     @Override
@@ -565,11 +583,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (activitiesList != null) {
             for (Activity a : activitiesList) {
                 if (a.getCoordinates() != null && !a.getCoordinates().isEmpty()) {
-                    //TODO: check if activities are all for the future.
-               /* String[] time = a.getTime().split(" ");
-                String timeMonth = time[0];
-                int currTimeM = Calendar.getInstance().get(Calendar.MONTH);
-                int auxTimeMonth = this.monthToInteger(timeMonth);*/
 
                     Calendar currentTime = Calendar.getInstance();
 
@@ -735,8 +748,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         getDeviceLocation();
 
         enableUserLocation();
-        addGeofenceToActivities();
 
+        addGeofenceToActivities();
+       // addGeofenceToActivities2();
         mMap.setOnMapLongClickListener(this::handleMapLongClick);
 
     }
@@ -753,7 +767,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && resultCode == AutocompleteActivity.RESULT_OK) {
+        if (requestCode == 100 && resultCode == RESULT_OK) {
             Place pl = Autocomplete.getPlaceFromIntent(data);
             Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());
             searchView.setText(pl.getAddress());
@@ -769,7 +783,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     public void onInfoWindowClick(Marker marker) {
         Activity activity = null;
-        for (Activity curAct: activitiesList)
+        for (Activity curAct : activitiesList)
             if (curAct.getId().equals(marker.getTitle().split("_")[2])) {
                 activity = curAct;
                 break;
@@ -847,25 +861,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     private void addGeofenceToActivities() {
-        for (Activity a : activitiesList) {
-            if (!a.getCoordinates().equals("")) {
-                String[] aux = a.getCoordinates().split(",");
+      //  for (int i = 0; i<activitiesList.size(); i++) {
+            if (!activitiesList.get(0).getCoordinates().isEmpty()) {
+                String[] aux = activitiesList.get(0).getCoordinates().split(",");
                 double lat = Double.parseDouble(aux[0]);
                 double lon = Double.parseDouble(aux[1]);
                 LatLng latLng = new LatLng(lat, lon);
-               // addCircle(latLng, GEOFENCE_RADIUS);
-                geofenceHelper.addActivityInfo(a.getName() + "_" + a.getOwner() + "_" + a.getAddress() + "_" + a.getTime() + "_" + a.getParticipantNum()
-                        + "_" + a.getDurationInMinutes() + "_" + a.getId() + "_" + a.getType() + "_" + a.getCoordinates());
+                addCircle(latLng, GEOFENCE_RADIUS);
+                geofenceHelper.addActivityInfo(activitiesList.get(0));
                 addGeofence(latLng, GEOFENCE_RADIUS);
             }
-        }
+      //  }
     }
 
     private void handleMapLongClick(LatLng latLng) {
         //   mMap.clear();
-       // addMarker(latLng);
-      //  addCircle(latLng, GEOFENCE_RADIUS);
-       // addGeofence(latLng, GEOFENCE_RADIUS);
+        addMarker(latLng);
+        addCircle(latLng, GEOFENCE_RADIUS);
+        addGeofence(latLng, GEOFENCE_RADIUS);
     }
 
     @Override
@@ -897,6 +910,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         circleOptions.fillColor(Color.argb(64, 255, 0, 0));
         circleOptions.strokeWidth(4);
         mMap.addCircle(circleOptions);
+    }
+
+    private void addGeofenceToActivities2() {
+        LatLng latLng = new LatLng(38.7804889, -9.0950107);
+        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
+        mMap.addMarker(markerOptions);
+        addGeofence(latLng, GEOFENCE_RADIUS);
     }
 
     private void getActivitiesNearUser() {
