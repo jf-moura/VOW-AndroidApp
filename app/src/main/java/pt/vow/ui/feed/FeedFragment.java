@@ -58,9 +58,9 @@ public class FeedFragment extends Fragment {
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
 
-    private Map<String, Activity> aux;
     private ActivitiesByUserView enrolledActivities;
     private List<Activity> activityList;
+    private Map<String, Activity> aux;
 
     private RecyclerView recyclerView;
     private TextView activitiesTextView;
@@ -97,9 +97,13 @@ public class FeedFragment extends Fragment {
         super.onStart();
         downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
-        enrolledActivities = getActivitiesByUserViewModel.getActivitiesList().getValue();
         activitiesViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesViewModel.class);
+
         activitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
+
+        getActivitiesByUserViewModel.getActivitiesList().observe(this, activitiesByUser -> {
+            enrolledActivities = activitiesByUser;
+        });
 
         activitiesViewModel.getActivitiesList().observe(getActivity(), activities -> {
             activityList = activities;
@@ -108,7 +112,6 @@ public class FeedFragment extends Fragment {
             else if (activities != null) {
                 aux = new HashMap<>();
                 for (Activity a : activities) {
-
                     long currentTime = Calendar.getInstance().getTimeInMillis();
 
                     String[] dateTime = a.getTime().split(" ");
@@ -131,7 +134,7 @@ public class FeedFragment extends Fragment {
                     }
                 }
 
-                activityList = new ArrayList<>(aux.values());
+                List<Activity> activityList = new ArrayList<>(aux.values());
                 showFilteredAct(activityList);
 
                 RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
@@ -142,8 +145,12 @@ public class FeedFragment extends Fragment {
 
         downloadImageViewModel.getImage().observe(getActivity(), image -> {
             if (image.getObjName().split("_").length == 2) {
-                String objName = image.getObjName();
-                aux.get(objName).setImage(image);
+                if (aux != null) {
+                    String objName = image.getObjName();
+                    Activity a = aux.get(objName);
+                    if (a != null)
+                        a.setImage(image);
+                }
             }
         });
     }

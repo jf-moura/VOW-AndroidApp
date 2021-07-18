@@ -71,6 +71,8 @@ public class ProfileFragment extends Fragment {
     private LogoutViewModel logoutViewModel;
     private DownloadImageViewModel downloadImageViewModel;
     private UploadImageViewModel uploadImageViewModel;
+    private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
+    private GetMyActivitiesViewModel getMyActivitiesViewModel;
     private LoggedInUserView user;
 
     private FragmentProfileBinding binding;
@@ -98,8 +100,13 @@ public class ProfileFragment extends Fragment {
                 .get(UploadImageViewModel.class);
         getProfileViewModel = new ViewModelProvider(getActivity()).get(GetProfileViewModel.class);
         downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
+        getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
+        getMyActivitiesViewModel = new ViewModelProvider(getActivity()).get(GetMyActivitiesViewModel.class);
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
+
+        getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getTokenID());
+        getMyActivitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
 
         profileImage = root.findViewById(R.id.profileImage);
         aboutMeTextView = root.findViewById(R.id.aboutMeTextView);
@@ -173,24 +180,27 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        profileInfo = getProfileViewModel.profile().getValue();
-        String bio = profileInfo.getBio();
-        aboutMeTextView.setText(bio);
+        getProfileViewModel.profile().observe(getActivity(), profile -> {
+            profileInfo = profile;
+            String bio = profileInfo.getBio();
+            aboutMeTextView.setText(bio);
 
-        if (profileInfo.getImage() == null)
-            downloadImageViewModel.getImage().observe(getViewLifecycleOwner(), image -> {
-                if (image.getObjName().split("_").length == 1) {
-                    profileInfo.setImage(image);
-                    byte[] img = image.getImageBytes();
-                    bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                    profileImage.setImageBitmap(bitmap);
-                }
-            });
-        else {
-            byte[] img = profileInfo.getImage().getImageBytes();
-            bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-            profileImage.setImageBitmap(bitmap);
-        }
+            if (profileInfo.getImage() == null)
+                downloadImageViewModel.getImage().observe(getViewLifecycleOwner(), image -> {
+                    if (image.getObjName().split("_").length == 1) {
+                        profileInfo.setImage(image);
+                        byte[] img = image.getImageBytes();
+                        bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                        profileImage.setImageBitmap(bitmap);
+                    }
+                });
+            else {
+                byte[] img = profileInfo.getImage().getImageBytes();
+                bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                profileImage.setImageBitmap(bitmap);
+            }
+
+        });
 
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         Fragment fragment = new FutureActivitiesFragment();

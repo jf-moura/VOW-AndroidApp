@@ -27,6 +27,7 @@ import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.databinding.ScrollviewActivitiesBinding;
+import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.mainPage.DownloadImageViewModel;
 
@@ -58,9 +59,9 @@ public class MyActivitiesFragment extends Fragment {
 
         relativeLayout = root.findViewById(R.id.empty_state);
 
-
         downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
-        getMyActivitiesViewModel = new ViewModelProvider(requireActivity()).get(GetMyActivitiesViewModel.class);
+        getMyActivitiesViewModel = new ViewModelProvider(getActivity()).get(GetMyActivitiesViewModel.class);
+
         getMyActivitiesViewModel.getActivitiesResult().observeForever(myActObs = new Observer<GetMyActivitiesResult>() {
             @Override
             public void onChanged(@Nullable GetMyActivitiesResult getActivitiesResult) {
@@ -76,8 +77,8 @@ public class MyActivitiesFragment extends Fragment {
                         relativeLayout.setVisibility(View.VISIBLE);
                     }
                     if (myActivitiesList != null) {
+                        aux = new HashMap<>();
                         for (Activity a : myActivitiesList) {
-                            aux = new HashMap<>();
                             aux.put(a.getOwner() + "_" + a.getName(), a);
                             try {
                                 downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getOwner() + "_" + a.getName());
@@ -98,10 +99,12 @@ public class MyActivitiesFragment extends Fragment {
 
         downloadImageViewModel.getImage().observe(getActivity(), image -> {
             if (image.getObjName().split("_").length == 2) {
-                String objName = image.getObjName();
-                Activity a = aux.get(objName);
-                if (a != null)
-                    a.setImage(image);
+                if (aux != null) {
+                    String objName = image.getObjName();
+                    Activity a = aux.get(objName);
+                    if (a != null)
+                        a.setImage(image);
+                }
             }
         });
 

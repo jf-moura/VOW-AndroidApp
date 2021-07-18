@@ -101,11 +101,11 @@ public class EnrollActivity extends AppCompatActivity {
         textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + "</b>" + " " + activity.getParticipantNum()));
         textViewDuration.setText(Html.fromHtml("<b>" + getResources().getString(R.string.duration) + "</b>" + " " + Integer.parseInt(activity.getDurationInMinutes()) / 60 + "h" + Integer.parseInt(activity.getDurationInMinutes()) % 60));
 
-        // TODO: perceber pq quando saiu o botao nao fica logo bem e tenho de mudar de frag
         if (activitiesList != null) {
             for (Activity a : activitiesList.getActivities()) {
                 if (a.getId().equals(activity.getId())) {
                     aux = a;
+                    break;
                 }
             }
         }
@@ -121,7 +121,8 @@ public class EnrollActivity extends AppCompatActivity {
             textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + " </b>" + participants.size() + "/" + activity.getParticipantNum()));
             if (participants.size() == Integer.parseInt(activity.getParticipantNum())) {
                 enrollButton.setEnabled(false);
-            } else enrollButton.setEnabled(true);
+            }
+            //else enrollButton.setEnabled(true);
         });
 
         Image actImage = activity.getImage();

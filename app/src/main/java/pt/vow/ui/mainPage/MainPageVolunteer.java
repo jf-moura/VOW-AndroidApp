@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.api.services.storage.Storage;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,19 +89,20 @@ public class MainPageVolunteer extends AppCompatActivity {
                 .get(GetActivitiesViewModel.class);
         downloadImageViewModel = new ViewModelProvider(this, new DownloadImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(DownloadImageViewModel.class);
+        getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetProfileViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetActivitiesByUserViewModel.class);
         getMyActivitiesViewModel = new ViewModelProvider(this, new GetMyActivitiesViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetMyActivitiesViewModel.class);
-        getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getApplication()).getExecutorService()))
-                .get(GetProfileViewModel.class);
+
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         profileName = null;
 
         activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
+        getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getMyActivitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
-        getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getTokenID());
         getProfileViewModel.getProfile(user.getUsername(), user.getTokenID());
         try {
             downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
