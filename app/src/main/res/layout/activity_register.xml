@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="@string/phone_number"
+                android:hint="@string/phone_number_org"
                 android:inputType="phone"
                 android:visibility="visible"
                 tools:visibility="visible" />

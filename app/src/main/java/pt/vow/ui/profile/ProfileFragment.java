@@ -145,10 +145,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 logoutViewModel.logout(user.getUsername(),
                         user.getTokenID());
-
-                loginPrefsEditor.putBoolean("saveLogin", false);
                 Intent intent;
-                //intent = new Intent(getActivity(), LoginActivity.class);
                 intent = new Intent(getActivity(), FrontPageActivity.class);
                 intent.putExtra("test", false);
                 startActivity(intent);

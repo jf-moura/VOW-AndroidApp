@@ -10,7 +10,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import pt.vow.R;
+import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.login.LoginActivity;
+import pt.vow.ui.mainPage.MainPageOrganization;
+import pt.vow.ui.mainPage.MainPageVolunteer;
 import pt.vow.ui.register.RegisterActivity;
 
 public class FrontPageActivity extends AppCompatActivity {
@@ -20,9 +23,11 @@ public class FrontPageActivity extends AppCompatActivity {
 
     private SharedPreferences loginPreferences;
 
-    private boolean saveLogin, saveLogin2, saveLoginExtra;
+    private boolean saveLogin, saveLoginExtra;
     private String username, tokenId;
     private Long role;
+    private Boolean test;
+    private LoggedInUserView user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,37 +41,41 @@ public class FrontPageActivity extends AppCompatActivity {
 
         loginPreferences = getApplicationContext().getSharedPreferences("loginPrefs", MODE_PRIVATE);
 
-        Boolean test = (Boolean) getIntent().getSerializableExtra("test");
-        if(test == null){
+        test = (Boolean) getIntent().getSerializableExtra("test");
+        user = (LoggedInUserView) getIntent().getSerializableExtra("userLogged");
+
+        if (test == null) {
             test = true;
         }
 
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
-        saveLogin2 = loginPreferences.getBoolean("saveLogin2", true);
 
-        if(username==null) {
+        if (username == null) {
             username = loginPreferences.getString("username", "username");
             role = loginPreferences.getLong("role", 1);
             tokenId = loginPreferences.getString("tokenId", "tokenId");
         }
 
-       /* if (saveLogin && test) {
-            Intent intent;
-            LoggedInUserView user = new LoggedInUserView(role, username, tokenId);
-            if (role == 0) { //volunteer
-                intent = new Intent(loginAct, MainPageVolunteer.class);
-                intent.putExtra("UserLogged", user);
-            } else { //organization
-                intent = new Intent(loginAct, MainPage.class);
-                intent.putExtra("UserLogged", user);
-            }
+        if (test) {
+            Intent intent = new Intent(loginAct, LoginActivity.class);
+            intent.putExtra("test", test);
             startActivity(intent);
-        }*/
+            /*Intent intent;
+              LoggedInUserView user = new LoggedInUserView(role, username, tokenId);
+            if (user.getRole() == 0) { //volunteer
+                intent = new Intent(loginAct, MainPageVolunteer.class);
+            } else { //organization
+                intent = new Intent(loginAct, MainPageOrganization.class);
+            }
+            intent.putExtra("UserLogged", user);
+            startActivity(intent);*/
+        }
 
         loginBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(loginAct, LoginActivity.class);
+                intent.putExtra("test", test);
                 startActivity(intent);
             }
         });
@@ -98,6 +107,7 @@ public class FrontPageActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         // Restore UI state from the savedInstanceState.
         // This bundle has also been passed to onCreate.
+        user = (LoggedInUserView) getIntent().getSerializableExtra("userLogged");
         username = savedInstanceState.getString("username");
         role = savedInstanceState.getLong("role");
         tokenId = savedInstanceState.getString("tokenId");

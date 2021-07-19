@@ -4,8 +4,8 @@
 
     <string name="app_name">VOW</string>
     <!-- Strings related to login -->
-    <string name="prompt_email">email</string>
-    <string name="prompt_password">password</string>
+    <string name="prompt_email">email<font color='#ff477e'>*</font></string>
+    <string name="prompt_password">password<font color='#ff477e'>*</font></string>
     <string name="action_sign_in">Iniciar sessão ou registar.</string>
     <string name="action_sign_in_short">Iniciar sessão</string>
     <string name="welcome">Bem vindo/a</string>
@@ -88,10 +88,10 @@
     <string name="remember_me">Relembra-me</string>
 
     <!--register-->
-    <string name="name">nome</string>
-    <string name="username">username</string>
-    <string name="confirm_password">confirmar password</string>
-    <string name="phone_number">número de telemovel</string>
+    <string name="name">nome<font color='#ff477e'>*</font></string>
+    <string name="username">username<font color='#ff477e'>*</font></string>
+    <string name="confirm_password">confirmar password<font color='#ff477e'>*</font></string>
+    <string name="phone_number">número de telemóvel</string>
     <string name="website">website</string>
     <string name="date_birth">Data de nascimento</string>
     <string name="next">Próximo</string>
@@ -164,7 +164,7 @@
     <string name="password_not_available">Por favor insira a palavra passe</string>
 
 
-    <string name="username_email">username/email</string>
+    <string name="username_email">username/email<font color='#FF0000'>*</font></string>
     <string name="date_no_valid">Não é possível criar atividades para o passado</string>
     <string name="commit_rating">Obrigada pela sua pontuação</string>
     <string name="get_rating_failed">Erro ao obter a pontuação</string>
@@ -207,4 +207,6 @@
     <string name="register_comment">Comentário registado!</string>
     <string name="get_comments_failed">Falha ao obter os comentários.</string>
 
+    <string name="prompt_bio">Biografia:</string>
+    <string name="phone_number_org">número de telemóvel<font color='#ff477e'>*</font></string>
 </resources>

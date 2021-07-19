@@ -33,7 +33,8 @@ public class LoginActivity extends AppCompatActivity {
     private LoginActivity mActivity;
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
-    private boolean saveLogin;
+    private boolean saveLogin, test;
+    private LoggedInUserView userLogged;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,11 +56,15 @@ public class LoginActivity extends AppCompatActivity {
         loginPrefsEditor = loginPreferences.edit();
 
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
-        if (saveLogin) {
+        test = getIntent().getBooleanExtra("test", true);
+
+        if (saveLogin && test) {
             usernameEditText.setText(loginPreferences.getString("username", ""));
             passwordEditText.setText(loginPreferences.getString("password", ""));
             rememberMe.setChecked(true);
             loginButton.setEnabled(true);
+            loginViewModel.login(usernameEditText.getText().toString(),
+                    passwordEditText.getText().toString());
         }
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
@@ -155,6 +160,7 @@ public class LoginActivity extends AppCompatActivity {
         // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
         Intent intent;
+        userLogged = model;
         loginPrefsEditor.putLong("role", model.getRole());
         loginPrefsEditor.putString("tokenId", model.getTokenID());
         if (model.getRole() == 0) {

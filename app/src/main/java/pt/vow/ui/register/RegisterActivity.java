@@ -83,6 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
                         datePickerDateBirth.setVisibility(view.GONE);
                         textViewDateBirth.setVisibility(view.GONE);
                         isOrganization = true;
+                        editTextPhoneNumber.setHint(R.string.phone_number_org);
                         break;
 
                     case 1:
@@ -90,6 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
                         datePickerDateBirth.setVisibility(view.VISIBLE);
                         textViewDateBirth.setVisibility(view.VISIBLE);
                         isOrganization = false;
+                        editTextPhoneNumber.setHint(R.string.phone_number);
                         break;
                 }
             }

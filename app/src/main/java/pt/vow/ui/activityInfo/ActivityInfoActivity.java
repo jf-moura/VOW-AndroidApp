@@ -139,27 +139,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         // showImageType();
 
         //if the user is not the owner of the activity
-        if (!user.getUsername().equals(activity.getOwner())) {
-            editTextActName.setFocusable(false);
-            editTextActName.setClickable(false);
-            editTextActName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            editTextActOwner.setFocusable(false);
-            editTextActOwner.setClickable(false);
-            editTextActOwner.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            editTextAddress.setFocusable(false);
-            editTextAddress.setClickable(false);
-            editTextAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            editTextNumPart.setFocusable(false);
-            editTextNumPart.setClickable(false);
-            editTextNumPart.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            editTextTime.setFocusable(false);
-            editTextTime.setClickable(false);
-            editTextTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            editTextDuration.setFocusable(false);
-            editTextDuration.setClickable(false);
-            editTextDuration.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            saveUpdateBttn.setVisibility(View.GONE);
-        }
+        hideOwnerFunctionalities();
 
         Calendar currentTime = Calendar.getInstance();
         String[] dateTime = activity.getTime().split(" ");
@@ -208,7 +188,6 @@ public class ActivityInfoActivity extends AppCompatActivity {
         editTextActOwner.setText(" " + activity.getOwner());
         editTextAddress.setText(" " + activity.getAddress());
         editTextTime.setText(" " + activity.getTime());
-        // editTextNumPart.setText(" " + activityInfo[4]);
         editTextDuration.setText(" " + Integer.parseInt(activity.getDurationInMinutes()) / 60 + "h" + Integer.parseInt(activity.getDurationInMinutes()) % 60);
         textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b> " + totalRate + "/5.0"));
 
@@ -391,6 +370,32 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
     private void showActionFailed(@StringRes Integer error) {
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    private void hideOwnerFunctionalities() {
+        //if the user is not the owner of the activity
+        if (!user.getUsername().equals(activity.getOwner())) {
+            editTextActName.setFocusable(false);
+            editTextActName.setClickable(false);
+            editTextActName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            editTextActOwner.setFocusable(false);
+            editTextActOwner.setClickable(false);
+            editTextActOwner.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            editTextAddress.setFocusable(false);
+            editTextAddress.setClickable(false);
+            editTextAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            editTextNumPart.setFocusable(false);
+            editTextNumPart.setClickable(false);
+            editTextNumPart.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            editTextTime.setFocusable(false);
+            editTextTime.setClickable(false);
+            editTextTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            editTextDuration.setFocusable(false);
+            editTextDuration.setClickable(false);
+            editTextDuration.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            saveUpdateBttn.setVisibility(View.GONE);
+            deleteActBttn.setVisibility(View.GONE);
+        }
     }
 
 }

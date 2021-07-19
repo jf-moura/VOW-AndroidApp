@@ -4,8 +4,8 @@
 
     <string name="app_name">VOW</string>
     <!-- Strings related to login -->
-    <string name="prompt_email">email</string>
-    <string name="prompt_password">password</string>
+    <string name="prompt_email">email<font color='#ff477e'>*</font></string>
+    <string name="prompt_password">password<font color='#ff477e'>*</font></string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">Welcome</string>
@@ -84,9 +84,9 @@
     <string name="learn_more">Learn more about us</string>
     <string name="remember_me">Remember Me</string>
     <!--register-->
-    <string name="name">name</string>
-    <string name="username">username</string>
-    <string name="confirm_password">confirm password</string>
+    <string name="name">name<font color='#ff477e'>*</font></string>
+    <string name="username">username<font color='#ff477e'>*</font></string>
+    <string name="confirm_password">confirm password<font color='#ff477e'>*</font></string>
     <string name="phone_number">phone number</string>
     <string name="website">website</string>
     <string name="date_birth">Date Birth</string>
@@ -154,7 +154,7 @@
 
     <string name="organization_title">Organization</string>
     <string name="password_not_available">Please insert password</string>
-    <string name="username_email">username/email</string>
+    <string name="username_email">username/email<font color='#ff477e'>*</font></string>
     <string name="date_no_valid">Cannot create activities for the past</string>
     <string name="commit_rating">Thank you for your rating</string>
     <string name="get_rating_failed">Error getting rating</string>
@@ -185,6 +185,7 @@
     <string name="register_comment">Comment Registered!</string>
     <string name="get_comments_failed">Get Comments Failed</string>
     <string name="prompt_bio">Biography:</string>
+    <string name="phone_number_org">phone number<font color='#ff477e'>*</font></string>
 
     <string-array name="filter">
         <item>Health</item>
