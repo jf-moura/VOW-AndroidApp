@@ -11,26 +11,18 @@ public class UpdateFormState {
     private Integer newPasswordError;
     @Nullable
     private Integer phoneNumberError;
-    @Nullable
-    private Integer nameError;
-    @Nullable
-    private Integer bioError;
     private boolean isDataValid;
 
-    UpdateFormState(@Nullable Integer nameError, @Nullable Integer bioError,@Nullable Integer passwordError, @Nullable Integer newPasswordError, @Nullable Integer confirmPasswordError, @Nullable Integer phoneNumberError) {
+    UpdateFormState(@Nullable Integer passwordError, @Nullable Integer newPasswordError, @Nullable Integer confirmPasswordError, @Nullable Integer phoneNumberError) {
+        this.passwordError = passwordError;
         this.confirmPasswordError = confirmPasswordError;
         this.newPasswordError = newPasswordError;
         this.phoneNumberError = phoneNumberError;
-        this.bioError = bioError;
-        this.nameError = nameError;
-        this.passwordError = passwordError;
         this.isDataValid = false;
     }
 
     UpdateFormState(boolean isDataValid) {
         this.passwordError = null;
-        this.nameError = null;
-        this.bioError = null;
         this.confirmPasswordError = null;
         this.newPasswordError = null;
         this.phoneNumberError = null;
@@ -55,16 +47,6 @@ public class UpdateFormState {
     @Nullable
     Integer getPhoneNumberError() {
         return phoneNumberError;
-    }
-
-    @Nullable
-    Integer getNameError() {
-        return nameError;
-    }
-
-    @Nullable
-    Integer getBioError() {
-        return bioError;
     }
 
     boolean isDataValid() {

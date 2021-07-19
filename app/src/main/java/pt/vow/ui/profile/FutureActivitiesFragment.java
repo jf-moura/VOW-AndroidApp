@@ -118,10 +118,12 @@ public class FutureActivitiesFragment extends Fragment {
 
         downloadImageViewModel.getImage().observe(getActivity(), image -> {
             if (image.getObjName().split("_").length == 2) {
-                String objName = image.getObjName();
-                Activity a = aux.get(objName);
-                if (a != null)
-                    a.setImage(image);
+                if (aux != null) {
+                    String objName = image.getObjName();
+                    Activity a = aux.get(objName);
+                    if (a != null)
+                        a.setImage(image);
+                }
             }
         });
 

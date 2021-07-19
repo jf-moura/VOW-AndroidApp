@@ -184,6 +184,7 @@
     <string name="unjoined_activity">Unjoined Activity!</string>
     <string name="register_comment">Comment Registered!</string>
     <string name="get_comments_failed">Get Comments Failed</string>
+    <string name="prompt_bio">Biography:</string>
 
     <string-array name="filter">
         <item>Health</item>

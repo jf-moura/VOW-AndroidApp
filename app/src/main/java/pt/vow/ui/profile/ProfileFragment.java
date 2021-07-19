@@ -102,6 +102,7 @@ public class ProfileFragment extends Fragment {
 
         getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getTokenID());
         getMyActivitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
+        getProfileViewModel.getProfile(user.getUsername(), user.getUsername(), user.getTokenID());
 
         profileImage = root.findViewById(R.id.profileImage);
         aboutMeTextView = root.findViewById(R.id.aboutMeTextView);
@@ -172,6 +173,16 @@ public class ProfileFragment extends Fragment {
                 intent.setAction(intent.ACTION_GET_CONTENT);
 
                 someActivityResultLauncher.launch(intent);
+            }
+        });
+
+        getProfileViewModel.getProfileResult().observe(getActivity(), new Observer<GetProfileResult>() {
+            @Override
+            public void onChanged(GetProfileResult getProfileResult) {
+                if (getProfileResult.getError() != null)
+                    return;
+                if (getProfileResult.getSuccess() != null)
+                    return;
             }
         });
 
