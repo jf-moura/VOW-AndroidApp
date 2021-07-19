@@ -207,6 +207,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/rating_bar" />
 
             <Button
+                android:id="@+id/checkPartBttn"
+                android:layout_width="41dp"
+                android:layout_height="41dp"
+                android:layout_marginTop="116dp"
+                android:background="@drawable/ic_baseline_check_circle_24"
+                android:textSize="9sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.83"
+                app:layout_constraintStart_toEndOf="@+id/rating_bar"
+                app:layout_constraintTop_toBottomOf="@+id/editTextDur" />
+
+            <Button
                 android:id="@+id/submitBttn"
                 android:layout_width="41dp"
                 android:layout_height="41dp"

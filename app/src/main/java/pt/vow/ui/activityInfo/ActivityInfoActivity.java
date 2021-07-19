@@ -25,6 +25,7 @@ import pt.vow.ui.comments.GetActCommentsViewModelFactory;
 import pt.vow.ui.comments.RegisterCommentResult;
 import pt.vow.ui.comments.RegisterCommentViewModel;
 import pt.vow.ui.comments.RegisterCommentViewModelFactory;
+import pt.vow.ui.confimParticipants.ConfirmParticipantsActivity;
 import pt.vow.ui.disableActivity.DeleteActivityViewModel;
 import pt.vow.ui.disableActivity.DeleteActivityViewModelFactory;
 import pt.vow.ui.enroll.EnrollResult;
@@ -63,7 +64,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private ActivityInfoActivity mActivity;
     private TextView textViewRating, textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
     private EditText editTextDuration, editTextNumPart, editTextTime, editTextActName, editTextActOwner, editTextAddress;
-    private Button submitBttn, saveUpdateBttn, postCommentBttn;
+    private Button submitBttn, saveUpdateBttn, postCommentBttn, checkPartBttn;
     private EditText editTextComment;
     private RatingBar ratingBar;
     private ImageView activityImage;
@@ -132,6 +133,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         activityImage = findViewById(R.id.activityImageInfo);
         postCommentBttn = findViewById(R.id.buttonPostComment);
         actCommentsRecyclerView = findViewById(R.id.comments_recycler_view);
+        checkPartBttn = findViewById(R.id.checkPartBttn);
 
         // activityInfoFromNotification = (Activity) getIntent().getSerializableExtra("Activity");
         activity = (Activity) getIntent().getSerializableExtra("Activity");
@@ -286,6 +288,16 @@ public class ActivityInfoActivity extends AppCompatActivity {
             CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(getApplicationContext(), commentaryList);
             actCommentsRecyclerView.setAdapter(adapter);
             actCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        });
+
+        checkPartBttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityInfoActivity.this, ConfirmParticipantsActivity.class);
+                intent.putExtra("UserLogged", user);
+                intent.putExtra("Activity", activity);
+                startActivity(intent);
+            }
         });
     }
 

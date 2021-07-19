@@ -186,6 +186,8 @@
     <string name="get_comments_failed">Get Comments Failed</string>
     <string name="prompt_bio">Biography:</string>
     <string name="phone_number_org">phone number<font color='#ff477e'>*</font></string>
+    <string name="confirm_users">Please confirm the participants that attended this activity</string>
+    <string name="confirm_act_participants">Confirm Activity Participants</string>
 
     <string-array name="filter">
         <item>Health</item>
