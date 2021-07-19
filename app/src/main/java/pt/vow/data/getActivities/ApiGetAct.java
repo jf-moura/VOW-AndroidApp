@@ -12,6 +12,4 @@ public interface ApiGetAct {
 
     @POST("rest/get/activities")
     Call<List<Activity>> getActivities(@Body ActivityCredentials credentials);
-
-
 }

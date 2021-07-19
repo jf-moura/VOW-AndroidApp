@@ -13,15 +13,29 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 import pt.vow.R;
+import pt.vow.data.model.Activity;
+import pt.vow.data.model.UserInfo;
 import pt.vow.databinding.FragmentPodiumBinding;
+import pt.vow.ui.VOW;
+import pt.vow.ui.activityInfo.GetRatingViewModel;
+import pt.vow.ui.activityInfo.GetRatingViewModelFactory;
+import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.feed.RecyclerViewAdapter;
+import pt.vow.ui.getAllUsers.GetAllUsersViewModel;
+import pt.vow.ui.getAllUsers.GetAllUsersViewModelFactory;
+import pt.vow.ui.login.LoggedInUserView;
 
 public class PodiumFragment extends Fragment {
 
     private PodiumViewModel podiumViewModel;
     private FragmentPodiumBinding binding;
     private RecyclerView recyclerView;
+    private LoggedInUserView user;
+    private GetAllUsersViewModel getAllUsersViewModel;
+    private List<UserInfo> usersList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -31,16 +45,24 @@ public class PodiumFragment extends Fragment {
         binding = FragmentPodiumBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
+        getAllUsersViewModel = new ViewModelProvider(this, new GetAllUsersViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(GetAllUsersViewModel.class);
+
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setTitle(null);
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
 
-       /* RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), list, user);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));*/
+        getAllUsersViewModel.getAllUsers(user.getUsername(), user.getTokenID());
 
+        getAllUsersViewModel.getAllUsersList().observe(getActivity(), users -> {
+            usersList = users;
+            PodiumRecyclerViewAdapter adapter = new PodiumRecyclerViewAdapter(getContext(), usersList, user);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        });
         return root;
     }
 

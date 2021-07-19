@@ -56,11 +56,11 @@ public class FrontPageActivity extends AppCompatActivity {
             tokenId = loginPreferences.getString("tokenId", "tokenId");
         }
 
-        if (test) {
+        /*if (test) {
             Intent intent = new Intent(loginAct, LoginActivity.class);
             intent.putExtra("test", test);
             startActivity(intent);
-            /*Intent intent;
+            Intent intent;
               LoggedInUserView user = new LoggedInUserView(role, username, tokenId);
             if (user.getRole() == 0) { //volunteer
                 intent = new Intent(loginAct, MainPageVolunteer.class);
@@ -68,8 +68,8 @@ public class FrontPageActivity extends AppCompatActivity {
                 intent = new Intent(loginAct, MainPageOrganization.class);
             }
             intent.putExtra("UserLogged", user);
-            startActivity(intent);*/
-        }
+            startActivity(intent);
+        }*/
 
         loginBttn.setOnClickListener(new View.OnClickListener() {
             @Override
