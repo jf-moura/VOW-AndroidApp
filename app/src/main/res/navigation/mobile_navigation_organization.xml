@@ -17,9 +17,9 @@
         tools:layout="@layout/fragment_activities_data" />
     <fragment
         android:id="@+id/navigation_choose_type"
-        android:name="pt.vow.ui.route.ChooseType"
-        android:label="@string/title_new_activity"
-        tools:layout="@layout/fragment_choose_type" />
+        android:name="pt.vow.ui.newActivity.NewActivityMapFragment"
+        android:label="@string/title_select_activity_dest"
+        tools:layout="@layout/fragment_new_activity_map" />
     <fragment
         android:id="@+id/navigation_podium"
         android:name="pt.vow.ui.podium.PodiumFragment"

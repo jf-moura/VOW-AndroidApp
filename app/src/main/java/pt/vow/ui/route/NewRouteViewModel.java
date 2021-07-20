@@ -14,7 +14,6 @@ import pt.vow.data.route.NewRouteRepository;
 import pt.vow.ui.newActivity.RegisteredActivityView;
 
 public class NewRouteViewModel extends ViewModel {
-    private MutableLiveData<NewRouteFormState> newRouteFormState = new MutableLiveData<>();
     private MutableLiveData<NewRouteResult> newRouteResult = new MutableLiveData<>();
     private NewRouteRepository newRouteRepository;
     private final Executor executor;
@@ -24,11 +23,7 @@ public class NewRouteViewModel extends ViewModel {
         this.executor = executor;
     }
 
-    LiveData<NewRouteFormState> getNewRouteFormState() {
-        return newRouteFormState;
-    }
-
-    LiveData<NewRouteResult> getNewRouteResult() {
+    public LiveData<NewRouteResult> getNewRouteResult() {
         return newRouteResult;
     }
 
@@ -44,48 +39,6 @@ public class NewRouteViewModel extends ViewModel {
                 }
             }
         });
-    }
-
-    public void newRouteDataChanged(String name, String time, String type, String participantNum, String durationInMinutes) {
-        if (!isNameValid(name))
-            newRouteFormState.setValue(new NewRouteFormState(R.string.invalid_name, null, null, null, null, null));
-        else if (!isTimeValid(time))
-            newRouteFormState.setValue(new NewRouteFormState(null, R.string.invalid_time, null, null, null, null));
-        else if (!isParticipantNumValid(participantNum))
-            newRouteFormState.setValue(new NewRouteFormState(null, null, null, R.string.invalid_participant_num, null, null));
-        else if (!isDurationInMinutesValid(durationInMinutes))
-            newRouteFormState.setValue(new NewRouteFormState(null, null, null, null, R.string.invalid_duration, null));
-        else if (!isTypeValid(type))
-            newRouteFormState.setValue(new NewRouteFormState(null, null, null,  R.string.invalid_type,null, null));
-        else
-            newRouteFormState.setValue(new NewRouteFormState(true));
-    }
-
-    // A placeholder name validation check
-    private boolean isNameValid(String name) {
-        return name != null && !name.trim().isEmpty();
-    }
-
-
-    // A placeholder time validation check
-    private boolean isTimeValid(String time) {
-        return time != null && !time.trim().isEmpty();
-    }
-
-    // A placeholder duration validation check
-    private boolean isDurationInMinutesValid(String duration) {
-        return duration != null;
-    }
-
-    // A placeholder participant number validation check
-    private boolean isParticipantNumValid(String participantNum) {
-        if (participantNum != null)
-            return  !participantNum.trim().isEmpty() && participantNum.compareTo("0") >= 1;
-        return true;
-    }
-    // A placeholder type validation check
-    private boolean isTypeValid(String type) {
-        return type != null;
     }
 
 }

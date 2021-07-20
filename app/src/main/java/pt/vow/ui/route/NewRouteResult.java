@@ -19,12 +19,12 @@ public class NewRouteResult {
     }
 
     @Nullable
-    RegisteredActivityView getSuccess() {
+    public RegisteredActivityView getSuccess() {
         return success;
     }
 
     @Nullable
-    Integer getError() {
+    public Integer getError() {
         return error;
     }
 }

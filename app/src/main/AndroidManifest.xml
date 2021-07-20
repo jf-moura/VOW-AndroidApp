@@ -63,6 +63,9 @@
             android:name=".ui.update.UpdateActivity"
             android:label="@string/settings" />
         <activity
+            android:name=".ui.newActivity.NewActivityActivity"
+            android:label="@string/title_new_activity" />
+        <activity
             android:name=".ui.activityInfo.PopDelete"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.customPop" />
         <activity

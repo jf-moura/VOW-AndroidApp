@@ -5,7 +5,7 @@
     android:id="@+id/chooseRoute"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.route.CreateRouteFragment">
+    tools:context=".ui.newActivity.NewActivityMapFragment">
 
 
     <fragment
@@ -17,28 +17,45 @@
         tools:layout_editor_absoluteX="-16dp"
         tools:layout_editor_absoluteY="34dp" />
 
+    <TextView
+        android:id="@+id/search_location2"
+        android:layout_width="388dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_search_view"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/ic_baseline_search_24"
+        android:elevation="5dp"
+        android:padding="12dp"
+        android:queryHint="Search..."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/goBackBttn"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_baseline_arrow_back_24"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.08"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.881" />
+        app:layout_constraintVertical_bias="0.95" />
 
     <ImageView
         android:id="@+id/confirm"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@drawable/ic_baseline_check_circle_24"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.894"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.881" />
+        app:layout_constraintVertical_bias="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

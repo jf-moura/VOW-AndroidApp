@@ -415,14 +415,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
-            new ActivityResultCallback<Boolean>() {
-                @Override
-                public void onActivityResult(Boolean result) {
-                    if (result) {
-                        Log.e(TAG, "onActivityResult: PERMISSION GRANTED");
-                    } else {
-                        Log.e(TAG, "onActivityResult: PERMISSION DENIED");
-                    }
+            result -> {
+                if (result) {
+                    Log.e(TAG, "onActivityResult: PERMISSION GRANTED");
+                } else {
+                    Log.e(TAG, "onActivityResult: PERMISSION DENIED");
                 }
             });
 
@@ -499,24 +496,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         try {
             if (locationPermissionGranted) {
                 Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            lastKnownLocation = task.getResult();
-                            if (lastKnownLocation != null) {
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(lastKnownLocation.getLatitude(),
-                                                lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                            }
-                        } else {
-                            Log.d(TAG, "Current location is null. Using defaults.");
-                            Log.e(TAG, "Exception: %s", task.getException());
-                            mMap.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                locationResult.addOnCompleteListener(getActivity(), task -> {
+                    if (task.isSuccessful()) {
+                        // Set the map's camera position to the current location of the device.
+                        lastKnownLocation = task.getResult();
+                        if (lastKnownLocation != null) {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(lastKnownLocation.getLatitude(),
+                                            lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                         }
+                    } else {
+                        Log.d(TAG, "Current location is null. Using defaults.");
+                        Log.e(TAG, "Exception: %s", task.getException());
+                        mMap.moveCamera(CameraUpdateFactory
+                                .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
+                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
                     }
                 });
             }
@@ -871,7 +865,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             double lat = Double.parseDouble(aux[0]);
             double lon = Double.parseDouble(aux[1]);
             LatLng latLng = new LatLng(lat, lon);
-            addCircle(latLng, GEOFENCE_RADIUS);
             geofenceHelper.addActivityInfo(activitiesList.get(0));
             addGeofence(latLng, GEOFENCE_RADIUS);
         }
