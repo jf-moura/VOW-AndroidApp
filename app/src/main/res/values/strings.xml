@@ -191,7 +191,7 @@
     <string name="confirm_delete_comment">Are you sure you want to delete comment?</string>
     <string name="comment_deleted">Comment deleted with success</string>
     <string name="delete_comment_failed">Failed deleting comment</string>
-    <string name="title_select_activity_dest">Select Activity Destiny</string>
+    <string name="title_select_activity_dest">Select Activity Destination</string>
     <string name="description">Description: </string>
     <string name="hint_description">Short description of the activity</string>
     <string name="location_unavailable">Need to add activity location</string>
