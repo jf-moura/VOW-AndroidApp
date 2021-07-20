@@ -35,30 +35,42 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
                 android:layout_marginTop="100dp"
+                android:backgroundTint="@color/white"
                 android:clickable="false"
                 android:src="@drawable/ic_fi_rr_camera"
                 android:tint="#F8F5F5"
-                android:backgroundTint="@color/white"
                 app:fabSize="mini"
                 app:layout_anchorGravity="bottom|right" />
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/aboutMeTextView"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:hint="@string/about_me"
-            android:inputType="text"
-            android:textSize="20dp" />
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/aboutMeTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/about_me"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="end" >
+        android:layout_gravity="end">
 
         <include layout="@layout/main_nav_drawer" />
     </RelativeLayout>

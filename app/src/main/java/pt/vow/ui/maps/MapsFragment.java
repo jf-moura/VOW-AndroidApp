@@ -241,7 +241,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 // Start the autocomplete intent.
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                         .build(getActivity());
-                startActivityForResult(intent, 100);
+                someActivityResultLauncher.launch(intent);
+             //   startActivityForResult(intent, 100);
             }
         });
 
@@ -417,7 +418,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             new ActivityResultCallback<Boolean>() {
                 @Override
                 public void onActivityResult(Boolean result) {
-                    if(result) {
+                    if (result) {
                         Log.e(TAG, "onActivityResult: PERMISSION GRANTED");
                     } else {
                         Log.e(TAG, "onActivityResult: PERMISSION DENIED");
@@ -750,7 +751,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         enableUserLocation();
 
         addGeofenceToActivities();
-       // addGeofenceToActivities2();
+        // addGeofenceToActivities2();
         mMap.setOnMapLongClickListener(this::handleMapLongClick);
 
     }
@@ -764,22 +765,25 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && resultCode == RESULT_OK) {
-            Place pl = Autocomplete.getPlaceFromIntent(data);
-            Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());
-            searchView.setText(pl.getAddress());
+    private ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Place pl = Autocomplete.getPlaceFromIntent(result.getData());
+                        Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());
+                        searchView.setText(pl.getAddress());
 
-            mMap.clear();
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(pl.getLatLng()));
-        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                        mMap.clear();
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(pl.getLatLng()));
+                    } else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
 
-            Status status = Autocomplete.getStatusFromIntent(data);
-            Log.i(TAG, status.getStatusMessage());
-        }
-    }
+                        Status status = Autocomplete.getStatusFromIntent(result.getData());
+                        Log.i(TAG, status.getStatusMessage());
+                    }
+                }
+            });
 
     public void onInfoWindowClick(Marker marker) {
         Activity activity = null;
@@ -861,17 +865,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     private void addGeofenceToActivities() {
-      //  for (int i = 0; i<activitiesList.size(); i++) {
-            if (!activitiesList.get(0).getCoordinates().isEmpty()) {
-                String[] aux = activitiesList.get(0).getCoordinates().split(",");
-                double lat = Double.parseDouble(aux[0]);
-                double lon = Double.parseDouble(aux[1]);
-                LatLng latLng = new LatLng(lat, lon);
-                addCircle(latLng, GEOFENCE_RADIUS);
-                geofenceHelper.addActivityInfo(activitiesList.get(0));
-                addGeofence(latLng, GEOFENCE_RADIUS);
-            }
-      //  }
+        //  for (int i = 0; i<activitiesList.size(); i++) {
+        if (!activitiesList.get(0).getCoordinates().isEmpty()) {
+            String[] aux = activitiesList.get(0).getCoordinates().split(",");
+            double lat = Double.parseDouble(aux[0]);
+            double lon = Double.parseDouble(aux[1]);
+            LatLng latLng = new LatLng(lat, lon);
+            addCircle(latLng, GEOFENCE_RADIUS);
+            geofenceHelper.addActivityInfo(activitiesList.get(0));
+            addGeofence(latLng, GEOFENCE_RADIUS);
+        }
+        //  }
     }
 
     private void handleMapLongClick(LatLng latLng) {

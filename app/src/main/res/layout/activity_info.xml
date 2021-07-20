@@ -178,6 +178,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewDuration2" />
 
+            <TextView
+                android:id="@+id/textViewConfirmPart"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:drawableRight="@drawable/ic_fi_rr_list_check"
+                android:padding="7dp"
+                android:text="@string/confirm_act_participants"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/textViewRating"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textViewRating"
+                app:layout_constraintTop_toBottomOf="@+id/textViewRating" />
+
             <RatingBar
                 android:id="@+id/rating_bar"
                 android:layout_width="240dp"
@@ -206,18 +221,18 @@
                 app:layout_constraintStart_toStartOf="@+id/rating_bar"
                 app:layout_constraintTop_toBottomOf="@+id/rating_bar" />
 
-            <Button
-                android:id="@+id/checkPartBttn"
-                android:layout_width="41dp"
-                android:layout_height="41dp"
-                android:layout_marginTop="116dp"
-                android:background="@drawable/ic_baseline_check_circle_24"
-                android:textSize="9sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.83"
-                app:layout_constraintStart_toEndOf="@+id/rating_bar"
-                app:layout_constraintTop_toBottomOf="@+id/editTextDur" />
-
+            <!--  <Button
+                  android:id="@+id/checkPartBttn"
+                  android:layout_width="41dp"
+                  android:layout_height="41dp"
+                  android:layout_marginTop="116dp"
+                  android:background="@drawable/ic_baseline_check_circle_24"
+                  android:textSize="9sp"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintHorizontal_bias="0.83"
+                  app:layout_constraintStart_toEndOf="@+id/rating_bar"
+                  app:layout_constraintTop_toBottomOf="@+id/editTextDur" />
+  -->
             <Button
                 android:id="@+id/submitBttn"
                 android:layout_width="41dp"
@@ -232,7 +247,7 @@
 
             <Button
                 android:id="@+id/buttonPostComment"
-                android:layout_width="62dp"
+                android:layout_width="100dp"
                 android:layout_height="42dp"
                 android:layout_marginBottom="30dp"
                 android:text="@string/post"

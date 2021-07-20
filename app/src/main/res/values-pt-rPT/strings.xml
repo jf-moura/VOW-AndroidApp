@@ -164,7 +164,7 @@
     <string name="password_not_available">Por favor insira a palavra passe</string>
 
 
-    <string name="username_email">username/email<font color='#FF0000'>*</font></string>
+    <string name="username_email">username/email<font color='#ff477e'>*</font></string>
     <string name="date_no_valid">Não é possível criar atividades para o passado</string>
     <string name="commit_rating">Obrigada pela sua pontuação</string>
     <string name="get_rating_failed">Erro ao obter a pontuação</string>
@@ -209,4 +209,10 @@
 
     <string name="prompt_bio">Biografia:</string>
     <string name="phone_number_org">número de telemóvel<font color='#ff477e'>*</font></string>
+
+    <string name="confirm_users">Por favor confirme todos os utilizadores que participaram na atividade!</string>
+    <string name="confirm_act_participants">Confirme os participantes na atividade</string>
+    <string name="confirm_delete_comment">Tem a certeza de que pretende apagar o comentário?</string>
+    <string name="comment_deleted">Comentário apagado com sucesso</string>
+    <string name="delete_comment_failed">Falha ao apagar comentário</string>
 </resources>

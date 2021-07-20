@@ -62,7 +62,7 @@ import java.util.List;
 public class ActivityInfoActivity extends AppCompatActivity {
 
     private ActivityInfoActivity mActivity;
-    private TextView textViewRating, textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
+    private TextView textViewConfirmPart, textViewRating, textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
     private EditText editTextDuration, editTextNumPart, editTextTime, editTextActName, editTextActOwner, editTextAddress;
     private Button submitBttn, saveUpdateBttn, postCommentBttn, checkPartBttn;
     private EditText editTextComment;
@@ -136,8 +136,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
         activityImage = findViewById(R.id.activityImageInfo);
         postCommentBttn = findViewById(R.id.buttonPostComment);
         actCommentsRecyclerView = findViewById(R.id.comments_recycler_view);
-        checkPartBttn = findViewById(R.id.checkPartBttn);
-
+//        checkPartBttn = findViewById(R.id.checkPartBttn);
+        textViewConfirmPart = findViewById(R.id.textViewConfirmPart);
 
         // showImageType();
 
@@ -156,6 +156,11 @@ public class ActivityInfoActivity extends AppCompatActivity {
             beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
 
         long startMillis = beginTime.getTimeInMillis();
+
+        if (activity.getOwner().equals(user.getUsername())) {
+            textViewConfirmPart.setVisibility(View.VISIBLE);
+        }
+
         // Activity hasn't occured or the user is the owner of the activity
         if (startMillis >= currentTime.getTimeInMillis() || activity.getOwner().equals(user.getUsername())) {
             ratingBar.setVisibility(View.INVISIBLE);
@@ -293,7 +298,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
             actCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         });
 
-        checkPartBttn.setOnClickListener(new View.OnClickListener() {
+        textViewConfirmPart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ActivityInfoActivity.this, ConfirmParticipantsActivity.class);
@@ -302,6 +307,16 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+       /* checkPartBttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityInfoActivity.this, ConfirmParticipantsActivity.class);
+                intent.putExtra("UserLogged", user);
+                intent.putExtra("Activity", activity);
+                startActivity(intent);
+            }
+        });*/
     }
 
 
