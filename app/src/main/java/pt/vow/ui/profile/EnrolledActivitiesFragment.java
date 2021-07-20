@@ -122,7 +122,7 @@ public class EnrolledActivitiesFragment extends Fragment {
             }
         });
 
-        downloadImageViewModel.getImage().observe(getActivity(), image -> {
+        /*downloadImageViewModel.getImage().observe(getActivity(), image -> {
             if (image.getObjName().split("_").length == 2) {
                 if (aux != null) {
                     String objName = image.getObjName();
@@ -131,7 +131,7 @@ public class EnrolledActivitiesFragment extends Fragment {
                         a.setImage(image);
                 }
             }
-        });
+        });*/
 
         return root;
     }

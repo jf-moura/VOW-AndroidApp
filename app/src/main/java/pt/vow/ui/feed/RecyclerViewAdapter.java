@@ -53,7 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.time.setText(holder.itemView.getContext().getString(R.string.date)+" "+ activityList.get(position).getTime());
         holder.duration.setText(holder.itemView.getContext().getString(R.string.duration)+" " + activityList.get(position).getDurationInMinutes() + " minutes");
 
-        if (activityList.get(position).getImage() != null) {
+        /*if (activityList.get(position).getImage() != null) {
             holder.activityImage.setVisibility(View.VISIBLE);
             holder.owner.setVisibility(View.GONE);
             holder.time.setVisibility(View.GONE);
@@ -61,7 +61,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             byte[] img = activityList.get(position).getImage().getImageBytes();
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             holder.activityImage.setImageBitmap(bitmap);
-        }
+        }*/
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

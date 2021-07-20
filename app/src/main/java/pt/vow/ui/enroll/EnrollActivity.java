@@ -127,13 +127,13 @@ public class EnrollActivity extends AppCompatActivity {
             //else enrollButton.setEnabled(true);
         });
 
-        Image actImage = activity.getImage();
+        /*Image actImage = activity.getImage();
         if (actImage != null) {
             activityImage.setVisibility(View.VISIBLE);
             byte[] img = actImage.getImageBytes();
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             activityImage.setImageBitmap(bitmap);
-        }
+        }*/
 
         enrollViewModel.getEnrollResult().observe(this, new Observer<EnrollResult>() {
             @Override
