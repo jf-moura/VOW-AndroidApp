@@ -1,5 +1,6 @@
 package pt.vow.ui.profile;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -15,7 +16,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavArgument;
+import androidx.navigation.NavHostController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -45,11 +51,16 @@ import pt.vow.R;
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.frontPage.FrontPageActivity;
+import pt.vow.ui.login.LoginActivity;
 import pt.vow.ui.mainPage.DownloadImageViewModel;
 import pt.vow.ui.mainPage.GetImageResult;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.logout.LogoutViewModel;
 import pt.vow.ui.logout.LogoutViewModelFactory;
+import pt.vow.ui.mainPage.Image;
+import pt.vow.ui.update.ChangeVisibilityResult;
+import pt.vow.ui.update.ChangeVisibilityViewModel;
+import pt.vow.ui.update.ChangeVisibilityViewModelFactory;
 import pt.vow.ui.update.UpdateActivity;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -60,6 +71,8 @@ public class ProfileFragment extends Fragment {
     private ShapeableImageView profileImage;
     private TextView aboutMeTextView;
     private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, deleteAccountLinearLayout;
+    private Switch switchMode;
+    private boolean mode;
     private DrawerLayout drawerLayout;
     private BottomNavigationView topNavigationProfile;
 
@@ -68,7 +81,10 @@ public class ProfileFragment extends Fragment {
     private UploadImageViewModel uploadImageViewModel;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
+    private ChangeVisibilityViewModel changeVisibilityViewModel;
     private LoggedInUserView user;
+    private Image image;
+    private ProfileInfoView profileInfo;
 
     private FragmentProfileBinding binding;
 
@@ -80,7 +96,6 @@ public class ProfileFragment extends Fragment {
 
     private Observer<GetImageResult> imgObs;
     private GetProfileViewModel getProfileViewModel;
-    private ProfileInfoView profileInfo;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -93,6 +108,8 @@ public class ProfileFragment extends Fragment {
                 .get(LogoutViewModel.class);
         uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(UploadImageViewModel.class);
+        changeVisibilityViewModel = new ViewModelProvider(this, new ChangeVisibilityViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(ChangeVisibilityViewModel.class);
         getProfileViewModel = new ViewModelProvider(getActivity()).get(GetProfileViewModel.class);
         downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
@@ -102,7 +119,6 @@ public class ProfileFragment extends Fragment {
 
         getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getTokenID());
         getMyActivitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
-        getProfileViewModel.getProfile(user.getUsername(), user.getUsername(), user.getTokenID());
 
         profileImage = root.findViewById(R.id.profileImage);
         aboutMeTextView = root.findViewById(R.id.aboutMeTextView);
@@ -117,10 +133,18 @@ public class ProfileFragment extends Fragment {
         statsLinearLayout = root.findViewById(R.id.statsLinearLayout);
         logoutLinearLayout = root.findViewById(R.id.logoutLinearLayout);
         deleteAccountLinearLayout = root.findViewById(R.id.deleteAccountLinearLayout);
+        switchMode = root.findViewById(R.id.switch2);
+
+        this.getProfileInfo();
 
         //TODO: escolher se queremos continuar com o stats
         if (user.getRole() == 0) { //volunteer
             statsLinearLayout.setVisibility(LinearLayout.GONE);
+        }
+
+        if (profileInfo != null) {
+            mode = profileInfo.getVisibility();
+            switchMode.setChecked(mode);
         }
 
         settingsLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -162,6 +186,29 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        switchMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                changeVisibilityViewModel.changeVisibility(user.getUsername(), user.getTokenID(), user.getUsername(), isChecked);
+            }
+        });
+
+        changeVisibilityViewModel.getVisibilityChangeResult().observe(getViewLifecycleOwner(), new Observer<ChangeVisibilityResult>() {
+            @Override
+            public void onChanged(ChangeVisibilityResult changeVisibilityResult) {
+                if (changeVisibilityResult == null) {
+                    return;
+                }
+                if (changeVisibilityResult.getError() != null) {
+                    showMessage(changeVisibilityResult.getError());
+                }
+                if (changeVisibilityResult.getSuccess() != null) {
+                    mode = changeVisibilityResult.getSuccess().getVisibility();
+                    switchMode.setChecked(mode);
+                }
+            }
+        });
+
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,36 +220,34 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        getProfileViewModel.getProfileResult().observe(getActivity(), new Observer<GetProfileResult>() {
-            @Override
-            public void onChanged(GetProfileResult getProfileResult) {
-                if (getProfileResult.getError() != null)
-                    return;
-                if (getProfileResult.getSuccess() != null)
-                    return;
-            }
-        });
+        if (profileInfo == null) {
+            getProfileViewModel.getProfile(user.getUsername(), user.getUsername(), user.getTokenID());
+            getProfileViewModel.profile().observe(getActivity(), profile -> {
+                profileInfo = profile;
+                String bio = profileInfo.getBio();
+                aboutMeTextView.setText(bio);
+                mode = profileInfo.getVisibility();
+                switchMode.setChecked(mode);
+            });
+        }
 
-        getProfileViewModel.profile().observe(getActivity(), profile -> {
-            profileInfo = profile;
-            String bio = profileInfo.getBio();
-            aboutMeTextView.setText(bio);
 
-            if (profileInfo.getImage() == null)
-                downloadImageViewModel.getImage().observe(getViewLifecycleOwner(), image -> {
-                    if (image.getObjName().split("_").length == 1) {
-                        profileInfo.setImage(image);
-                        byte[] img = image.getImageBytes();
-                        bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                        profileImage.setImageBitmap(bitmap);
-                    }
-                });
-            else {
-                byte[] img = profileInfo.getImage().getImageBytes();
-                bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                profileImage.setImageBitmap(bitmap);
+        if (image == null) {
+            try {
+                downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
+            downloadImageViewModel.getImage().observe(getViewLifecycleOwner(), images -> {
+                if (images.getObjName().split("_").length == 1) {
+                    image = images;
+                    byte[] img = images.getImageBytes();
+                    bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                    profileImage.setImageBitmap(bitmap);
+                }
+            });
+        }
+
 
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         Fragment fragment = new FutureActivitiesFragment();
@@ -237,7 +282,9 @@ public class ProfileFragment extends Fragment {
                 return true;
             }
         });
+
         getActivity().invalidateOptionsMenu();
+
         setHasOptionsMenu(true);
         return root;
     }
@@ -261,6 +308,24 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void getProfileInfo() {
+        NavArgument args = NavHostFragment.findNavController(this).getCurrentDestination().getArguments().get("Profile");
+        if (args != null) {
+            Bundle bundle = (Bundle) args.getDefaultValue();
+
+            profileInfo = (ProfileInfoView) bundle.getSerializable("ProfileInfo");
+            if (profileInfo != null)
+                aboutMeTextView.setText(profileInfo.getBio());
+
+            image = (Image) bundle.getSerializable("ProfileImage");
+            if (image != null) {
+                byte[] profileImageInByte = image.getImageBytes();
+                Bitmap bitmap = BitmapFactory.decodeByteArray(profileImageInByte, 0, profileImageInByte.length);
+                profileImage.setImageBitmap(bitmap);
+            }
+        }
     }
 
     private static void openDrawer(DrawerLayout drawerLayout) {
@@ -293,7 +358,8 @@ public class ProfileFragment extends Fragment {
             });
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void uploadImage(String projectId, String bucketName, String objectName) throws IOException {
+    private void uploadImage(String projectId, String bucketName, String objectName) throws
+            IOException {
         if (imageUri != null) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
@@ -303,7 +369,7 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void showProfileFailed(@StringRes Integer errorString) {
-        Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    private void showMessage(@StringRes Integer message) {
+        Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

@@ -727,7 +727,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             public View getInfoContents(Marker marker) {
                 String str = marker.getTitle();
                 final String[] str2 = str.split("_");
-                infoTitle.setText(getResources().getString(R.string.name) + " " + str2[0]);
+                infoTitle.setText(getResources().getString(R.string.prompt_name) + " " + str2[0]);
                 infoOwner.setText(getResources().getString(R.string.owner) + " " + str2[1]);
                 infoButtonListener.setMarker(marker);
 

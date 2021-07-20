@@ -107,6 +107,9 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 .get(GetActCommentsViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
+        activity = (Activity) getIntent().getSerializableExtra("Activity");
+
+        getSupportActionBar().setTitle(activity.getName());
 
         textViewActName = findViewById(R.id.textViewActName2);
         textViewActOwner = findViewById(R.id.textViewActOwner2);
@@ -135,8 +138,6 @@ public class ActivityInfoActivity extends AppCompatActivity {
         actCommentsRecyclerView = findViewById(R.id.comments_recycler_view);
         checkPartBttn = findViewById(R.id.checkPartBttn);
 
-        // activityInfoFromNotification = (Activity) getIntent().getSerializableExtra("Activity");
-        activity = (Activity) getIntent().getSerializableExtra("Activity");
 
         // showImageType();
 
@@ -268,6 +269,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 if (registerCommentResult.getSuccess() != null) {
                     Toast.makeText(getApplicationContext(), R.string.register_comment, Toast.LENGTH_SHORT).show();
                     editTextComment.setText("");
+                    getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
                 }
             }
         });
@@ -278,6 +280,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 //register the comment
                 String comment = editTextComment.getText().toString();
                 registerCommentViewModel.registerComment(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId(), comment);
+                getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
             }
         });
 
@@ -285,7 +288,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
         getActCommentsViewModel.getActCommentsList().observe(this, comments -> {
             commentaryList = comments;
-            CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(getApplicationContext(), commentaryList);
+            CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(getApplicationContext(), mActivity, commentaryList, user, activity);
             actCommentsRecyclerView.setAdapter(adapter);
             actCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         });

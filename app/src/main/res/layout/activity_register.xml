@@ -141,7 +141,7 @@
                 android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="@string/private_account" />
+                android:text="@string/public_account" />
             <Button
                 android:id="@+id/confirmBttn"
                 android:layout_width="match_parent"

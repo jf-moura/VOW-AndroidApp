@@ -6,9 +6,9 @@ import pt.vow.ui.mainPage.Image;
 
 public class ProfileInfoView implements Serializable {
     private String username, tokenID, name, email, phoneNumber, dateBirth, bio, website;
-    private Image img;
+    private boolean visibility, status;
 
-    public ProfileInfoView(String username, String tokenID, String name, String email, String phoneNumber, String dateBirth, String bio, String website) {
+    public ProfileInfoView(String username, String tokenID, String name, String email, String phoneNumber, String dateBirth, String bio, String website, boolean visibility, boolean status) {
         this.username = username;
         this.tokenID = tokenID;
         this.name = name;
@@ -17,7 +17,8 @@ public class ProfileInfoView implements Serializable {
         this.dateBirth=dateBirth;
         this.bio=bio;
         this.website = website;
-        img = null;
+        this.visibility = visibility;
+        this.status = status;
     }
 
     public String getUsername() {
@@ -52,7 +53,7 @@ public class ProfileInfoView implements Serializable {
         return website;
     }
 
-    public void setImage(Image img) { this.img = img; }
+    public boolean getVisibility() { return visibility; }
 
-    public Image getImage() { return img; }
+    public boolean getStatus() { return status; }
 }

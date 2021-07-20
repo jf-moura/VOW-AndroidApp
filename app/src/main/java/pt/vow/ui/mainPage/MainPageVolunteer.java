@@ -32,6 +32,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavArgument;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -56,6 +57,7 @@ import pt.vow.ui.profile.GetMyActivitiesViewModelFactory;
 import pt.vow.ui.profile.GetProfileViewModel;
 import pt.vow.ui.profile.GetProfileViewModelFactory;
 import pt.vow.ui.profile.ProfileFragment;
+import pt.vow.ui.profile.ProfileInfoView;
 
 public class MainPageVolunteer extends AppCompatActivity {
     private static final String CHANNEL_ID = "012345";
@@ -70,9 +72,9 @@ public class MainPageVolunteer extends AppCompatActivity {
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
     private GetProfileViewModel getProfileViewModel;
 
-    private String profileName;
+    private ProfileInfoView profileInfo;
     private List<Activity> activitiesList;
-    private byte[] profileImageInByte;
+    private Image profileImage;
 
     private Observer<GetActivitiesByUserResult> actByUserObs;
 
@@ -96,9 +98,7 @@ public class MainPageVolunteer extends AppCompatActivity {
         getMyActivitiesViewModel = new ViewModelProvider(this, new GetMyActivitiesViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetMyActivitiesViewModel.class);
 
-
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
-        profileName = null;
 
         activitiesViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
         getActivitiesByUserViewModel.getActivities(user.getUsername(), String.valueOf(user.getTokenID()));
@@ -111,10 +111,12 @@ public class MainPageVolunteer extends AppCompatActivity {
         }
 
         getProfileViewModel.profile().observe(this, profile -> {
-            profileName = profile.getName();
+            profileInfo = profile;
         });
 
         notificationId = 0;
+        profileImage = null;
+        profileInfo = null;
         createNotificationChannel();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -127,14 +129,26 @@ public class MainPageVolunteer extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.navigation_profile && profileName != null) {
-                destination.setLabel(profileName);
+            if (destination.getId() == R.id.navigation_profile) {
+                if (profileInfo != null || profileImage != null) {
+                    Bundle bundle = new Bundle();
+                    if (profileInfo != null) {
+                        destination.setLabel(profileInfo.getName());
+                        bundle.putSerializable("ProfileInfo", profileInfo);
+                    }
+                    if (profileImage != null) {
+                        bundle.putSerializable("ProfileImage", profileImage);
+                    }
+                    NavArgument arg = new NavArgument.Builder().setDefaultValue(bundle).build();
+                    destination.addArgument("Profile", arg);
+                }
             }
         });
 
         downloadImageViewModel.getImage().observe(this, image -> {
             if (image.getObjName().split("_").length == 1) {
-                profileImageInByte = image.getImageBytes();
+                profileImage = image;
+                byte[] profileImageInByte = image.getImageBytes();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(profileImageInByte, 0, profileImageInByte.length);
                 Drawable drawable = new BitmapDrawable(getResources(), bitmap);
                 drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);

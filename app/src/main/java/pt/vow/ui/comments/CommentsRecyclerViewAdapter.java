@@ -2,29 +2,45 @@ package pt.vow.ui.comments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import pt.vow.R;
+import pt.vow.data.model.Activity;
 import pt.vow.data.model.Commentary;
+import pt.vow.ui.VOW;
 import pt.vow.ui.activityInfo.ActivityInfoActivity;
+import pt.vow.ui.activityInfo.GetRatingViewModel;
+import pt.vow.ui.activityInfo.GetRatingViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 
 public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRecyclerViewAdapter.ViewHolder> {
     Context context;
     List<Commentary> commentList;
+    LoggedInUserView user;
+    Activity activity;
+    ActivityInfoActivity mActivity;
 
-
-    public CommentsRecyclerViewAdapter(Context context, List<Commentary> commentList) {
+    public CommentsRecyclerViewAdapter(Context context, ActivityInfoActivity mActivity, List<Commentary> commentList, LoggedInUserView user, Activity activity) {
         this.context = context;
         this.commentList = commentList;
+        this.user = user;
+        this.activity = activity;
+        this.mActivity = mActivity;
     }
 
     @NonNull
@@ -40,14 +56,63 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
         holder.textViewUserName.setText(commentList.get(position).getCommentOwner());
         holder.textViewComment.setText(commentList.get(position).getComment());
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ActivityInfoActivity.class);
-                intent.putExtra("Comment", commentList.get(position));
-                context.startActivity(intent);
-            }
-        });
+        if (commentList.get(position).getCommentOwner().equals(user.getUsername())) {
+            holder.editBttn.setVisibility(View.VISIBLE);
+            holder.trashBttn.setVisibility(View.VISIBLE);
+
+            holder.trashBttn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, PopDeleteComment.class);
+                    intent.putExtra("UserLogged", user);
+                    intent.putExtra("Activity", activity);
+                    intent.putExtra("Comment", commentList.get(position));
+                    mActivity.startActivity(intent);
+                }
+            });
+
+            holder.editBttn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.editTextComment.setText(holder.textViewComment.getText().toString());
+                    holder.textViewComment.setVisibility(View.GONE);
+                    holder.editTextComment.setVisibility(View.VISIBLE);
+                    holder.editBttn.setImageResource(R.drawable.ic_fi_rr_checkbox);
+
+                    UpdateCommentViewModel updateCommentViewModel = new ViewModelProvider(mActivity, new UpdateCommentViewModelFactory(((VOW) mActivity.getApplication()).getExecutorService()))
+                            .get(UpdateCommentViewModel.class);
+                    holder.editBttn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            updateCommentViewModel.updateComment(user.getUsername(), user.getTokenID(),
+                                    commentList.get(position).getCommentID(), activity.getOwner(), activity.getId(),
+                                    holder.editTextComment.getText().toString());
+                            holder.editBttn.setEnabled(true);
+                        }
+                    });
+
+                    updateCommentViewModel.getUpdateCommentResult().observe(mActivity, new Observer<UpdateCommentResult>() {
+                        @Override
+                        public void onChanged(UpdateCommentResult updateCommentResult) {
+                            if (updateCommentResult == null) {
+                                return;
+                            }
+                            if (updateCommentResult.getError() != null) {
+                                Toast.makeText(context, R.string.register_comment_failed, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            if (updateCommentResult.getSuccess() != null) {
+                                holder.textViewComment.setText(holder.editTextComment.getText().toString());
+                                holder.editTextComment.setVisibility(View.GONE);
+                                holder.textViewComment.setVisibility(View.VISIBLE);
+                                holder.editBttn.setImageResource(R.drawable.ic_fi_rr_pencil);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
     }
 
     @Override
@@ -58,11 +123,16 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textViewUserName, textViewComment;
+        EditText editTextComment;
+        ImageButton editBttn, trashBttn;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewUserName = itemView.findViewById(R.id.textViewUserName);
             textViewComment = itemView.findViewById(R.id.textViewComment);
+            editTextComment = itemView.findViewById(R.id.editTextComment2);
+            editBttn = itemView.findViewById(R.id.editBttn);
+            trashBttn = itemView.findViewById(R.id.trashBttn);
         }
     }
 }

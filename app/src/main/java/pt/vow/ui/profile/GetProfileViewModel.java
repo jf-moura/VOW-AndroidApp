@@ -35,7 +35,7 @@ public class GetProfileViewModel extends ViewModel {
                 if (result instanceof Result.Success) {
                     ProfileInfoView data = ((Result.Success<ProfileInfoView>) result).getData();
                     info.postValue(data);
-                    getProfileResult.postValue(new GetProfileResult(new ProfileInfoView(data.getUsername(), data.getTokenID(), data.getName(), data.getEmail(), data.getPhoneNumber(), data.getDateBirth(), data.getBio(), data.getWebsite())));
+                    getProfileResult.postValue(new GetProfileResult(new ProfileInfoView(data.getUsername(), data.getTokenID(), data.getName(), data.getEmail(), data.getPhoneNumber(), data.getDateBirth(), data.getBio(), data.getWebsite(), data.getVisibility(), data.getStatus())));
                 } else {
                     getProfileResult.postValue(new GetProfileResult(R.string.get_profile_failed));
                 }

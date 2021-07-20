@@ -34,15 +34,12 @@ public class UpdateActivity extends AppCompatActivity {
     private TextView textViewWebsiteSett;
     private UpdateViewModel updateViewModel;
     private LoggedInUserView user;
-    private UpdateActivity mActivity;
     private ProfileInfoView profileInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
-        mActivity = this;
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         profileInfo = (ProfileInfoView) getIntent().getSerializableExtra("ProfileInfo");

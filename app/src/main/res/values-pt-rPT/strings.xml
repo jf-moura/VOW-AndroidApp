@@ -191,7 +191,7 @@
     <string name="rate_activity">Avalie a atividade que acabou de fazer.</string>
     <string name="join_activity">Quer se inscrever nesta atividade?</string>
 
-    <string name="private_account">Conta Privada</string>
+    <string name="public_account">Conta Publica</string>
     <string name="get_profile_failed">Falhou a obter o perfil</string>
     <string name="name_invalid">Nome inválido</string>
     <string name="bio_invalid">A bio tem de ter pelo menos um caracter.</string>

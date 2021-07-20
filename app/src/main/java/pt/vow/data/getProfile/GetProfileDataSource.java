@@ -28,7 +28,7 @@ public class GetProfileDataSource {
             Response<UserInfo> response = getProfileCall.execute();
             if (response.isSuccessful()) {
                 UserInfo ua = response.body();
-                return new Result.Success<>(new ProfileInfoView(ua.getUsername(), tokenID, ua.getName(), ua.getEmail(), ua.getPhoneNumber(), ua.getDateBirth(), ua.getBio(), ua.getWebsite()));
+                return new Result.Success<>(new ProfileInfoView(ua.getUsername(), tokenID, ua.getName(), ua.getEmail(), ua.getPhoneNumber(), ua.getDateBirth(), ua.getBio(), ua.getWebsite(), ua.getVisibility(), ua.getStatus()));
             }
             return new Result.Error(new Exception(response.errorBody().toString()));
         } catch (IOException e) {

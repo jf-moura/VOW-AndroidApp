@@ -169,7 +169,7 @@
     <string name="near_activity">You are near an activity!</string>
     <string name="rate_activity">Rate the activity you just finished.</string>
     <string name="join_activity">Do you want to join this activity?</string>
-    <string name="private_account">Private Account</string>
+    <string name="public_account">Public Account</string>
     <string name="get_profile_failed">Get profile failed</string>
     <string name="name_invalid">Not a valid name</string>
     <string name="bio_invalid">Bio must be at least one character</string>
@@ -188,6 +188,9 @@
     <string name="phone_number_org">phone number<font color='#ff477e'>*</font></string>
     <string name="confirm_users">Please confirm the participants that attended this activity</string>
     <string name="confirm_act_participants">Confirm Activity Participants</string>
+    <string name="confirm_delete_comment">Are you sure you want to delete comment?</string>
+    <string name="comment_deleted">Comment deleted with success</string>
+    <string name="delete_comment_failed">Failed deleting comment</string>
 
     <string-array name="filter">
         <item>Health</item>

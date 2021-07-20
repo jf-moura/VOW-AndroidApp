@@ -94,6 +94,7 @@ public class EnrollActivity extends AppCompatActivity {
         activity = (Activity) getIntent().getSerializableExtra("Activity");
         activitiesList = (ActivitiesByUserView) getIntent().getSerializableExtra("EnrolledActivities");
 
+        getSupportActionBar().setTitle(activity.getName());
 
         textViewActName.setText(Html.fromHtml("<b>" + getResources().getString(R.string.activity_name) + "</b>" + " " + activity.getName()));
         textViewActOwner.setText(Html.fromHtml("<b>" + getResources().getString(R.string.organization) + "</b>" + " " + activity.getOwner()));
