@@ -872,10 +872,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     private void handleMapLongClick(LatLng latLng) {
-        //   mMap.clear();
-        addMarker(latLng);
-        addCircle(latLng, GEOFENCE_RADIUS);
-        addGeofence(latLng, GEOFENCE_RADIUS);
+        //  mMap.clear();
+      //  addMarker(latLng);
+     //   addCircle(latLng, GEOFENCE_RADIUS);
+     //   addGeofence(latLng, GEOFENCE_RADIUS);
     }
 
     @Override

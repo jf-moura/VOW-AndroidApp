@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -88,6 +90,7 @@ public class FeedFragment extends Fragment {
     private GetAllUsersViewModel getAllUsersViewModel;
     private List<UserInfo> users;
     private String[] auxSearchView;
+    private String input;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -97,7 +100,7 @@ public class FeedFragment extends Fragment {
         View root = binding.getRoot();
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
-
+        input = "";
         mActivity = this;
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
@@ -120,52 +123,35 @@ public class FeedFragment extends Fragment {
             auxSearchView = new String[usersList.size()];
             int count = 0;
             for (UserInfo u : users) {
-                auxSearchView[count++] = u.getName();
+                auxSearchView[count++] = u.getUsername();
             }
             ArrayAdapter<String> adapterSearch = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, auxSearchView);
             searchView.setAdapter(adapterSearch);
+
+            searchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    input = searchView.getText().toString();
+                    if (!input.isEmpty()) {
+                        List<Activity> aux = new LinkedList<>();
+                        for (Activity a : activityList) {
+                            if (a.getOwner().equals(input))
+                                aux.add(a);
+                        }
+                        RecyclerViewAdapter adapter1 = new RecyclerViewAdapter(getContext(), aux, user, enrolledActivities);
+                        recyclerView.setAdapter(adapter1);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    }
+                    input = "";
+                }
+            });
         });
 
-
-      /*  searchView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Set the fields to specify which types of place data to
-                // return after the user has made a selection.
-                List<Place.Field> fields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.ID, Place.Field.NAME);
-
-
-                // Start the autocomplete intent.
-                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-                        .build(getActivity());
-                //someActivityResultLauncher.launch(intent);
-                //   startActivityForResult(intent, 100);
-            }
-        });*/
 
         setHasOptionsMenu(true);
         return root;
     }
 
-   /* private ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Place pl = Autocomplete.getPlaceFromIntent(result.getData());
-                        Log.i(TAG, "Place: " + pl.getName() + ", " + pl.getId());
-                        searchView.setText(pl.getAddress());
-
-                        mMap.clear();
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(pl.getLatLng()));
-                    } else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
-
-                        Status status = Autocomplete.getStatusFromIntent(result.getData());
-                        Log.i(TAG, status.getStatusMessage());
-                    }
-                }
-            });*/
 
     @Override
     public void onStart() {
@@ -209,14 +195,15 @@ public class FeedFragment extends Fragment {
                     }
                 }
 
-                List<Activity> activityList = new ArrayList<>(aux.values());
+                activityList = new ArrayList<>(aux.values());
                 showFilteredAct(activityList);
-
                 RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             }
         });
+
+        this.onCompleteIsEmpty();
 
         /*downloadImageViewModel.getImage().observe(getActivity(), image -> {
             if (image.getObjName().split("_").length == 2) {
@@ -257,6 +244,32 @@ public class FeedFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void onCompleteIsEmpty() {
+        searchView.addTextChangedListener(new TextWatcher() {
+            String afterTextChanged = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                afterTextChanged = searchView.getText().toString();
+                if (afterTextChanged.isEmpty()) {
+                    RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                }
+            }
+        });
     }
 
     private void showFilteredAct(List<Activity> aux) {

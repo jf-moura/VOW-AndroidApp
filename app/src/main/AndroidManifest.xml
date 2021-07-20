@@ -88,6 +88,10 @@
             android:name=".ui.login.LoginActivity"
             android:label="@string/login" />
         <activity
+            android:name=".ui.profile.ShowProfileActivity"
+            android:label="@string/user_info" />
+
+        <activity
             android:name=".ui.confimParticipants.ConfirmParticipantsActivity"
             android:label="@string/confirm_act_participants" />
         <activity android:name=".ui.geofencing.MapsGeofencing">

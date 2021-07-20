@@ -160,7 +160,9 @@ public class ActivityInfoActivity extends AppCompatActivity {
         if (activity.getOwner().equals(user.getUsername())) {
             textViewConfirmPart.setVisibility(View.VISIBLE);
         }
-
+        if (startMillis >= currentTime.getTimeInMillis()) {
+            textViewRating.setVisibility(View.INVISIBLE);
+        }
         // Activity hasn't occured or the user is the owner of the activity
         if (startMillis >= currentTime.getTimeInMillis() || activity.getOwner().equals(user.getUsername())) {
             ratingBar.setVisibility(View.INVISIBLE);

@@ -1,0 +1,216 @@
+package pt.vow.ui.profile;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.imageview.ShapeableImageView;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import pt.vow.R;
+import pt.vow.ui.VOW;
+import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.logout.LogoutViewModel;
+import pt.vow.ui.logout.LogoutViewModelFactory;
+import pt.vow.ui.mainPage.DownloadImageViewModel;
+import pt.vow.ui.mainPage.DownloadImageViewModelFactory;
+import pt.vow.ui.mainPage.GetImageResult;
+import pt.vow.ui.mainPage.Image;
+
+public class ShowProfileActivity extends AppCompatActivity {
+    private static final int RESULT_OK = -1;
+
+    private ShapeableImageView profileImage;
+    private TextView aboutMeTextView;
+    private Switch switchMode;
+    private boolean mode;
+    private DrawerLayout drawerLayout;
+    private BottomNavigationView topNavigationProfile;
+
+    private LogoutViewModel logoutViewModel;
+    private DownloadImageViewModel downloadImageViewModel;
+    private UploadImageViewModel uploadImageViewModel;
+    private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
+    private GetMyActivitiesViewModel getMyActivitiesViewModel;
+    private LoggedInUserView user;
+    private Image image;
+    private ProfileInfoView profileInfo;
+
+    private Uri imageUri;
+    private static Bitmap bitmap;
+
+    private Observer<GetImageResult> imgObs;
+    private GetProfileViewModel getProfileViewModel;
+    private RelativeLayout relativeLayoutCam;
+    private ShowProfileActivity mActivity;
+    private String userToGet;
+    private Boolean userVisibility;
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
+
+        mActivity = this;
+
+        logoutViewModel = new ViewModelProvider(this, new LogoutViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(LogoutViewModel.class);
+        uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(UploadImageViewModel.class);
+
+        getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetProfileViewModel.class);
+        downloadImageViewModel = new ViewModelProvider(this, new DownloadImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(DownloadImageViewModel.class);
+        getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetActivitiesByUserViewModel.class);
+        getMyActivitiesViewModel = new ViewModelProvider(this, new GetMyActivitiesViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetMyActivitiesViewModel.class);
+
+        // Bundle bundle = this.getArguments();
+        // user = (LoggedInUserView) bundle.getSerializable("UserLogged");
+        user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
+        userToGet = (String) getIntent().getSerializableExtra("UserShown");
+        userVisibility = (Boolean) getIntent().getSerializableExtra("UserShownVisibility");
+
+        //public account
+        if (userVisibility) {
+            getActivitiesByUserViewModel.getActivities(userToGet, user.getTokenID());
+            getMyActivitiesViewModel.getActivities(userToGet, user.getTokenID());
+        } else {
+
+        }
+
+
+        profileImage = findViewById(R.id.profileImage);
+        aboutMeTextView = findViewById(R.id.aboutMeTextView);
+        topNavigationProfile = findViewById(R.id.topNavigationProfile);
+
+        relativeLayoutCam = findViewById(R.id.relativeLayoutCam);
+        relativeLayoutCam.setVisibility(View.INVISIBLE);
+
+
+        if (profileInfo == null) {
+            getProfileViewModel.getProfile(userToGet, user.getUsername(), user.getTokenID());
+            getProfileViewModel.profile().observe(this, profile -> {
+                profileInfo = profile;
+                getSupportActionBar().setTitle(profileInfo.getUsername());
+                String bio = profileInfo.getBio();
+                aboutMeTextView.setText(bio);
+            });
+        }
+
+
+        if (image == null) {
+            try {
+                downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", userToGet);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            downloadImageViewModel.getImage().observe(this, images -> {
+                if (images.getObjName().split("_").length == 1) {
+                    image = images;
+                    byte[] img = images.getImageBytes();
+                    bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                    profileImage.setImageBitmap(bitmap);
+                }
+            });
+        }
+
+
+        topNavigationProfile.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                switch (item.getItemId()) {
+                    case R.id.navigation_enrolled_activities:
+                        Fragment afragment = new EnrolledActivitiesFragment();
+                        fragmentTransaction.replace(R.id.activities_layout, afragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                        break;
+                    case R.id.navigation_my_activities:
+                        Fragment bfragment = new MyActivitiesFragment();
+                        fragmentTransaction.replace(R.id.activities_layout, bfragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                        break;
+                }
+                return true;
+            }
+        });
+
+        this.invalidateOptionsMenu();
+
+    }
+
+
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        imageUri = data.getData();
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                            profileImage.setImageBitmap(bitmap);
+                            uploadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
+                            try {
+                                downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void uploadImage(String projectId, String bucketName, String objectName) throws
+            IOException {
+        if (imageUri != null) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            byte[] imageInByte = out.toByteArray();
+            out.close();
+            uploadImageViewModel.uploadImage(projectId, bucketName, objectName, imageInByte);
+        }
+    }
+
+    private void showMessage(@StringRes Integer message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+}

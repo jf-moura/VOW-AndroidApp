@@ -77,7 +77,7 @@
     <string name="elderly">elderly</string>
     <string name="health">health</string>
     <string name="disabled">disabled</string>
-    <string name="all">all</string>
+    <string name="all">All</string>
     <string name="finish">Finish</string>
     <string name="login">Login</string>
     <string name="create_account">Create Account</string>
@@ -195,6 +195,8 @@
     <string name="description">Description: </string>
     <string name="hint_description">Short description of the activity</string>
     <string name="location_unavailable">Need to add activity location</string>
+    <string name="user_info">User Info</string>
+    <string name="account_private">This account is private</string>
 
     <string-array name="filter">
         <item>Health</item>
