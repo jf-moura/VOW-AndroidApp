@@ -39,8 +39,8 @@ public class NewRouteRepository {
         this.user = user;
     }
 
-    public Result<RegisteredRoute> registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray) {
-        Result<RegisteredRoute> result = dataSource.registerRoute(username, tokenID, name, address,time,type, participantNum, durationInMinutes, coordinateArray);
+    public Result<RegisteredRoute> registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray, String description) {
+        Result<RegisteredRoute> result = dataSource.registerRoute(username, tokenID, name, address,time,type, participantNum, durationInMinutes, coordinateArray, description);
         if (result instanceof Result.Success) {
             setRegisteredRoute(((Result.Success<RegisteredRoute>) result).getData());
         }

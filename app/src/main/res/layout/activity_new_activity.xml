@@ -27,7 +27,7 @@
                 android:layout_height="50dp"
                 android:layout_above="@+id/textViewDescription"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="28dp"
                 android:layout_marginTop="70dp"
                 android:gravity="center"
                 android:text="@string/activity_name"
@@ -41,7 +41,7 @@
                 android:layout_height="50dp"
                 android:layout_above="@+id/textViewParticipantNum"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="28dp"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:text="@string/description"
@@ -91,18 +91,17 @@
                 app:layout_constraintStart_toEndOf="@+id/textViewNameAct"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <EditText
                 android:id="@+id/editTextDescription"
-                android:layout_width="280dp"
-                android:layout_height="48dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:hint="@string/hint_description"
-                android:inputType="textAutoComplete"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.609"
+                app:layout_constraintHorizontal_bias="0.619"
                 app:layout_constraintStart_toEndOf="@+id/textViewDescription"
                 app:layout_constraintTop_toBottomOf="@+id/editTextNameAct" />
 

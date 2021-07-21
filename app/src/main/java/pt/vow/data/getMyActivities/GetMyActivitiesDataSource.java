@@ -24,8 +24,8 @@ public class GetMyActivitiesDataSource {
         this.service = retrofit.create(ApiGetMyAct.class);
     }
 
-    public Result<MyActivitiesView> getMyActivities(String username, String tokenID) {
-        Call<List<Activity>> getMyActivitiesCall = service.getMyActivities(username, tokenID);
+    public Result<MyActivitiesView> getMyActivities(String userToGet, String username, String tokenID) {
+        Call<List<Activity>> getMyActivitiesCall = service.getMyActivities(userToGet, username, tokenID);
         try {
             Response<List<Activity>> response = getMyActivitiesCall.execute();
             if (response.isSuccessful()) {

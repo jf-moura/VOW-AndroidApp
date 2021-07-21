@@ -27,11 +27,11 @@ public class NewRouteViewModel extends ViewModel {
         return newRouteResult;
     }
 
-    public void registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes,  List<String> coordinateArray) {
+    public void registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes,  List<String> coordinateArray, String description) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredRoute> result = newRouteRepository.registerRoute(username, tokenID, name, address, time,type, participantNum, durationInMinutes, coordinateArray);
+                Result<RegisteredRoute> result = newRouteRepository.registerRoute(username, tokenID, name, address, time,type, participantNum, durationInMinutes, coordinateArray, description);
                 if (result instanceof Result.Success) {
                     newRouteResult.postValue(new NewRouteResult(new RegisteredActivityView(name)));
                 } else {

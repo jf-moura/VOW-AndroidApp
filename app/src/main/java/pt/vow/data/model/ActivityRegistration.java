@@ -8,11 +8,12 @@ public class ActivityRegistration {
     String address;
     String coordinates;
     String time;
+    String description;
     String participantNum;
     String durationInMinutes;
     String type;
 
-    public ActivityRegistration(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes) {
+    public ActivityRegistration(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String description) {
         this.username = username;
         this.tokenID = tokenID;
         this.name = name;
@@ -22,6 +23,7 @@ public class ActivityRegistration {
         this.participantNum = participantNum;
         this.durationInMinutes = durationInMinutes;
         this.type = type;
+        this.description = description;
     }
 
     public String getUsername() {
@@ -58,5 +60,9 @@ public class ActivityRegistration {
 
     public String getType() {
         return type;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

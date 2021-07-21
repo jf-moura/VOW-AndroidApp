@@ -197,6 +197,7 @@
     <string name="location_unavailable">Need to add activity location</string>
     <string name="user_info">User Info</string>
     <string name="account_private">This account is private</string>
+    <string name="podium_info">Join activities to earn points</string>
 
     <string-array name="filter">
         <item>Health</item>

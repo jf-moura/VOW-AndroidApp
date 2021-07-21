@@ -23,9 +23,9 @@ public class NewRouteDataSource {
         this.service = retrofit.create(ApiNewRoute.class);
     }
 
-    public Result<RegisteredRoute> registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray) {
+    public Result<RegisteredRoute> registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray, String description) {
 
-        Call<Void> activityRegistrationCall = service.newRoute(new RouteRegistration(username, tokenID, name, address, time, type, participantNum, durationInMinutes, coordinateArray));
+        Call<Void> activityRegistrationCall = service.newRoute(new RouteRegistration(username, tokenID, name, address, time, type, participantNum, durationInMinutes, coordinateArray, description));
         try {
             Response<Void> response = activityRegistrationCall.execute();
             if (response.isSuccessful()) {

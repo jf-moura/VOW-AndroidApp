@@ -142,7 +142,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
         // showImageType();
 
         //if the user is not the owner of the activity
-        hideOwnerFunctionalities();
+        if (!user.getUsername().equals(activity.getOwner()))
+            hideOwnerFunctionalities();
 
         Calendar currentTime = Calendar.getInstance();
         String[] dateTime = activity.getTime().split(" ");
@@ -406,28 +407,28 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
     private void hideOwnerFunctionalities() {
         //if the user is not the owner of the activity
-        if (!user.getUsername().equals(activity.getOwner())) {
-            editTextActName.setFocusable(false);
-            editTextActName.setClickable(false);
-            editTextActName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            editTextActOwner.setFocusable(false);
-            editTextActOwner.setClickable(false);
-            editTextActOwner.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            editTextAddress.setFocusable(false);
-            editTextAddress.setClickable(false);
-            editTextAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            editTextNumPart.setFocusable(false);
-            editTextNumPart.setClickable(false);
-            editTextNumPart.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            editTextTime.setFocusable(false);
-            editTextTime.setClickable(false);
-            editTextTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            editTextDuration.setFocusable(false);
-            editTextDuration.setClickable(false);
-            editTextDuration.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            saveUpdateBttn.setVisibility(View.GONE);
-            deleteActBttn.setVisibility(View.GONE);
-        }
+
+        editTextActName.setFocusable(false);
+        editTextActName.setClickable(false);
+        editTextActName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        editTextActOwner.setFocusable(false);
+        editTextActOwner.setClickable(false);
+        editTextActOwner.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        editTextAddress.setFocusable(false);
+        editTextAddress.setClickable(false);
+        editTextAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        editTextNumPart.setFocusable(false);
+        editTextNumPart.setClickable(false);
+        editTextNumPart.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        editTextTime.setFocusable(false);
+        editTextTime.setClickable(false);
+        editTextTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        editTextDuration.setFocusable(false);
+        editTextDuration.setClickable(false);
+        editTextDuration.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        saveUpdateBttn.setVisibility(View.GONE);
+        deleteActBttn.setVisibility(View.GONE);
+
     }
 
 }

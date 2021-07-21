@@ -12,9 +12,10 @@ public class RouteRegistration {
     String durationInMinutes;
     List<String> coordinateArray;
     String address;
+    String description;
 
 
-    public RouteRegistration(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray) {
+    public RouteRegistration(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray, String description) {
         this.username = username;
         this.tokenID = tokenID;
         this.name = name;
@@ -24,6 +25,7 @@ public class RouteRegistration {
         this.type = type;
         this.coordinateArray = coordinateArray;
         this.address = address;
+        this.description = description;
     }
 
     public String getUsername() {
@@ -58,5 +60,11 @@ public class RouteRegistration {
         return type;
     }
 
-    public String getAddress(){return address;}
+    public String getAddress() {
+        return address;
+    }
+
+    private String getDescription() {
+        return description;
+    }
 }

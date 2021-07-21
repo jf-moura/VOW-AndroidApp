@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -50,11 +51,12 @@ public class ShowProfileActivity extends AppCompatActivity {
     private static final int RESULT_OK = -1;
 
     private ShapeableImageView profileImage;
-    private TextView aboutMeTextView;
+    private TextView aboutMeTextView, textAccPrivate;
     private Switch switchMode;
     private boolean mode;
     private DrawerLayout drawerLayout;
     private BottomNavigationView topNavigationProfile;
+    private ImageView imageLock;
 
     private LogoutViewModel logoutViewModel;
     private DownloadImageViewModel downloadImageViewModel;
@@ -101,14 +103,6 @@ public class ShowProfileActivity extends AppCompatActivity {
         userToGet = (String) getIntent().getSerializableExtra("UserShown");
         userVisibility = (Boolean) getIntent().getSerializableExtra("UserShownVisibility");
 
-        //public account
-        if (userVisibility) {
-            getActivitiesByUserViewModel.getActivities(userToGet, user.getTokenID());
-            getMyActivitiesViewModel.getActivities(userToGet, user.getTokenID());
-        } else {
-
-        }
-
 
         profileImage = findViewById(R.id.profileImage);
         aboutMeTextView = findViewById(R.id.aboutMeTextView);
@@ -116,6 +110,18 @@ public class ShowProfileActivity extends AppCompatActivity {
 
         relativeLayoutCam = findViewById(R.id.relativeLayoutCam);
         relativeLayoutCam.setVisibility(View.INVISIBLE);
+        imageLock = findViewById(R.id.imageLock);
+        textAccPrivate = findViewById(R.id.textAccPrivate);
+
+        //public account
+        if (userVisibility) {
+            getActivitiesByUserViewModel.getActivities(userToGet, user.getUsername(), user.getTokenID());
+            getMyActivitiesViewModel.getActivities(userToGet, user.getUsername(), user.getTokenID());
+        } else {
+            imageLock.setVisibility(View.VISIBLE);
+            textAccPrivate.setVisibility(View.VISIBLE);
+            topNavigationProfile.setVisibility(View.GONE);
+        }
 
 
         if (profileInfo == null) {

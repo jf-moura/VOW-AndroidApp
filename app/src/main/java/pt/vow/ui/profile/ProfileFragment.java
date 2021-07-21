@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -69,12 +70,13 @@ public class ProfileFragment extends Fragment {
     private static final int RESULT_OK = -1;
 
     private ShapeableImageView profileImage;
-    private TextView aboutMeTextView;
+    private TextView aboutMeTextView, textAccPrivate;
     private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, deleteAccountLinearLayout;
     private Switch switchMode;
     private boolean mode;
     private DrawerLayout drawerLayout;
     private BottomNavigationView topNavigationProfile;
+    private ImageView imageLock;
 
     private LogoutViewModel logoutViewModel;
     private DownloadImageViewModel downloadImageViewModel;
@@ -117,8 +119,8 @@ public class ProfileFragment extends Fragment {
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
-        getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getTokenID());
-        getMyActivitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
+        getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getUsername(), user.getTokenID());
+        getMyActivitiesViewModel.getActivities(user.getUsername(), user.getUsername(), user.getTokenID());
 
         profileImage = root.findViewById(R.id.profileImage);
         aboutMeTextView = root.findViewById(R.id.aboutMeTextView);
@@ -134,6 +136,9 @@ public class ProfileFragment extends Fragment {
         logoutLinearLayout = root.findViewById(R.id.logoutLinearLayout);
         deleteAccountLinearLayout = root.findViewById(R.id.deleteAccountLinearLayout);
         switchMode = root.findViewById(R.id.switch2);
+        imageLock = root.findViewById(R.id.imageLock);
+        textAccPrivate = root.findViewById(R.id.textAccPrivate);
+
 
         this.getProfileInfo();
 

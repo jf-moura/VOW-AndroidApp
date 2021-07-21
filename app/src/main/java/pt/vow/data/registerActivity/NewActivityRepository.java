@@ -35,8 +35,8 @@ public class NewActivityRepository {
         this.user = user;
     }
 
-    public Result<RegisteredActivity> registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes) {
-        Result<RegisteredActivity> result = dataSource.registerActivity(username, tokenID, name, address, coordinates, time,type, participantNum, durationInMinutes);
+    public Result<RegisteredActivity> registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String description) {
+        Result<RegisteredActivity> result = dataSource.registerActivity(username, tokenID, name, address, coordinates, time,type, participantNum, durationInMinutes, description);
         if (result instanceof Result.Success) {
             setRegisteredActivity(((Result.Success<RegisteredActivity>) result).getData());
         }

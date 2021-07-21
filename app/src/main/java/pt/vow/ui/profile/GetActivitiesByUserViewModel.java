@@ -27,11 +27,11 @@ public class GetActivitiesByUserViewModel extends ViewModel {
         return getActivitiesResult;
     }
 
-    public void getActivities(String username, String tokenID) {
+    public void getActivities(String userToGet, String username, String tokenID) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<ActivitiesByUserView> result = activitiesInfoRepository.getActivitiesByUser(username, tokenID);
+                Result<ActivitiesByUserView> result = activitiesInfoRepository.getActivitiesByUser(userToGet, username, tokenID);
                 if (result instanceof Result.Success) {
                     ActivitiesByUserView data = ((Result.Success<ActivitiesByUserView>) result).getData();
                     activities.postValue(data);

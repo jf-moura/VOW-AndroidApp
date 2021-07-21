@@ -30,8 +30,8 @@ public class GetActivitiesByUserRepository {
         this.activities = activities;
     }
 
-    public Result<ActivitiesByUserView> getActivitiesByUser(String username, String tokenID) {
-        Result<ActivitiesByUserView> result = dataSource.getActivitiesByUser(username, tokenID);
+    public Result<ActivitiesByUserView> getActivitiesByUser(String userToGet, String username, String tokenID) {
+        Result<ActivitiesByUserView> result = dataSource.getActivitiesByUser(userToGet, username, tokenID);
         if (result instanceof Result.Success) {
             setActivities(((Result.Success<ActivitiesByUserView>) result).getData());
         }

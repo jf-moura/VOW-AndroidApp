@@ -10,6 +10,6 @@ import retrofit2.http.Path;
 
 public interface ApiGetMyAct {
 
-    @GET("rest/get/ownedactivities/{username}")
-    Call<List<Activity>> getMyActivities(@Path("username") String username, @Header("tokenID") String tokenID);
+    @GET("rest/get/ownedactivities/{userToGet}")
+    Call<List<Activity>> getMyActivities(@Path("userToGet") String userToGet, @Header("username") String username, @Header("tokenID") String tokenID);
 }

@@ -55,12 +55,14 @@ public class PodiumRecyclerViewAdapter extends RecyclerView.Adapter<PodiumRecycl
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ShowProfileActivity.class);
-                intent.putExtra("UserLogged", user);
-                intent.putExtra("UserShown", userList.get(position).getUsername());
-                intent.putExtra("UserShownVisibility", userList.get(position).getVisibility());
-               // intent.putExtra("UserShownToken", userList.get(position));
-                context.startActivity(intent);
+                if (!userList.get(position).getUsername().equals(user.getUsername())) {
+                    Intent intent = new Intent(context, ShowProfileActivity.class);
+                    intent.putExtra("UserLogged", user);
+                    intent.putExtra("UserShown", userList.get(position).getUsername());
+                    intent.putExtra("UserShownVisibility", userList.get(position).getVisibility());
+                    // intent.putExtra("UserShownToken", userList.get(position));
+                    context.startActivity(intent);
+                }
             }
         });
     }

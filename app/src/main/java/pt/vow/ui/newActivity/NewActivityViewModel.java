@@ -31,11 +31,11 @@ public class NewActivityViewModel extends ViewModel {
         return newActResult;
     }
 
-    public void registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes) {
+    public void registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String description) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredActivity> result = newActivityRepository.registerActivity(username, tokenID, name, address, coordinates, time, type, participantNum, durationInMinutes);
+                Result<RegisteredActivity> result = newActivityRepository.registerActivity(username, tokenID, name, address, coordinates, time, type, participantNum, durationInMinutes, description);
                 if (result instanceof Result.Success) {
                     newActResult.postValue(new NewActivityResult(new RegisteredActivityView(name)));
                 } else {
@@ -45,7 +45,7 @@ public class NewActivityViewModel extends ViewModel {
         });
     }
 
-    public void newActivityDataChanged(String name, String address, String time, String type, String participantNum, String durationInMinutes) {
+    public void newActivityDataChanged(String name, String address, String time, String type, String participantNum, String durationInMinutes, String description) {
         if (!isNameValid(name))
             newActFormState.setValue(new NewActivityFormState(R.string.invalid_name, null));
         else if (!isAddressValid(address))
@@ -57,6 +57,8 @@ public class NewActivityViewModel extends ViewModel {
         else if (!isTimeValid(time))
             newActFormState.setValue(new NewActivityFormState(null, null));
         else if (!isTypeValid(type))
+            newActFormState.setValue(new NewActivityFormState(null, null));
+        else if (!isDescriptionValid(description))
             newActFormState.setValue(new NewActivityFormState(null, null));
         else
             newActFormState.setValue(new NewActivityFormState(true));
@@ -92,6 +94,10 @@ public class NewActivityViewModel extends ViewModel {
     // A placeholder type validation check
     private boolean isTypeValid(String type) {
         return type != null && !type.isEmpty();
+    }
+
+    private boolean isDescriptionValid(String description) {
+        return !description.isEmpty();
     }
 
     private int monthToIntegerShort(String month) {

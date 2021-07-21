@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -36,6 +38,7 @@ public class PodiumFragment extends Fragment {
     private LoggedInUserView user;
     private GetAllUsersViewModel getAllUsersViewModel;
     private List<UserInfo> usersList;
+    private ImageView imageViewInfo;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class PodiumFragment extends Fragment {
         actionBar.setTitle(null);
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
+        imageViewInfo = root.findViewById(R.id.imageViewInfo);
 
         getAllUsersViewModel.getAllUsers(user.getUsername(), user.getTokenID());
 
@@ -62,6 +66,13 @@ public class PodiumFragment extends Fragment {
             PodiumRecyclerViewAdapter adapter = new PodiumRecyclerViewAdapter(getContext(), usersList, user);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        });
+
+        imageViewInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), R.string.podium_info, Toast.LENGTH_SHORT).show();
+            }
         });
         return root;
     }

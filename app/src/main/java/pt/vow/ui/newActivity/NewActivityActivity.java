@@ -190,7 +190,7 @@ public class NewActivityActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
-                        address, date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                        address, date, type, editTextPartNum.getText().toString(), durationInMinutes, editTextDescription.getText().toString());
             }
         };
 
@@ -204,7 +204,7 @@ public class NewActivityActivity extends AppCompatActivity {
                     int aux = hour * 60 + minutes;
                     durationInMinutes = new String().concat(String.valueOf(aux));
                     newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
-                            address, date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                            address, date, type, editTextPartNum.getText().toString(), durationInMinutes, editTextDescription.getText().toString());
                 });
 
         dateBttn.setOnClickListener(v -> showDatePickerDialog());
@@ -230,10 +230,10 @@ public class NewActivityActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 if (coordinates.size() == 1)
                     newActivityViewModel.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                        address, coordinates.get(0), date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                        address, coordinates.get(0), date, type, editTextPartNum.getText().toString(), durationInMinutes, editTextDescription.getText().toString());
                 else if (coordinates.size() > 1)
                     newRouteViewModel.registerRoute(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                            address, date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinates);
+                            address, date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinates, editTextDescription.getText().toString());
             }
         });
 
@@ -268,7 +268,7 @@ public class NewActivityActivity extends AppCompatActivity {
                         .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
 
                 newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
-                        editTextDescription.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                        editTextDescription.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes,  editTextDescription.getText().toString());
             }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
         dpd.getDatePicker().setMinDate(cal.getTimeInMillis());
@@ -370,7 +370,7 @@ public class NewActivityActivity extends AppCompatActivity {
                 break;
         }
         newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
-                editTextDescription.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes);
+                editTextDescription.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes, editTextDescription.getText().toString());
     }
 
     private void showSetImageFailed() {
