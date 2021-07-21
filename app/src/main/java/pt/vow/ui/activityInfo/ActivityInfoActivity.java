@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +37,13 @@ import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.mainPage.Image;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
 import pt.vow.ui.profile.ProfileRecyclerViewAdapter;
+import pt.vow.ui.update.UpdateActivity;
+import pt.vow.ui.update.UpdateActivityViewModel;
+import pt.vow.ui.update.UpdateActivityViewModelFactory;
+import pt.vow.ui.update.UpdateFormState;
+import pt.vow.ui.update.UpdateResult;
+import pt.vow.ui.update.UpdateViewModel;
+import pt.vow.ui.update.UpdateViewModelFactory;
 
 
 import androidx.annotation.Nullable;
@@ -62,8 +71,9 @@ import java.util.List;
 public class ActivityInfoActivity extends AppCompatActivity {
 
     private ActivityInfoActivity mActivity;
-    private TextView textViewConfirmPart, textViewRating, textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
-    private EditText editTextDuration, editTextNumPart, editTextTime, editTextActName, editTextActOwner, editTextAddress;
+    private TextView textViewDescription, textViewConfirmPart, textViewRating,
+            textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
+    private EditText editTextDuration, editTextNumPart, editTextTime, editTextActName, editTextActOwner, editTextAddress, editTextDescription;
     private Button submitBttn, saveUpdateBttn, postCommentBttn, checkPartBttn;
     private EditText editTextComment;
     private RatingBar ratingBar;
@@ -86,6 +96,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private Observer<GetActCommentsResult> actCommentsObs;
     private List<Commentary> commentaryList;
     private RecyclerView actCommentsRecyclerView;
+    private UpdateActivityViewModel updateActivityViewModel;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +116,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 .get(RegisterCommentViewModel.class);
         getActCommentsViewModel = new ViewModelProvider(this, new GetActCommentsViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetActCommentsViewModel.class);
+        updateActivityViewModel = new ViewModelProvider(this, new UpdateActivityViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(UpdateActivityViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         activity = (Activity) getIntent().getSerializableExtra("Activity");
@@ -117,6 +130,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         textViewDuration = findViewById(R.id.textViewDuration2);
         textViewNumPart = findViewById(R.id.textViewNumParticipants2);
         textViewTime = findViewById(R.id.textViewTime2);
+        textViewDescription = findViewById(R.id.textViewDescription2);
 
         editTextActName = findViewById(R.id.editTextActName);
         editTextActOwner = findViewById(R.id.editTextOrganization);
@@ -124,6 +138,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         editTextDuration = findViewById(R.id.editTextDur);
         editTextNumPart = findViewById(R.id.editTextPartNum);
         editTextTime = findViewById(R.id.editTextTime2);
+        editTextDescription = findViewById(R.id.editTextDescription);
 
         ratingBar = findViewById(R.id.rating_bar);
         submitBttn = findViewById(R.id.submitBttn);
@@ -320,6 +335,43 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });*/
+
+
+        TextWatcher afterTextChangedListener = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // ignore
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // ignore
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                updateActivityViewModel.updateActivityDataChanged(editTextActName.getText().toString(), editTextAddress.getText().toString(),
+                        editTextTime.getText().toString(), activity.getType(), editTextNumPart.getText().toString(),
+                        editTextDuration.getText().toString(), editTextDescription.getText().toString());
+            }
+        };
+
+        editTextActName.addTextChangedListener(afterTextChangedListener);
+        editTextActOwner.addTextChangedListener(afterTextChangedListener);
+        editTextAddress.addTextChangedListener(afterTextChangedListener);
+        editTextNumPart.addTextChangedListener(afterTextChangedListener);
+        editTextTime.addTextChangedListener(afterTextChangedListener);
+        editTextDuration.addTextChangedListener(afterTextChangedListener);
+        editTextDescription.addTextChangedListener(afterTextChangedListener);
+        submitBttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                updateActivityViewModel.updateActivity(editTextActName.getText().toString(), editTextAddress.getText().toString(), activity.getCoordinates(),
+                        editTextTime.getText().toString(), activity.getType(), editTextNumPart.getText().toString(),
+                        editTextDuration.getText().toString(), "", "", String.valueOf(user.getRole()), editTextDescription.getText().toString());
+            }
+        });
     }
 
 
@@ -406,8 +458,6 @@ public class ActivityInfoActivity extends AppCompatActivity {
     }
 
     private void hideOwnerFunctionalities() {
-        //if the user is not the owner of the activity
-
         editTextActName.setFocusable(false);
         editTextActName.setClickable(false);
         editTextActName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -428,7 +478,6 @@ public class ActivityInfoActivity extends AppCompatActivity {
         editTextDuration.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         saveUpdateBttn.setVisibility(View.GONE);
         deleteActBttn.setVisibility(View.GONE);
-
     }
 
 }
