@@ -35,13 +35,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.google.android.material.textfield.TextInputLayout;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -69,7 +62,6 @@ import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.profile.ActivitiesByUserView;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 
-import static android.app.Activity.RESULT_OK;
 
 public class FeedFragment extends Fragment {
     private FeedFragment mActivity;

@@ -111,7 +111,7 @@
     <!--new activity-->
     <string name="activity_duration">Duração da Atividade :</string>
     <string name="hint_address">rua, número, código postal</string>
-    <string name="date">Data</string>
+    <string name="date">Data:</string>
     <string name="type">Tipo:</string>
     <!--pop window-->
     <string name="yes">Sim</string>
@@ -224,4 +224,7 @@
     <string name="account_private">Esta conta é privada</string>
 
     <string name="podium_info">Junte-se a atividades para ganhar pontos</string>
+
+    <string name="confirm_participants_failed">Não foi possível confirmar a presença dos participantes</string>
+    <string name="confirmed_participants">Participantes confirmados com sucesso!</string>
 </resources>

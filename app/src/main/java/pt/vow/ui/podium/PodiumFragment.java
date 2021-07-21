@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -46,6 +48,7 @@ public class PodiumFragment extends Fragment {
     private GetAllUsersViewModel getAllUsersViewModel;
     private List<UserInfo> usersList;
     private ShapeableImageView firstPlaceImg, secondPlaceImg, thirdPlaceImg;
+    private ImageView imageViewInfo;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -67,6 +70,7 @@ public class PodiumFragment extends Fragment {
         firstPlaceImg = root.findViewById(R.id.firstPlaceImage);
         secondPlaceImg = root.findViewById(R.id.secondPlaceImage);
         thirdPlaceImg = root.findViewById(R.id.thirdPlaceImage);
+        imageViewInfo = root.findViewById(R.id.imageViewInfo);
 
         getAllUsersViewModel.getAllUsers(user.getUsername(), user.getTokenID());
 
@@ -107,6 +111,12 @@ public class PodiumFragment extends Fragment {
             }
         });
 
+        imageViewInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), R.string.podium_info, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return root;
     }

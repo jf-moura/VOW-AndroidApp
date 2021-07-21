@@ -108,7 +108,7 @@
     <!--new activity-->
     <string name="activity_duration">Activity Duration :</string>
     <string name="hint_address">street, number, postal code</string>
-    <string name="date">Date</string>
+    <string name="date">Date:</string>
     <string name="type">Type:</string>
     <!--pop window-->
     <string name="yes">Yes</string>

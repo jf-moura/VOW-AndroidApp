@@ -1,6 +1,7 @@
 package pt.vow.ui.profile;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 
 import pt.vow.R;
 import pt.vow.ui.VOW;
@@ -46,6 +49,8 @@ import pt.vow.ui.mainPage.DownloadImageViewModel;
 import pt.vow.ui.mainPage.DownloadImageViewModelFactory;
 import pt.vow.ui.mainPage.GetImageResult;
 import pt.vow.ui.mainPage.Image;
+import pt.vow.ui.maps.MapsFragment;
+import pt.vow.ui.podium.PodiumFragment;
 
 public class ShowProfileActivity extends AppCompatActivity {
     private static final int RESULT_OK = -1;
@@ -123,6 +128,8 @@ public class ShowProfileActivity extends AppCompatActivity {
             topNavigationProfile.setVisibility(View.GONE);
         }
 
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);// set drawable icon
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (profileInfo == null) {
             getProfileViewModel.getProfile(userToGet, user.getUsername(), user.getTokenID());
@@ -216,7 +223,15 @@ public class ShowProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void showMessage(@StringRes Integer message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 }
