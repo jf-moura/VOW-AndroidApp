@@ -44,7 +44,7 @@
                 android:layout_marginBottom="10dp"
                 android:text="TextView"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/editBttn"
+                app:layout_constraintEnd_toStartOf="@+id/editLayout"
                 app:layout_constraintStart_toEndOf="@+id/textViewUserName"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,11 +56,11 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
+                android:imeOptions="actionSend"
                 android:text="TextView"
                 android:visibility="gone"
-                android:imeOptions="actionSend"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/editBttn"
+                app:layout_constraintEnd_toStartOf="@+id/editLayout"
                 app:layout_constraintStart_toEndOf="@+id/textViewUserName"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -77,18 +77,34 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible" />
 
-            <ImageButton
-                android:id="@+id/editBttn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginEnd="10dp"
-                android:backgroundTint="@android:color/transparent"
-                android:src="@drawable/ic_fi_rr_pencil"
-                android:visibility="gone"
+            <RelativeLayout
+                android:id="@+id/editLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/trashBttn"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/editBttn"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:src="@drawable/ic_fi_rr_pencil"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/confirmCommentBttn"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:src="@drawable/ic_fi_rr_checkbox"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+            </RelativeLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

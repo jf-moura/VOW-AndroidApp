@@ -60,6 +60,10 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
             holder.editBttn.setVisibility(View.VISIBLE);
             holder.trashBttn.setVisibility(View.VISIBLE);
 
+
+            UpdateCommentViewModel updateCommentViewModel = new ViewModelProvider(mActivity, new UpdateCommentViewModelFactory(((VOW) mActivity.getApplication()).getExecutorService()))
+                    .get(UpdateCommentViewModel.class);
+
             holder.trashBttn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -77,38 +81,38 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
                     holder.editTextComment.setText(holder.textViewComment.getText().toString());
                     holder.textViewComment.setVisibility(View.GONE);
                     holder.editTextComment.setVisibility(View.VISIBLE);
-                    holder.editBttn.setImageResource(R.drawable.ic_fi_rr_checkbox);
+                    holder.editBttn.setVisibility(View.GONE);
+                    holder.confirmBttn.setVisibility(View.VISIBLE);
+                }
+            });
 
-                    UpdateCommentViewModel updateCommentViewModel = new ViewModelProvider(mActivity, new UpdateCommentViewModelFactory(((VOW) mActivity.getApplication()).getExecutorService()))
-                            .get(UpdateCommentViewModel.class);
-                    holder.editBttn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            updateCommentViewModel.updateComment(user.getUsername(), user.getTokenID(),
-                                    commentList.get(position).getCommentID(), activity.getOwner(), activity.getId(),
-                                    holder.editTextComment.getText().toString());
-                            holder.editBttn.setEnabled(true);
-                        }
-                    });
+            holder.confirmBttn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateCommentViewModel.updateComment(user.getUsername(), user.getTokenID(),
+                            commentList.get(position).getCommentID(), activity.getOwner(), activity.getId(),
+                            holder.editTextComment.getText().toString());
+                    holder.confirmBttn.setEnabled(true);
+                }
+            });
 
-                    updateCommentViewModel.getUpdateCommentResult().observe(mActivity, new Observer<UpdateCommentResult>() {
-                        @Override
-                        public void onChanged(UpdateCommentResult updateCommentResult) {
-                            if (updateCommentResult == null) {
-                                return;
-                            }
-                            if (updateCommentResult.getError() != null) {
-                                Toast.makeText(context, R.string.register_comment_failed, Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            if (updateCommentResult.getSuccess() != null) {
-                                holder.textViewComment.setText(holder.editTextComment.getText().toString());
-                                holder.editTextComment.setVisibility(View.GONE);
-                                holder.textViewComment.setVisibility(View.VISIBLE);
-                                holder.editBttn.setImageResource(R.drawable.ic_fi_rr_pencil);
-                            }
-                        }
-                    });
+            updateCommentViewModel.getUpdateCommentResult().observe(mActivity, new Observer<UpdateCommentResult>() {
+                @Override
+                public void onChanged(UpdateCommentResult updateCommentResult) {
+                    if (updateCommentResult == null) {
+                        return;
+                    }
+                    if (updateCommentResult.getError() != null) {
+                        Toast.makeText(context, R.string.register_comment_failed, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (updateCommentResult.getSuccess() != null) {
+                        holder.textViewComment.setText(holder.editTextComment.getText().toString());
+                        holder.editTextComment.setVisibility(View.GONE);
+                        holder.textViewComment.setVisibility(View.VISIBLE);
+                        holder.confirmBttn.setVisibility(View.GONE);
+                        holder.editBttn.setVisibility(View.VISIBLE);
+                    }
                 }
             });
         }
@@ -124,7 +128,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
 
         TextView textViewUserName, textViewComment;
         EditText editTextComment;
-        ImageButton editBttn, trashBttn;
+        ImageButton editBttn, confirmBttn, trashBttn;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -132,6 +136,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
             textViewComment = itemView.findViewById(R.id.textViewComment);
             editTextComment = itemView.findViewById(R.id.editTextComment2);
             editBttn = itemView.findViewById(R.id.editBttn);
+            confirmBttn = itemView.findViewById(R.id.confirmCommentBttn);
             trashBttn = itemView.findViewById(R.id.trashBttn);
         }
     }

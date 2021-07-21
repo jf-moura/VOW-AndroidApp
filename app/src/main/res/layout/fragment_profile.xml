@@ -67,13 +67,7 @@
 
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="end">
 
-        <include layout="@layout/main_nav_drawer" />
-    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/activities_layout"
@@ -89,5 +83,14 @@
             android:background="@color/logo_lighter_blue"
             app:menu="@menu/top_navigation_profile" />
     </LinearLayout>
+
+    <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="end"
+        android:gravity="bottom" >
+
+    <include layout="@layout/main_nav_drawer" />
+</RelativeLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

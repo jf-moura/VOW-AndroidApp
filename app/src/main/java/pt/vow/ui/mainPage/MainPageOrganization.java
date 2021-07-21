@@ -10,7 +10,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,10 +30,13 @@ import androidx.navigation.ui.NavigationUI;
 import java.io.IOException;
 
 import pt.vow.R;
+import pt.vow.data.model.UserInfo;
 import pt.vow.databinding.ActivityMainPageOrganizationBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.feed.GetActivitiesViewModelFactory;
+import pt.vow.ui.getAllUsers.GetAllUsersViewModel;
+import pt.vow.ui.getAllUsers.GetAllUsersViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;
@@ -46,7 +54,9 @@ public class MainPageOrganization extends AppCompatActivity {
     private DownloadImageViewModel downloadImageViewModel;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
+    private GetAllUsersViewModel getAllUsersViewModel;
     private GetProfileViewModel getProfileViewModel;
+    private ImagesViewModel imagesViewModel;
     private String profileName;
     private byte[] profileImageInByte;
 
@@ -69,6 +79,10 @@ public class MainPageOrganization extends AppCompatActivity {
                 .get(GetMyActivitiesViewModel.class);
         getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetProfileViewModel.class);
+        getAllUsersViewModel = new ViewModelProvider(this, new GetAllUsersViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetAllUsersViewModel.class);
+        imagesViewModel = new ViewModelProvider(this, new ImagesViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(ImagesViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
@@ -76,12 +90,12 @@ public class MainPageOrganization extends AppCompatActivity {
         getActivitiesByUserViewModel.getActivities(user.getUsername(),user.getUsername(), String.valueOf(user.getTokenID()));
         getMyActivitiesViewModel.getActivities(user.getUsername(),user.getUsername(), String.valueOf(user.getTokenID()));
         getProfileViewModel.getProfile(user.getUsername(), user.getUsername(), user.getTokenID());
+        getAllUsersViewModel.getAllUsers(user.getUsername(), user.getTokenID());
         try {
             downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         getProfileViewModel.profile().observe(this, profile -> {
             profileName = profile.getName();
         });
@@ -102,7 +116,8 @@ public class MainPageOrganization extends AppCompatActivity {
         });
 
         downloadImageViewModel.getImage().observe(this, image -> {
-            if (image.getObjName().split("_").length == 1) {
+            imagesViewModel.addImage(image);
+            if (image.getObjName().equals(user.getUsername())) {
                 profileImageInByte = image.getImageBytes();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(profileImageInByte, 0, profileImageInByte.length);
                 Drawable drawable = new BitmapDrawable(getResources(), bitmap);

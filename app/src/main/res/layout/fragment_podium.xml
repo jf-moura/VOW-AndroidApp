@@ -17,50 +17,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.017" />
-
-    <TextView
-        android:id="@+id/podium_1"
-        android:layout_width="60dp"
-        android:layout_height="80dp"
-        android:background="@drawable/podium1"
-        android:text="@string/first_place"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/firstPlaceImage"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="20dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.08" />
+        app:shapeAppearanceOverlay="@style/Circular" />
 
-    <TextView
-        android:id="@+id/podium_2"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/podium2"
-        android:text="@string/second_place"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/podium_1"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/secondPlaceImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="25dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toStartOf="@+id/firstPlaceImage"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.107" />
+        app:shapeAppearanceOverlay="@style/Circular" />
 
-    <TextView
-        android:id="@+id/podium_3"
-        android:layout_width="60dp"
-        android:layout_height="40dp"
-        android:background="@drawable/podium3"
-        android:text="@string/third_place"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/podium_1"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/thirdPlaceImage"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="60dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toEndOf="@+id/firstPlaceImage"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.133" />
+        app:shapeAppearanceOverlay="@style/Circular" />
 
     <ScrollView
         android:id="@+id/scrollView"

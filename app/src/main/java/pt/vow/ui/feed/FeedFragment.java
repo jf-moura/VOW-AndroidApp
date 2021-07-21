@@ -74,7 +74,7 @@ import static android.app.Activity.RESULT_OK;
 public class FeedFragment extends Fragment {
     private FeedFragment mActivity;
     private GetActivitiesViewModel activitiesViewModel;
-    private DownloadImageViewModel downloadImageViewModel;
+    //private DownloadImageViewModel downloadImageViewModel;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
@@ -156,7 +156,7 @@ public class FeedFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
+        //downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
         activitiesViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesViewModel.class);
 
@@ -187,11 +187,11 @@ public class FeedFragment extends Fragment {
                     long startMillis = beginTime.getTimeInMillis();
                     if (startMillis > currentTime) {
                         aux.put(a.getOwner() + "_" + a.getName(), a);
-                        try {
+                        /*try {
                             downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getOwner() + "_" + a.getName());
                         } catch (IOException e) {
                             e.printStackTrace();
-                        }
+                        }*/
                     }
                 }
 

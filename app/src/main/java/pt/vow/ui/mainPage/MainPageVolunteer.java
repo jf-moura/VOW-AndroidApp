@@ -48,6 +48,8 @@ import pt.vow.databinding.ActivityMainPagePersonBinding;
 import pt.vow.ui.activityInfo.ActivityInfoActivity;
 import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.feed.GetActivitiesViewModelFactory;
+import pt.vow.ui.getAllUsers.GetAllUsersViewModel;
+import pt.vow.ui.getAllUsers.GetAllUsersViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
@@ -71,6 +73,8 @@ public class MainPageVolunteer extends AppCompatActivity {
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
     private GetProfileViewModel getProfileViewModel;
+    private GetAllUsersViewModel getAllUsersViewModel;
+    private ImagesViewModel imagesViewModel;
 
     private ProfileInfoView profileInfo;
     private List<Activity> activitiesList;
@@ -97,6 +101,10 @@ public class MainPageVolunteer extends AppCompatActivity {
                 .get(GetActivitiesByUserViewModel.class);
         getMyActivitiesViewModel = new ViewModelProvider(this, new GetMyActivitiesViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetMyActivitiesViewModel.class);
+        getAllUsersViewModel = new ViewModelProvider(this, new GetAllUsersViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetAllUsersViewModel.class);
+        imagesViewModel = new ViewModelProvider(this, new ImagesViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(ImagesViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
@@ -104,6 +112,7 @@ public class MainPageVolunteer extends AppCompatActivity {
         getActivitiesByUserViewModel.getActivities(user.getUsername(),user.getUsername(), String.valueOf(user.getTokenID()));
         getMyActivitiesViewModel.getActivities(user.getUsername(),user.getUsername(), String.valueOf(user.getTokenID()));
         getProfileViewModel.getProfile(user.getUsername(), user.getUsername(), user.getTokenID());
+        getAllUsersViewModel.getAllUsers(user.getUsername(), user.getTokenID());
         try {
             downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
         } catch (IOException e) {
@@ -146,7 +155,8 @@ public class MainPageVolunteer extends AppCompatActivity {
         });
 
         downloadImageViewModel.getImage().observe(this, image -> {
-            if (image.getObjName().split("_").length == 1) {
+            imagesViewModel.addImage(image);
+            if (image.getObjName().equals(user.getUsername())) {
                 profileImage = image;
                 byte[] profileImageInByte = image.getImageBytes();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(profileImageInByte, 0, profileImageInByte.length);

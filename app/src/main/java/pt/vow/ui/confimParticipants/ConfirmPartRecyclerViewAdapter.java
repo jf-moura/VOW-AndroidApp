@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,11 +18,13 @@ import pt.vow.R;
 public class ConfirmPartRecyclerViewAdapter extends RecyclerView.Adapter<ConfirmPartRecyclerViewAdapter.ViewHolder> {
     Context context;
     List<String> participantsList;
+    List<String> participantsConfirmedList;
 
 
-    public ConfirmPartRecyclerViewAdapter(Context context, List<String> participantsList) {
+    public ConfirmPartRecyclerViewAdapter(Context context, List<String> participantsList, List<String> participantsConfirmedList) {
         this.context = context;
         this.participantsList = participantsList;
+        this.participantsConfirmedList = participantsConfirmedList;
     }
 
     @NonNull
@@ -36,12 +39,13 @@ public class ConfirmPartRecyclerViewAdapter extends RecyclerView.Adapter<Confirm
     public void onBindViewHolder(@NonNull ConfirmPartRecyclerViewAdapter.ViewHolder holder, int position) {
         holder.textViewPartName.setText(participantsList.get(position));
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ConfirmParticipantsActivity.class);
-                intent.putExtra("Participant", participantsList.get(position));
-                context.startActivity(intent);
+                if (holder.checkBox.isChecked())
+                    participantsConfirmedList.add(participantsList.get(position));
+                else
+                    participantsConfirmedList.remove(participantsList.get(position));
             }
         });
     }
@@ -54,11 +58,12 @@ public class ConfirmPartRecyclerViewAdapter extends RecyclerView.Adapter<Confirm
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textViewPartName;
+        CheckBox checkBox;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewPartName = itemView.findViewById(R.id.textViewPartName);
-
+            checkBox = itemView.findViewById(R.id.checkboxPart);
         }
     }
 }

@@ -198,6 +198,8 @@
     <string name="user_info">User Info</string>
     <string name="account_private">This account is private</string>
     <string name="podium_info">Join activities to earn points</string>
+    <string name="confirm_participants_failed">Wasn\'t able to confirm participants presence</string>
+    <string name="confirmed_participants">Participants confirmed with success</string>
 
     <string-array name="filter">
         <item>Health</item>
