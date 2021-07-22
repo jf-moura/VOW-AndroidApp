@@ -28,6 +28,7 @@ public class FrontPageActivity extends AppCompatActivity {
     private Long role;
     private Boolean test;
     private LoggedInUserView user;
+    private TextView textViewInfoSite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class FrontPageActivity extends AppCompatActivity {
         registerChooseAct = this;
         loginBttn = findViewById(R.id.loginBttn);
         createAccBttn = findViewById(R.id.createAccBttn);
-        final TextView textViewInfoSite = findViewById(R.id.textViewInfoSite);
+        textViewInfoSite = findViewById(R.id.textViewInfoSite);
 
         loginPreferences = getApplicationContext().getSharedPreferences("loginPrefs", MODE_PRIVATE);
 
@@ -85,6 +86,16 @@ public class FrontPageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(registerChooseAct, RegisterActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        textViewInfoSite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.check_website) + " https://volunteeringontheway.pt/#/");
+                startActivity(intent.createChooser(intent, "Share Using"));
             }
         });
 

@@ -50,7 +50,7 @@ public class PodiumRecyclerViewAdapter extends RecyclerView.Adapter<PodiumRecycl
         }
         holder.textViewPosition.setText(String.valueOf(position + 1));
         holder.userName.setText(userList.get(position).getName());
-        //holder.textViewPoints.setText(holder.itemView.getContext().getString(R.string.organization) +" "+ activityList.get(position).getOwner());
+        holder.textViewPoints.setText(String.valueOf(userList.get(position).getScore()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

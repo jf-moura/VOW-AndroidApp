@@ -202,6 +202,10 @@
     <string name="confirmed_participants">Participants confirmed with success</string>
     <string name="participants">Participants:</string>
     <string name="activity">Activity:</string>
+    <string name="not_deleted_act">This activity was disabled</string>
+    <string name="share">Share our App</string>
+    <string name="check_website">Check our website!</string>
+
 
     <string-array name="filter">
         <item>Health</item>

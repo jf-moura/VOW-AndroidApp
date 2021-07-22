@@ -211,23 +211,7 @@ public class EnrollActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_share, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.share) {
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT, "URL da app");
-            startActivity(intent.createChooser(intent, "Share Using"));
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     private void showGetActivitiesFailed(@StringRes Integer errorString) {
         Toast.makeText(this.getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();

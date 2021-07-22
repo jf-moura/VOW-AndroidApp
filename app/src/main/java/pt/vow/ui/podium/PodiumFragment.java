@@ -19,8 +19,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.cloud.storage.Acl;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import pt.vow.R;
@@ -77,10 +81,19 @@ public class PodiumFragment extends Fragment {
         secondPlaceName = root.findViewById(R.id.secondPlaceName);
         thirdPlaceName = root.findViewById(R.id.thirdPlaceName);
 
+        class SortbyPoints implements Comparator<UserInfo> {
+            // Used for sorting in ascending order of
+            // score
+            public int compare(UserInfo a, UserInfo b) {
+                return b.getScore() - a.getScore();
+            }
+        }
+
         getAllUsersViewModel.getAllUsers(user.getUsername(), user.getTokenID());
 
         getAllUsersViewModel.getAllUsersList().observe(getActivity(), users -> {
             usersList = users;
+            Collections.sort(usersList, new SortbyPoints());
             if (usersList.size() >= 3) {
                 firstPlaceName.setText(users.get(0).getName());
                 secondPlaceName.setText(users.get(1).getName());
@@ -100,6 +113,7 @@ public class PodiumFragment extends Fragment {
                     }
                 }
             }
+
             PodiumRecyclerViewAdapter adapter = new PodiumRecyclerViewAdapter(getContext(), usersList, user);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

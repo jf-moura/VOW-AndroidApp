@@ -12,9 +12,10 @@ public class UserInfo {
     Boolean visibility;
     Integer role;
     Boolean status;
+    Integer score;
 
 
-    public UserInfo(String name, String username, String email, String phoneNumber, String dateBirth, String bio, String website, String creationTime, Boolean visibility, Integer role, Boolean status) {
+    public UserInfo(String name, String username, String email, String phoneNumber, String dateBirth, String bio, String website, String creationTime, Boolean visibility, Integer role, Boolean status,  Integer score) {
         this.name = name;
         this.username = username;
         this.email = email;
@@ -26,6 +27,7 @@ public class UserInfo {
         this.visibility = visibility;
         this.role = role;
         this.status = status;
+        this.score = score;
     }
 
     public String getName() {
@@ -70,5 +72,9 @@ public class UserInfo {
 
     public Boolean getStatus() {
         return status;
+    }
+
+    public Integer getScore() {
+        return score;
     }
 }
