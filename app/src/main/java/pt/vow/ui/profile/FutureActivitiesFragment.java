@@ -36,6 +36,7 @@ public class FutureActivitiesFragment extends Fragment {
     private ScrollviewActivitiesBinding binding;
 
     private RecyclerView enrolledActRecyclerView;
+    private ProfileRecyclerViewAdapter adapter;
 
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private DownloadImageViewModel downloadImageViewModel;
@@ -85,47 +86,44 @@ public class FutureActivitiesFragment extends Fragment {
                             String[] dateTime = a.getTime().split(" ");
                             String[] hours = dateTime[3].split(":");
 
-                            Calendar beginTime = Calendar.getInstance();;
+                            Calendar beginTime = Calendar.getInstance();
+                            ;
                             if (dateTime[4].equals("PM"))
-                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length()-1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
+                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
                             else
-                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length()-1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
 
                             long startMillis = beginTime.getTimeInMillis();
-                            if(startMillis >= currentTime.getTimeInMillis()){
-                                aux.put(a.getOwner() + "_" + a.getName(), a);
+                            if (startMillis >= currentTime.getTimeInMillis()) {
+                                aux.put(a.getId(), a);
                                 try {
-                                    downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getOwner() + "_" + a.getName());
+                                    downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getId());
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
                             }
                         }
-                        if (aux.isEmpty())
-                            relativeLayout.setVisibility(View.VISIBLE);
-                        else {
-                            List<Activity> activityList = new ArrayList<>(aux.values());
 
-                            ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
-                            enrolledActRecyclerView.setAdapter(adapter);
-                            enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        }
+                        List<Activity> activityList = new ArrayList<>(aux.values());
+
+                        adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
+                        enrolledActRecyclerView.setAdapter(adapter);
+                        enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     }
 
                 }
             }
         });
 
-        /*downloadImageViewModel.getImage().observe(getActivity(), image -> {
-            if (image.getObjName().split("_").length == 2) {
-                if (aux != null) {
-                    String objName = image.getObjName();
-                    Activity a = aux.get(objName);
-                    if (a != null)
-                        a.setImage(image);
-                }
+        downloadImageViewModel.getImage().observe(getActivity(), image -> {
+            if (aux != null) {
+                String objName = image.getObjName();
+                Activity a = aux.get(objName);
+                if (a != null)
+                    a.setImage(image);
             }
-        });*/
+            enrolledActRecyclerView.setAdapter(adapter);
+        });
 
         return root;
     }

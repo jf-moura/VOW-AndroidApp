@@ -45,13 +45,12 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
             holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) +" "+ activityList.get(position).getName());
             holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) +" "+ activityList.get(position).getOwner());
 
-            /*if (activityList.get(position).getImage() != null) {
-                holder.activityImage.setVisibility(View.VISIBLE);
+            if (activityList.get(position).getImage() != null) {
                 byte[] img = activityList.get(position).getImage().getImageBytes();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                holder.activityImage.setVisibility(View.VISIBLE);
                 holder.activityImage.setImageBitmap(bitmap);
-                //activityList.get(position).setImage(null);
-            }*/
+            }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

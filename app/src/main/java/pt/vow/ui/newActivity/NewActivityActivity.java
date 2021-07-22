@@ -74,6 +74,7 @@ public class NewActivityActivity extends AppCompatActivity {
     private NewActivityActivity mActivity;
     private Geocoder geocoder;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_activity);
@@ -156,6 +157,13 @@ public class NewActivityActivity extends AppCompatActivity {
                 showRegisterFailed(newActResult.getError());
             }
             if (newActResult.getSuccess() != null) {
+                if (bitmap != null) {
+                    try {
+                        uploadImage("vow-project-311114", "vow_profile_pictures", String.valueOf(newActResult.getSuccess().getActID()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 registerActivitySuccess(newActResult.getSuccess());
                 setResult(Activity.RESULT_OK);
                 finish();
@@ -170,6 +178,13 @@ public class NewActivityActivity extends AppCompatActivity {
                 showRegisterFailed(newRouteResult.getError());
             }
             if (newRouteResult.getSuccess() != null) {
+                if (bitmap != null) {
+                    try {
+                        uploadImage("vow-project-311114", "vow_profile_pictures", String.valueOf(newRouteResult.getSuccess().getActID()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 registerActivitySuccess(newRouteResult.getSuccess());
                 setResult(Activity.RESULT_OK);
                 finish();
@@ -240,15 +255,11 @@ public class NewActivityActivity extends AppCompatActivity {
         imgPickBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editTextName.getText().toString() != null && !editTextName.getText().toString().isEmpty()) {
                     Intent intent = new Intent();
                     intent.setType("image/*");
                     intent.setAction(intent.ACTION_GET_CONTENT);
 
                     someActivityResultLauncher.launch(intent);
-                } else {
-                    showSetImageFailed();
-                }
             }
         });
     }
@@ -300,7 +311,6 @@ public class NewActivityActivity extends AppCompatActivity {
                             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                             imageView.setImageBitmap(bitmap);
                             imageView.setVisibility(View.VISIBLE);
-                            uploadImage("vow-project-311114", "vow_profile_pictures", user.getUsername() + "_" + editTextName.getText().toString());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -312,11 +322,27 @@ public class NewActivityActivity extends AppCompatActivity {
     private void uploadImage(String projectId, String bucketName, String objectName) throws IOException {
         if (imageUri != null) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            getResizedBitmap(bitmap, 1000);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             byte[] imageInByte = out.toByteArray();
             out.close();
             uploadImageViewModel.uploadImage(projectId, bucketName, objectName, imageInByte);
         }
+    }
+
+    public void getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        bitmap = Bitmap.createScaledBitmap(image, width, height, true);
     }
 
     private RadioGroup.OnCheckedChangeListener listener1 = new RadioGroup.OnCheckedChangeListener() {

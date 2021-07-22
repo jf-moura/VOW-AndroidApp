@@ -31,9 +31,10 @@ public class NewRouteViewModel extends ViewModel {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredRoute> result = newRouteRepository.registerRoute(username, tokenID, name, address, time,type, participantNum, durationInMinutes, coordinateArray, description);
+                Result<RegisteredActivityView> result = newRouteRepository.registerRoute(username, tokenID, name, address, time,type, participantNum, durationInMinutes, coordinateArray, description);
                 if (result instanceof Result.Success) {
-                    newRouteResult.postValue(new NewRouteResult(new RegisteredActivityView(name)));
+                    RegisteredActivityView data = ((Result.Success<RegisteredActivityView>) result).getData();
+                    newRouteResult.postValue(new NewRouteResult(data));
                 } else {
                     newRouteResult.postValue(new NewRouteResult(R.string.register_failed));
                 }

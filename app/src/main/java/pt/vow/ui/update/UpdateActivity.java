@@ -58,8 +58,6 @@ public class UpdateActivity extends AppCompatActivity {
             textViewWebsiteSett.setVisibility(View.VISIBLE);
         }
 
-        // TODO: Interests
-
         final Button confirmButton = findViewById(R.id.bttnSaveChanges);
 
         editTextBio.setText(profileInfo.getBio());

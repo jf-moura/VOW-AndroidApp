@@ -40,7 +40,8 @@ public class UpdateActivityViewModel extends ViewModel {
             public void run() {
                 Result<RegisteredActivity> result = updateActivityRepository.updateActivity(name, address, coordinates, time, type, participantNum, durationInMinutes, coordinateArray, append, role, description);
                 if (result instanceof Result.Success) {
-                    updateActResult.postValue(new UpdateActivityResult(new RegisteredActivityView(name)));
+                    //TODO: alterar
+                    updateActResult.postValue(new UpdateActivityResult(new RegisteredActivity(name)));
                 } else {
                     updateActResult.postValue(new UpdateActivityResult(R.string.update_failed));
                 }

@@ -2,11 +2,12 @@ package pt.vow.ui.update;
 
 import androidx.annotation.Nullable;
 
+import pt.vow.data.model.RegisteredActivity;
 import pt.vow.ui.newActivity.RegisteredActivityView;
 
 public class UpdateActivityResult {
     @Nullable
-    private RegisteredActivityView success;
+    private RegisteredActivity success;
     @Nullable
     private Integer error;
 
@@ -14,12 +15,12 @@ public class UpdateActivityResult {
         this.error = error;
     }
 
-    UpdateActivityResult(@Nullable RegisteredActivityView success) {
+    UpdateActivityResult(@Nullable RegisteredActivity success) {
         this.success = success;
     }
 
     @Nullable
-    RegisteredActivityView getSuccess() {
+    RegisteredActivity getSuccess() {
         return success;
     }
 

@@ -5,7 +5,10 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -40,6 +43,8 @@ import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.mainPage.Image;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
 import pt.vow.ui.profile.ProfileRecyclerViewAdapter;
+import pt.vow.ui.profile.UploadImageViewModel;
+import pt.vow.ui.profile.UploadImageViewModelFactory;
 import pt.vow.ui.update.UpdateActivity;
 import pt.vow.ui.update.UpdateActivityViewModel;
 import pt.vow.ui.update.UpdateActivityViewModelFactory;
@@ -49,7 +54,12 @@ import pt.vow.ui.update.UpdateViewModel;
 import pt.vow.ui.update.UpdateViewModelFactory;
 
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -63,7 +73,9 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,7 +92,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private ImageButton editNumPart, editTime, editActName, editDuration, editAddress, editDescription;
     private ImageButton cancelEditNumPart, cancelEditActName, cancelEditDuration, cancelEditAddress, cancelEditDescription;
     private TimePicker editTextDuration;
-    private Button submitBttn, saveUpdateBttn, postCommentBttn, checkPartBttn;
+    private FloatingActionButton camera;
+    private Button submitBttn, saveUpdateBttn, postCommentBttn, addImageBttn, checkPartBttn;
     private EditText editTextComment;
     private RatingBar ratingBar;
     private ImageView activityImage;
@@ -89,10 +102,13 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private Activity activity;
     private GetRatingViewModel getRatingViewModel;
     private SetRatingViewModel setRatingViewModel;
+    private UploadImageViewModel uploadImageViewModel;
     private DeleteActivityViewModel deleteActivityViewModel;
     private ActivityParticipantsViewModel actParticipantsViewModel;
     private double totalRate;
     private String durationInMinutes, date;
+    private Uri imageUri;
+    private static Bitmap bitmap;
     //private long rate;
     private Observer<GetRatingResult> rateObs;
     private ImageButton deleteActBttn;
@@ -125,6 +141,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 .get(GetActCommentsViewModel.class);
         updateActivityViewModel = new ViewModelProvider(this, new UpdateActivityViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(UpdateActivityViewModel.class);
+        uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(UploadImageViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         activity = (Activity) getIntent().getSerializableExtra("Activity");
@@ -168,6 +186,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
         textViewRating = findViewById(R.id.textViewRating);
 
         deleteActBttn = findViewById(R.id.deleteActBttn);
+        addImageBttn = findViewById(R.id.addImage);
+        camera = findViewById(R.id.camera);
         //imageType = findViewById(R.id.imageViewType2);
         activityImage = findViewById(R.id.activityImageInfo);
         postCommentBttn = findViewById(R.id.buttonPostComment);
@@ -290,13 +310,16 @@ public class ActivityInfoActivity extends AppCompatActivity {
             }
         });
 
-        /*Image actImage = activity.getImage();
+        Image actImage = activity.getImage();
         if (actImage != null) {
+            if (user.getUsername().equals(activity.getOwner()))
+                camera.setVisibility(View.VISIBLE);
             activityImage.setVisibility(View.VISIBLE);
             byte[] img = actImage.getImageBytes();
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             activityImage.setImageBitmap(bitmap);
-        }*/
+        } else if (user.getUsername().equals(activity.getOwner()))
+            addImageBttn.setVisibility(View.VISIBLE);
 
         registerCommentViewModel.getRegisterCommentResult().observe(this, new Observer<RegisterCommentResult>() {
             @Override
@@ -461,6 +484,68 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
         editTime.setOnClickListener(v -> showDatePickerDialog());
 
+        addImageBttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(intent.ACTION_GET_CONTENT);
+
+                someActivityResultLauncher.launch(intent);
+            }
+        });
+
+    }
+
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        imageUri = data.getData();
+
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                            activityImage.setImageBitmap(bitmap);
+                            activityImage.setVisibility(View.VISIBLE);
+                            camera.setVisibility(View.VISIBLE);
+                            addImageBttn.setVisibility(View.GONE);
+                            uploadImage("vow-project-311114", "vow_profile_pictures", activity.getId());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void uploadImage(String projectId, String bucketName, String objectName) throws IOException {
+        if (imageUri != null) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            getResizedBitmap(bitmap, 1000);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            byte[] imageInByte = out.toByteArray();
+            out.close();
+            uploadImageViewModel.uploadImage(projectId, bucketName, objectName, imageInByte);
+        }
+    }
+
+    public void getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        bitmap = Bitmap.createScaledBitmap(image, width, height, true);
     }
 
     private void showDatePickerDialog() {

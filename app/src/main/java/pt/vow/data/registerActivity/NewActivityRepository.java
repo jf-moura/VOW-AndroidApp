@@ -2,6 +2,7 @@ package pt.vow.data.registerActivity;
 
 import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredActivity;
+import pt.vow.ui.newActivity.RegisteredActivityView;
 
 public class NewActivityRepository {
 
@@ -9,7 +10,7 @@ public class NewActivityRepository {
 
     private NewActivityDataSource dataSource;
 
-    private RegisteredActivity user = null;
+    private RegisteredActivityView user = null;
 
     private NewActivityRepository(NewActivityDataSource dataSource) {
         this.dataSource = dataSource;
@@ -31,14 +32,14 @@ public class NewActivityRepository {
         dataSource.deleteActivity();
     }
 
-    private void setRegisteredActivity(RegisteredActivity user) {
+    private void setRegisteredActivity(RegisteredActivityView user) {
         this.user = user;
     }
 
-    public Result<RegisteredActivity> registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String description) {
-        Result<RegisteredActivity> result = dataSource.registerActivity(username, tokenID, name, address, coordinates, time,type, participantNum, durationInMinutes, description);
+    public Result<RegisteredActivityView> registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String description) {
+        Result<RegisteredActivityView> result = dataSource.registerActivity(username, tokenID, name, address, coordinates, time,type, participantNum, durationInMinutes, description);
         if (result instanceof Result.Success) {
-            setRegisteredActivity(((Result.Success<RegisteredActivity>) result).getData());
+            setRegisteredActivity(((Result.Success<RegisteredActivityView>) result).getData());
         }
         return result;
     }

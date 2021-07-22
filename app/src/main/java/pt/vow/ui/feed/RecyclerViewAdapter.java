@@ -55,25 +55,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-
-        if (String.valueOf(activityList.get(position).getParticipants().size()).equals(activityList.get(position).getParticipantNum())) {
+        if (activityList.get(position).getParticipants() != null && String.valueOf(activityList.get(position).getParticipants().size()).equals(activityList.get(position).getParticipantNum())) {
             holder.constraintLayoutFeed.setBackgroundResource(R.drawable.bg_activity_not_available);
         }
 
         holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) + " " + activityList.get(position).getName());
-        holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) + " " + activityList.get(position).getOwner());
-        holder.time.setText(holder.itemView.getContext().getString(R.string.date) + " " + activityList.get(position).getTime());
-        holder.duration.setText(holder.itemView.getContext().getString(R.string.duration) + " " + activityList.get(position).getDurationInMinutes() + " minutes");
 
-        /*if (activityList.get(position).getImage() != null) {
+        if (activityList.get(position).getImage() != null) {
+            byte[] img = activityList.get(position).getImage().getImageBytes();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             holder.activityImage.setVisibility(View.VISIBLE);
             holder.owner.setVisibility(View.GONE);
             holder.time.setVisibility(View.GONE);
             holder.duration.setVisibility(View.GONE);
-            byte[] img = activityList.get(position).getImage().getImageBytes();
-            Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             holder.activityImage.setImageBitmap(bitmap);
-        }*/
+        } else {
+            holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) + " " + activityList.get(position).getOwner());
+            holder.time.setText(holder.itemView.getContext().getString(R.string.date) + " " + activityList.get(position).getTime());
+            holder.duration.setText(holder.itemView.getContext().getString(R.string.duration) + " " + activityList.get(position).getDurationInMinutes() + " minutes");
+        }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

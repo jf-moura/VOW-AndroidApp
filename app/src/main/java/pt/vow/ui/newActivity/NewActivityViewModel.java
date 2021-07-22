@@ -11,6 +11,7 @@ import pt.vow.R;
 import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredActivity;
 import pt.vow.data.registerActivity.NewActivityRepository;
+import pt.vow.ui.feed.ActivitiesRegisteredView;
 
 public class NewActivityViewModel extends ViewModel {
     private MutableLiveData<NewActivityFormState> newActFormState = new MutableLiveData<>();
@@ -35,9 +36,10 @@ public class NewActivityViewModel extends ViewModel {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredActivity> result = newActivityRepository.registerActivity(username, tokenID, name, address, coordinates, time, type, participantNum, durationInMinutes, description);
+                Result<RegisteredActivityView> result = newActivityRepository.registerActivity(username, tokenID, name, address, coordinates, time, type, participantNum, durationInMinutes, description);
                 if (result instanceof Result.Success) {
-                    newActResult.postValue(new NewActivityResult(new RegisteredActivityView(name)));
+                    RegisteredActivityView data = ((Result.Success<RegisteredActivityView>) result).getData();
+                    newActResult.postValue(new NewActivityResult(data));
                 } else {
                     newActResult.postValue(new NewActivityResult(R.string.register_failed));
                 }

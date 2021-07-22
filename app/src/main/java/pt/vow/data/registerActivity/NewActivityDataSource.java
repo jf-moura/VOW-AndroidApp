@@ -5,6 +5,8 @@ import java.io.IOException;
 import pt.vow.data.Result;
 import pt.vow.data.model.ActivityRegistration;
 import pt.vow.data.model.RegisteredActivity;
+import pt.vow.data.model.UserAuthenticated;
+import pt.vow.ui.newActivity.RegisteredActivityView;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -23,13 +25,14 @@ public class NewActivityDataSource {
         this.service = retrofit.create(ApiCreateActivity.class);
     }
 
-    public Result<RegisteredActivity> registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String description) {
+    public Result<RegisteredActivityView> registerActivity(String username, String tokenID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String description) {
 
-        Call<Void> activityRegistrationCall = service.createActivity(new ActivityRegistration(username, tokenID, name, address, coordinates, time, type, participantNum, durationInMinutes, description));
+        Call<Long> activityRegistrationCall = service.createActivity(new ActivityRegistration(username, tokenID, name, address, coordinates, time, type, participantNum, durationInMinutes, description));
         try {
-            Response<Void> response = activityRegistrationCall.execute();
+            Response<Long> response = activityRegistrationCall.execute();
             if (response.isSuccessful()) {
-                return new Result.Success<>(new RegisteredActivity(username));
+                Long id = response.body();
+                return new Result.Success<>(new RegisteredActivityView(id));
             }
             return new Result.Error(new Exception(response.errorBody().toString()));
         } catch (IOException e) {

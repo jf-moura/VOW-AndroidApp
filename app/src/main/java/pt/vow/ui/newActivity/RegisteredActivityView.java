@@ -1,13 +1,13 @@
 package pt.vow.ui.newActivity;
 
 public class RegisteredActivityView {
-    String actName;
+    Long id;
 
-    public RegisteredActivityView(String actName) {
-        this.actName = actName;
+    public RegisteredActivityView(Long id) {
+        this.id = id;
     }
 
-    public String getActName() {
-        return actName;
+    public Long getActID() {
+        return id;
     }
 }

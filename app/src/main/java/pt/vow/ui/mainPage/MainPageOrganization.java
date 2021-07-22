@@ -20,6 +20,7 @@ import com.google.cloud.storage.StorageOptions;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavArgument;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
@@ -28,8 +29,10 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.io.IOException;
+import java.util.List;
 
 import pt.vow.R;
+import pt.vow.data.model.Activity;
 import pt.vow.data.model.UserInfo;
 import pt.vow.databinding.ActivityMainPageOrganizationBinding;
 import pt.vow.ui.VOW;
@@ -44,6 +47,7 @@ import pt.vow.ui.profile.GetMyActivitiesViewModel;
 import pt.vow.ui.profile.GetMyActivitiesViewModelFactory;
 import pt.vow.ui.profile.GetProfileViewModel;
 import pt.vow.ui.profile.GetProfileViewModelFactory;
+import pt.vow.ui.profile.ProfileInfoView;
 
 public class MainPageOrganization extends AppCompatActivity {
 
@@ -57,8 +61,10 @@ public class MainPageOrganization extends AppCompatActivity {
     private GetAllUsersViewModel getAllUsersViewModel;
     private GetProfileViewModel getProfileViewModel;
     private ImagesViewModel imagesViewModel;
-    private String profileName;
-    private byte[] profileImageInByte;
+
+    private ProfileInfoView profileInfo;
+    private List<Activity> activitiesList;
+    private Image profileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +103,11 @@ public class MainPageOrganization extends AppCompatActivity {
             e.printStackTrace();
         }
         getProfileViewModel.profile().observe(this, profile -> {
-            profileName = profile.getName();
+            profileInfo = profile;
         });
+
+        profileImage = null;
+        profileInfo = null;
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
@@ -110,15 +119,27 @@ public class MainPageOrganization extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.navigation_profile && profileName != null) {
-                destination.setLabel(profileName);
+            if (destination.getId() == R.id.navigation_profile) {
+                if (profileInfo != null || profileImage != null) {
+                    Bundle bundle = new Bundle();
+                    if (profileInfo != null) {
+                        destination.setLabel(profileInfo.getName());
+                        bundle.putSerializable("ProfileInfo", profileInfo);
+                    }
+                    if (profileImage != null) {
+                        bundle.putSerializable("ProfileImage", profileImage);
+                    }
+                    NavArgument arg = new NavArgument.Builder().setDefaultValue(bundle).build();
+                    destination.addArgument("Profile", arg);
+                }
             }
         });
 
         downloadImageViewModel.getImage().observe(this, image -> {
             imagesViewModel.addImage(image);
             if (image.getObjName().equals(user.getUsername())) {
-                profileImageInByte = image.getImageBytes();
+                profileImage = image;
+                byte[] profileImageInByte = image.getImageBytes();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(profileImageInByte, 0, profileImageInByte.length);
                 Drawable drawable = new BitmapDrawable(getResources(), bitmap);
                 drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);

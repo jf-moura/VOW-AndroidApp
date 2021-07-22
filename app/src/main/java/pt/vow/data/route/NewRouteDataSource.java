@@ -6,6 +6,8 @@ import java.util.List;
 import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredRoute;
 import pt.vow.data.model.RouteRegistration;
+import pt.vow.data.model.UserAuthenticated;
+import pt.vow.ui.newActivity.RegisteredActivityView;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -23,13 +25,14 @@ public class NewRouteDataSource {
         this.service = retrofit.create(ApiNewRoute.class);
     }
 
-    public Result<RegisteredRoute> registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray, String description) {
+    public Result<RegisteredActivityView> registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray, String description) {
 
-        Call<Void> activityRegistrationCall = service.newRoute(new RouteRegistration(username, tokenID, name, address, time, type, participantNum, durationInMinutes, coordinateArray, description));
+        Call<Long> activityRegistrationCall = service.newRoute(new RouteRegistration(username, tokenID, name, address, time, type, participantNum, durationInMinutes, coordinateArray, description));
         try {
-            Response<Void> response = activityRegistrationCall.execute();
+            Response<Long> response = activityRegistrationCall.execute();
             if (response.isSuccessful()) {
-                return new Result.Success<>(new RegisteredRoute(username));
+                Long id = response.body();
+                return new Result.Success<>(new RegisteredActivityView(id));
             }
             return new Result.Error(new Exception(response.errorBody().toString()));
         } catch (IOException e) {

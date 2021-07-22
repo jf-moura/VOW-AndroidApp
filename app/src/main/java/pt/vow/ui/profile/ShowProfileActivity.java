@@ -152,12 +152,10 @@ public class ShowProfileActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             downloadImageViewModel.getImage().observe(this, images -> {
-                if (images.getObjName().split("_").length == 1) {
-                    image = images;
-                    byte[] img = images.getImageBytes();
-                    bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                    profileImage.setImageBitmap(bitmap);
-                }
+               image = images;
+               byte[] img = images.getImageBytes();
+               bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+               profileImage.setImageBitmap(bitmap);
             });
         }
 

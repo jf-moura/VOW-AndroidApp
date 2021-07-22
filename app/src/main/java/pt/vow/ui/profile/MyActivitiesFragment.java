@@ -35,6 +35,7 @@ public class MyActivitiesFragment extends Fragment {
     private ScrollviewActivitiesBinding binding;
 
     private RecyclerView myActRecyclerView;
+    private ProfileRecyclerViewAdapter adapter;
 
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
     private DownloadImageViewModel downloadImageViewModel;
@@ -79,16 +80,18 @@ public class MyActivitiesFragment extends Fragment {
                     if (myActivitiesList != null) {
                         aux = new HashMap<>();
                         for (Activity a : myActivitiesList) {
-                            aux.put(a.getOwner() + "_" + a.getName(), a);
-                            try {
-                                downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getOwner() + "_" + a.getName());
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                            aux.put(a.getId(), a);
+                            if (a.getImage() == null) {
+                                try {
+                                    downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getId());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                         List<Activity> activityList = new ArrayList<>(aux.values());
 
-                        ProfileRecyclerViewAdapter adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
+                        adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
                         myActRecyclerView.setAdapter(adapter);
                         myActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     }
@@ -97,16 +100,15 @@ public class MyActivitiesFragment extends Fragment {
             }
         });
 
-        /*downloadImageViewModel.getImage().observe(getActivity(), image -> {
-            if (image.getObjName().split("_").length == 2) {
-                if (aux != null) {
-                    String objName = image.getObjName();
-                    Activity a = aux.get(objName);
-                    if (a != null)
-                        a.setImage(image);
-                }
+        downloadImageViewModel.getImage().observe(getActivity(), image -> {
+            if (aux != null) {
+                String objName = image.getObjName();
+                Activity a = aux.get(objName);
+                if (a != null)
+                    a.setImage(image);
             }
-        });*/
+            myActRecyclerView.setAdapter(adapter);
+        });
 
         return root;
     }

@@ -1,14 +1,8 @@
 package pt.vow.ui.feed;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,19 +12,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -59,7 +45,6 @@ import pt.vow.ui.getAllUsers.GetAllUsersViewModel;
 import pt.vow.ui.getAllUsers.GetAllUsersViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.mainPage.DownloadImageViewModel;
-import pt.vow.ui.mainPage.Image;
 import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.profile.ActivitiesByUserView;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
@@ -68,10 +53,11 @@ import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 public class FeedFragment extends Fragment {
     private FeedFragment mActivity;
     private GetActivitiesViewModel activitiesViewModel;
-    //private DownloadImageViewModel downloadImageViewModel;
+    private DownloadImageViewModel downloadImageViewModel;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
+    private RecyclerViewAdapter adapter;
 
     private ActivitiesByUserView enrolledActivities;
     private List<Activity> activityList;
@@ -100,7 +86,6 @@ public class FeedFragment extends Fragment {
 
         recyclerView = root.findViewById(R.id.activities_recycler_view);
         activitiesTextView = root.findViewById(R.id.activitiesTextView);
-
         autoCompleteTextView = root.findViewById(R.id.autoCompleteTextView2);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
@@ -151,7 +136,7 @@ public class FeedFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        //downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
+        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
         activitiesViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesViewModel.class);
 
@@ -185,40 +170,42 @@ public class FeedFragment extends Fragment {
 
                     long startMillis = beginTime.getTimeInMillis();
                     if (startMillis > currentTime) {
-                        aux.put(a.getOwner() + "_" + a.getName(), a);
+                        aux.put(a.getId(), a);
                         actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
+                        //TODO: isto funciona?
                         actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
                             a.addParticipants(participants);
-                            activityList = new ArrayList<>(aux.values());
-                            showFilteredAct(activityList);
-                            RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
-                            recyclerView.setAdapter(adapter);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                         });
-                        /*try {
-                            downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getOwner() + "_" + a.getName());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }*/
+                        if (a.getImage() == null) {
+                            try {
+                                downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getId());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
+                activityList = new ArrayList<>(aux.values());
+                showFilteredAct(activityList);
 
+                adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             }
         });
 
         this.onCompleteIsEmpty();
 
-        /*downloadImageViewModel.getImage().observe(getActivity(), image -> {
-            if (image.getObjName().split("_").length == 2) {
-                if (aux != null) {
-                    String objName = image.getObjName();
-                    Activity a = aux.get(objName);
-                    if (a != null)
-                        a.setImage(image);
-                }
+        downloadImageViewModel.getImage().observe(getActivity(), image -> {
+            if (aux != null) {
+                String objName = image.getObjName();
+                Activity a = aux.get(objName);
+                if (a != null)
+                    a.setImage(image);
             }
-        });*/
+            recyclerView.setAdapter(adapter);
+        });
     }
 
     @Override
@@ -268,9 +255,7 @@ public class FeedFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 afterTextChanged = searchView.getText().toString();
                 if (afterTextChanged.isEmpty()) {
-                    RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
                     recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 }
             }
         });
@@ -325,7 +310,7 @@ public class FeedFragment extends Fragment {
                         }
                         break;
                 }
-                RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), filter, user, enrolledActivities);
+                adapter = new RecyclerViewAdapter(getContext(), filter, user, enrolledActivities);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             }

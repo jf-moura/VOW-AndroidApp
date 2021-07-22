@@ -244,12 +244,10 @@ public class ProfileFragment extends Fragment {
                 e.printStackTrace();
             }
             downloadImageViewModel.getImage().observe(getViewLifecycleOwner(), images -> {
-                if (images.getObjName().split("_").length == 1) {
-                    image = images;
-                    byte[] img = images.getImageBytes();
-                    bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                    profileImage.setImageBitmap(bitmap);
-                }
+                image = images;
+                byte[] img = images.getImageBytes();
+                bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                profileImage.setImageBitmap(bitmap);
             });
         }
 
@@ -333,6 +331,21 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    public void getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        bitmap = Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
     private static void openDrawer(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(Gravity.RIGHT);
     }
@@ -367,7 +380,8 @@ public class ProfileFragment extends Fragment {
             IOException {
         if (imageUri != null) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            getResizedBitmap(bitmap, 500);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             byte[] imageInByte = out.toByteArray();
             out.close();
             uploadImageViewModel.uploadImage(projectId, bucketName, objectName, imageInByte);

@@ -6,13 +6,14 @@ import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredRoute;
 import pt.vow.data.registerActivity.NewActivityDataSource;
 import pt.vow.data.registerActivity.NewActivityRepository;
+import pt.vow.ui.newActivity.RegisteredActivityView;
 
 public class NewRouteRepository {
     private static volatile NewRouteRepository instance;
 
     private NewRouteDataSource dataSource;
 
-    private RegisteredRoute user = null;
+    private RegisteredActivityView user = null;
 
 
     private NewRouteRepository(NewRouteDataSource dataSource) {
@@ -35,14 +36,14 @@ public class NewRouteRepository {
         dataSource.deleteRoute();
     }
 
-    private void setRegisteredRoute(RegisteredRoute user) {
+    private void setRegisteredRoute(RegisteredActivityView user) {
         this.user = user;
     }
 
-    public Result<RegisteredRoute> registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray, String description) {
-        Result<RegisteredRoute> result = dataSource.registerRoute(username, tokenID, name, address,time,type, participantNum, durationInMinutes, coordinateArray, description);
+    public Result<RegisteredActivityView> registerRoute(String username, String tokenID, String name, String address, String time, String type, String participantNum, String durationInMinutes, List<String> coordinateArray, String description) {
+        Result<RegisteredActivityView> result = dataSource.registerRoute(username, tokenID, name, address,time,type, participantNum, durationInMinutes, coordinateArray, description);
         if (result instanceof Result.Success) {
-            setRegisteredRoute(((Result.Success<RegisteredRoute>) result).getData());
+            setRegisteredRoute(((Result.Success<RegisteredActivityView>) result).getData());
         }
         return result;
     }
