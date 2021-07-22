@@ -7,23 +7,25 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/imageViewInfo"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:id="@+id/imageViewInfo"
         android:src="@drawable/ic_fi_rr_info"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.956"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.017" />
+        app:layout_constraintVertical_bias="0.0" />
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/firstPlaceImage"
         android:layout_width="65dp"
         android:layout_height="65dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
+        android:src="@drawable/ic_star_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,24 +37,59 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="60dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginEnd="10dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
+        android:src="@drawable/ic_star_2"
         app:layout_constraintEnd_toStartOf="@+id/firstPlaceImage"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/Circular" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/thirdPlaceImage"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="25dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="60dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
+        android:src="@drawable/ic_stars_3"
         app:layout_constraintStart_toEndOf="@+id/firstPlaceImage"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/Circular" />
+
+    <TextView
+        android:id="@+id/firstPlaceName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/firstPlaceImage"
+        app:layout_constraintStart_toStartOf="@+id/firstPlaceImage"
+        app:layout_constraintTop_toBottomOf="@+id/firstPlaceImage" />
+
+    <TextView
+        android:id="@+id/secondPlaceName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/secondPlaceImage"
+        app:layout_constraintStart_toStartOf="@+id/secondPlaceImage"
+        app:layout_constraintTop_toBottomOf="@+id/secondPlaceImage" />
+
+    <TextView
+        android:id="@+id/thirdPlaceName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/thirdPlaceImage"
+        app:layout_constraintStart_toStartOf="@+id/thirdPlaceImage"
+        app:layout_constraintTop_toBottomOf="@+id/thirdPlaceImage" />
 
     <ScrollView
         android:id="@+id/scrollView"

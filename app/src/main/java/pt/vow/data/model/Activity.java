@@ -1,6 +1,8 @@
 package pt.vow.data.model;
 
 import java.io.Serializable;
+import java.util.List;
+
 import pt.vow.ui.mainPage.Image;
 
 public class Activity implements Serializable {
@@ -14,6 +16,7 @@ public class Activity implements Serializable {
     String participantNum;
     String durationInMinutes;
     String type;
+    List<String> participants;
 
     public Activity(String owner, String id, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes) {
         this.owner = owner;
@@ -25,6 +28,7 @@ public class Activity implements Serializable {
         this.type = type;
         this.participantNum = participantNum;
         this.durationInMinutes = durationInMinutes;
+        this.participants = null;
     }
 
     public String getOwner() {
@@ -63,4 +67,11 @@ public class Activity implements Serializable {
         return type;
     }
 
+    public void addParticipants(List<String> participants) {
+        this.participants = participants;
+    }
+
+    public List<String> getParticipants() {
+        return participants;
+    }
 }

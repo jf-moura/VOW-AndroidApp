@@ -23,7 +23,7 @@ public class UpdateActivityFormState {
     }
 
     @Nullable
-    Integer getNameError() {
+    public Integer getNameError() {
         return nameError;
     }
 
@@ -33,7 +33,7 @@ public class UpdateActivityFormState {
     }
 
 
-    boolean isDataValid() {
+    public boolean isDataValid() {
         return isDataValid;
     }
 

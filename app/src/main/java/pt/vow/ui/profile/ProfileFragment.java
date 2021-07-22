@@ -51,11 +51,8 @@ import pt.vow.R;
 
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.VOW;
-import pt.vow.ui.activityInfo.ActivityParticipantsViewModel;
 import pt.vow.ui.activityInfo.GetRatingViewModel;
 import pt.vow.ui.activityInfo.GetRatingViewModelFactory;
-import pt.vow.ui.comments.GetActCommentsViewModel;
-import pt.vow.ui.comments.GetActCommentsViewModelFactory;
 import pt.vow.ui.frontPage.FrontPageActivity;
 import pt.vow.ui.login.LoginActivity;
 import pt.vow.ui.mainPage.DownloadImageViewModel;
@@ -117,7 +114,6 @@ public class ProfileFragment extends Fragment {
                 .get(UploadImageViewModel.class);
         changeVisibilityViewModel = new ViewModelProvider(this, new ChangeVisibilityViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(ChangeVisibilityViewModel.class);
-
         getProfileViewModel = new ViewModelProvider(getActivity()).get(GetProfileViewModel.class);
         downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
@@ -132,7 +128,6 @@ public class ProfileFragment extends Fragment {
         aboutMeTextView = root.findViewById(R.id.aboutMeTextView);
         topNavigationProfile = root.findViewById(R.id.topNavigationProfile);
 
-
         loginPreferences = getContext().getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
 
@@ -144,7 +139,6 @@ public class ProfileFragment extends Fragment {
         switchMode = root.findViewById(R.id.switch2);
         imageLock = root.findViewById(R.id.imageLock);
         textAccPrivate = root.findViewById(R.id.textAccPrivate);
-
 
         this.getProfileInfo();
 

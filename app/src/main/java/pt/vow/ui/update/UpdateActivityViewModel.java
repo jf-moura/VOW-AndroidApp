@@ -26,11 +26,11 @@ public class UpdateActivityViewModel extends ViewModel {
         this.executor = executor;
     }
 
-    LiveData<UpdateActivityFormState> getUpdateActFormState() {
+    public LiveData<UpdateActivityFormState> getUpdateActFormState() {
         return updateActFormState;
     }
 
-    LiveData<UpdateActivityResult> getUpdateActResult() {
+    public LiveData<UpdateActivityResult> getUpdateActResult() {
         return updateActResult;
     }
 

@@ -1,5 +1,7 @@
 package pt.vow.ui.activityInfo;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import pt.vow.R;
@@ -67,13 +70,16 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 public class ActivityInfoActivity extends AppCompatActivity {
 
     private ActivityInfoActivity mActivity;
-    private TextView textViewDescription, textViewConfirmPart, textViewRating,
-            textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
-    private EditText editTextDuration, editTextNumPart, editTextTime, editTextActName, editTextActOwner, editTextAddress, editTextDescription;
+    private TextView textActName, textDescription, textOwner, textAddress, textTime, textPartNum, textDuration, textViewRating, textViewConfirmPart;
+    private EditText editTextNumPart, editTextActName, editTextAddress, editTextDescription;
+    private ImageButton editNumPart, editTime, editActName, editDuration, editAddress, editDescription;
+    private ImageButton cancelEditNumPart, cancelEditActName, cancelEditDuration, cancelEditAddress, cancelEditDescription;
+    private TimePicker editTextDuration;
     private Button submitBttn, saveUpdateBttn, postCommentBttn, checkPartBttn;
     private EditText editTextComment;
     private RatingBar ratingBar;
@@ -86,6 +92,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private DeleteActivityViewModel deleteActivityViewModel;
     private ActivityParticipantsViewModel actParticipantsViewModel;
     private double totalRate;
+    private String durationInMinutes, date;
     //private long rate;
     private Observer<GetRatingResult> rateObs;
     private ImageButton deleteActBttn;
@@ -122,23 +129,37 @@ public class ActivityInfoActivity extends AppCompatActivity {
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         activity = (Activity) getIntent().getSerializableExtra("Activity");
 
+        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+        getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+
         getSupportActionBar().setTitle(activity.getName());
 
-        textViewActName = findViewById(R.id.textViewActName2);
-        textViewActOwner = findViewById(R.id.textViewActOwner2);
-        textViewAddress = findViewById(R.id.textViewAddress2);
-        textViewDuration = findViewById(R.id.textViewDuration2);
-        textViewNumPart = findViewById(R.id.textViewNumParticipants2);
-        textViewTime = findViewById(R.id.textViewTime2);
-        textViewDescription = findViewById(R.id.textViewDescription2);
+        textActName = findViewById(R.id.textViewActName);
+        textOwner = findViewById(R.id.textViewOwner);
+        textAddress = findViewById(R.id.textViewAddress);
+        textDuration = findViewById(R.id.textViewDur);
+        textPartNum = findViewById(R.id.textViewPartNum);
+        textTime = findViewById(R.id.textViewTime);
+        textDescription = findViewById(R.id.textViewDescription);
 
         editTextActName = findViewById(R.id.editTextActName);
-        editTextActOwner = findViewById(R.id.editTextOrganization);
-        editTextAddress = findViewById(R.id.editTextAddress2);
+        editTextAddress = findViewById(R.id.editTextAddress);
         editTextDuration = findViewById(R.id.editTextDur);
         editTextNumPart = findViewById(R.id.editTextPartNum);
-        editTextTime = findViewById(R.id.editTextTime2);
         editTextDescription = findViewById(R.id.editTextDescription);
+
+        editActName = findViewById(R.id.editNameBttn);
+        editAddress = findViewById(R.id.editAddressBttn);
+        editDuration = findViewById(R.id.editDurationBttn);
+        editNumPart = findViewById(R.id.editPartNumBttn);
+        editTime = findViewById(R.id.editTimeBttn);
+        editDescription = findViewById(R.id.editDescriptionBttn);
+
+        cancelEditActName = findViewById(R.id.cancelEditNameBttn);
+        cancelEditAddress = findViewById(R.id.cancelEditAddressBttn);
+        cancelEditDuration = findViewById(R.id.cancelEditDurBttn);
+        cancelEditNumPart = findViewById(R.id.cancelEditPartNumBttn);
+        cancelEditDescription = findViewById(R.id.cancelEditDescriptionBttn);
 
         ratingBar = findViewById(R.id.rating_bar);
         submitBttn = findViewById(R.id.submitBttn);
@@ -147,18 +168,18 @@ public class ActivityInfoActivity extends AppCompatActivity {
         textViewRating = findViewById(R.id.textViewRating);
 
         deleteActBttn = findViewById(R.id.deleteActBttn);
-        imageType = findViewById(R.id.imageViewType2);
+        //imageType = findViewById(R.id.imageViewType2);
         activityImage = findViewById(R.id.activityImageInfo);
         postCommentBttn = findViewById(R.id.buttonPostComment);
         actCommentsRecyclerView = findViewById(R.id.comments_recycler_view);
-//        checkPartBttn = findViewById(R.id.checkPartBttn);
+        //checkPartBttn = findViewById(R.id.checkPartBttn);
         textViewConfirmPart = findViewById(R.id.textViewConfirmPart);
 
         // showImageType();
 
-        //if the user is not the owner of the activity
-        if (!user.getUsername().equals(activity.getOwner()))
-            hideOwnerFunctionalities();
+        //if the user is the owner of the activity
+        if (user.getUsername().equals(activity.getOwner()))
+            showOwnerFunctionalities();
 
         Calendar currentTime = Calendar.getInstance();
         String[] dateTime = activity.getTime().split(" ");
@@ -204,17 +225,15 @@ public class ActivityInfoActivity extends AppCompatActivity {
             });
         }
 
-
-        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
         actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
-            editTextNumPart.setText(participants.size() + "/" + activity.getParticipantNum());
+            textPartNum.setText(participants.size() + "/" + activity.getParticipantNum());
         });
 
-        editTextActName.setText(" " + activity.getName());
-        editTextActOwner.setText(" " + activity.getOwner());
-        editTextAddress.setText(" " + activity.getAddress());
-        editTextTime.setText(" " + activity.getTime());
-        editTextDuration.setText(" " + Integer.parseInt(activity.getDurationInMinutes()) / 60 + "h" + Integer.parseInt(activity.getDurationInMinutes()) % 60);
+        textActName.setText(" " + activity.getName());
+        textOwner.setText(" " + activity.getOwner());
+        textAddress.setText(" " + activity.getAddress());
+        textTime.setText(" " + activity.getTime());
+        textDuration.setText(" " + Integer.parseInt(activity.getDurationInMinutes()) / 60 + "h" + Integer.parseInt(activity.getDurationInMinutes()) % 60);
         textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b> " + totalRate + "/5.0"));
 
         submitBttn.setOnClickListener(new View.OnClickListener() {
@@ -307,8 +326,6 @@ public class ActivityInfoActivity extends AppCompatActivity {
             }
         });
 
-        getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
-
         getActCommentsViewModel.getActCommentsList().observe(this, comments -> {
             commentaryList = comments;
             CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(getApplicationContext(), mActivity, commentaryList, user, activity);
@@ -336,6 +353,65 @@ public class ActivityInfoActivity extends AppCompatActivity {
             }
         });*/
 
+        editActName.setOnClickListener(v -> {
+            textActName.setVisibility(View.INVISIBLE);
+            editTextActName.setVisibility(View.VISIBLE);
+            editActName.setVisibility(View.INVISIBLE);
+            cancelEditActName.setVisibility(View.VISIBLE);
+        });
+
+        editDescription.setOnClickListener(v -> {
+            textDescription.setVisibility(View.INVISIBLE);
+            editTextDescription.setVisibility(View.VISIBLE);
+            editDescription.setVisibility(View.INVISIBLE);
+            cancelEditDescription.setVisibility(View.VISIBLE);
+        });
+
+        //TODO: ADDRESS UPDATE
+
+        editDuration.setOnClickListener(v -> {
+            textDuration.setVisibility(View.INVISIBLE);
+            editTextDuration.setVisibility(View.VISIBLE);
+            editDuration.setVisibility(View.INVISIBLE);
+            cancelEditDuration.setVisibility(View.VISIBLE);
+        });
+
+        editNumPart.setOnClickListener(v -> {
+            textPartNum.setVisibility(View.INVISIBLE);
+            editTextNumPart.setVisibility(View.VISIBLE);
+            editNumPart.setVisibility(View.INVISIBLE);
+            cancelEditNumPart.setVisibility(View.VISIBLE);
+        });
+
+        cancelEditActName.setOnClickListener(v -> {
+            textActName.setVisibility(View.VISIBLE);
+            editTextActName.setVisibility(View.GONE);
+            editActName.setVisibility(View.VISIBLE);
+            cancelEditActName.setVisibility(View.GONE);
+        });
+
+        cancelEditDescription.setOnClickListener(v -> {
+            textDescription.setVisibility(View.VISIBLE);
+            editTextDescription.setVisibility(View.GONE);
+            editDescription.setVisibility(View.VISIBLE);
+            cancelEditDescription.setVisibility(View.GONE);
+        });
+
+        //TODO: ADDRESS UPDATE
+
+        cancelEditDuration.setOnClickListener(v -> {
+            textDuration.setVisibility(View.VISIBLE);
+            editTextDuration.setVisibility(View.GONE);
+            editDuration.setVisibility(View.VISIBLE);
+            cancelEditDuration.setVisibility(View.GONE);
+        });
+
+        cancelEditNumPart.setOnClickListener(v -> {
+            textPartNum.setVisibility(View.VISIBLE);
+            editTextNumPart.setVisibility(View.GONE);
+            editNumPart.setVisibility(View.VISIBLE);
+            cancelEditNumPart.setVisibility(View.GONE);
+        });
 
         TextWatcher afterTextChangedListener = new TextWatcher() {
             @Override
@@ -351,29 +427,66 @@ public class ActivityInfoActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 updateActivityViewModel.updateActivityDataChanged(editTextActName.getText().toString(), editTextAddress.getText().toString(),
-                        editTextTime.getText().toString(), activity.getType(), editTextNumPart.getText().toString(),
-                        editTextDuration.getText().toString(), editTextDescription.getText().toString());
+                        date, activity.getType(), editTextNumPart.getText().toString(),
+                        durationInMinutes, editTextDescription.getText().toString());
+                saveUpdateBttn.setEnabled(true);
             }
         };
 
         editTextActName.addTextChangedListener(afterTextChangedListener);
-        editTextActOwner.addTextChangedListener(afterTextChangedListener);
         editTextAddress.addTextChangedListener(afterTextChangedListener);
         editTextNumPart.addTextChangedListener(afterTextChangedListener);
-        editTextTime.addTextChangedListener(afterTextChangedListener);
-        editTextDuration.addTextChangedListener(afterTextChangedListener);
         editTextDescription.addTextChangedListener(afterTextChangedListener);
-        submitBttn.setOnClickListener(new View.OnClickListener() {
+        saveUpdateBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 updateActivityViewModel.updateActivity(editTextActName.getText().toString(), editTextAddress.getText().toString(), activity.getCoordinates(),
-                        editTextTime.getText().toString(), activity.getType(), editTextNumPart.getText().toString(),
-                        editTextDuration.getText().toString(), "", "", String.valueOf(user.getRole()), editTextDescription.getText().toString());
+                        date, activity.getType(), editTextNumPart.getText().toString(),
+                        durationInMinutes, "", "", String.valueOf(user.getRole()), editTextDescription.getText().toString());
+                resetButtons();
             }
         });
+
+        editTextDuration.setOnTimeChangedListener(
+                (view, hourOfDay, minute) -> {
+                    int hour = editTextDuration.getHour();
+                    int minutes = editTextDuration.getMinute();
+                    int aux = hour * 60 + minutes;
+                    durationInMinutes = new String().concat(String.valueOf(aux));
+                    updateActivityViewModel.updateActivityDataChanged(editTextActName.getText().toString(), editTextAddress.getText().toString(),
+                            date, activity.getType(), editTextNumPart.getText().toString(),
+                            durationInMinutes, editTextDescription.getText().toString());
+                    saveUpdateBttn.setEnabled(true);
+                });
+
+        editTime.setOnClickListener(v -> showDatePickerDialog());
+
     }
 
+    private void showDatePickerDialog() {
+        Calendar cal = Calendar.getInstance();
+
+        DatePickerDialog dpd = new DatePickerDialog(mActivity, (view, year, monthOfYear, dayOfMonth) -> {
+            cal.set(year, monthOfYear, dayOfMonth);
+            new TimePickerDialog(mActivity, (view1, hourOfDay, minute) -> {
+                cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                cal.set(Calendar.MINUTE, minute);
+
+                String timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
+                // TODO: timezone does not yet change due to winter/summer time
+                date = new String().concat(String.valueOf(dayOfMonth)).concat("/")
+                        .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
+                        .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
+
+                updateActivityViewModel.updateActivityDataChanged(editTextActName.getText().toString(), editTextAddress.getText().toString(),
+                        date, activity.getType(), editTextNumPart.getText().toString(),
+                        durationInMinutes, editTextDescription.getText().toString());
+                saveUpdateBttn.setEnabled(true);
+            }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
+        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
+        dpd.getDatePicker().setMinDate(cal.getTimeInMillis());
+        dpd.show();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode,
@@ -457,27 +570,33 @@ public class ActivityInfoActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
     }
 
-    private void hideOwnerFunctionalities() {
-        editTextActName.setFocusable(false);
-        editTextActName.setClickable(false);
-        editTextActName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        editTextActOwner.setFocusable(false);
-        editTextActOwner.setClickable(false);
-        editTextActOwner.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        editTextAddress.setFocusable(false);
-        editTextAddress.setClickable(false);
-        editTextAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        editTextNumPart.setFocusable(false);
-        editTextNumPart.setClickable(false);
-        editTextNumPart.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        editTextTime.setFocusable(false);
-        editTextTime.setClickable(false);
-        editTextTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        editTextDuration.setFocusable(false);
-        editTextDuration.setClickable(false);
-        editTextDuration.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        saveUpdateBttn.setVisibility(View.GONE);
-        deleteActBttn.setVisibility(View.GONE);
+    private void showOwnerFunctionalities() {
+        editActName.setVisibility(View.VISIBLE);
+        editDescription.setVisibility(View.VISIBLE);
+        editAddress.setVisibility(View.VISIBLE);
+        editTime.setVisibility(View.VISIBLE);
+        editNumPart.setVisibility(View.VISIBLE);
+        editDuration.setVisibility(View.VISIBLE);
+        saveUpdateBttn.setVisibility(View.VISIBLE);
+        deleteActBttn.setVisibility(View.VISIBLE);
+        ratingBar.setVisibility(View.GONE);
+        submitBttn.setVisibility(View.GONE);
+    }
+
+    private void resetButtons() {
+        editActName.setVisibility(View.VISIBLE);
+        editDescription.setVisibility(View.VISIBLE);
+        editAddress.setVisibility(View.VISIBLE);
+        editTime.setVisibility(View.VISIBLE);
+        editNumPart.setVisibility(View.VISIBLE);
+        editDuration.setVisibility(View.VISIBLE);
+        saveUpdateBttn.setEnabled(false);
+        cancelEditActName.setVisibility(View.GONE);
+        cancelEditDescription.setVisibility(View.GONE);
+        cancelEditAddress.setVisibility(View.GONE);
+        cancelEditNumPart.setVisibility(View.GONE);
+        cancelEditDuration.setVisibility(View.GONE);
+        //TODO: mudar activity info
     }
 
 }

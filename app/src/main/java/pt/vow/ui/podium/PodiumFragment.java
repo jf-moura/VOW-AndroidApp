@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,7 @@ public class PodiumFragment extends Fragment {
     private GetAllUsersViewModel getAllUsersViewModel;
     private List<UserInfo> usersList;
     private ShapeableImageView firstPlaceImg, secondPlaceImg, thirdPlaceImg;
+    private TextView firstPlaceName, secondPlaceName, thirdPlaceName;
     private ImageView imageViewInfo;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -71,12 +73,18 @@ public class PodiumFragment extends Fragment {
         secondPlaceImg = root.findViewById(R.id.secondPlaceImage);
         thirdPlaceImg = root.findViewById(R.id.thirdPlaceImage);
         imageViewInfo = root.findViewById(R.id.imageViewInfo);
+        firstPlaceName = root.findViewById(R.id.firstPlaceName);
+        secondPlaceName = root.findViewById(R.id.secondPlaceName);
+        thirdPlaceName = root.findViewById(R.id.thirdPlaceName);
 
         getAllUsersViewModel.getAllUsers(user.getUsername(), user.getTokenID());
 
         getAllUsersViewModel.getAllUsersList().observe(getActivity(), users -> {
             usersList = users;
             if (usersList.size() >= 3) {
+                firstPlaceName.setText(users.get(0).getName());
+                secondPlaceName.setText(users.get(1).getName());
+                thirdPlaceName.setText(users.get(2).getName());
                 for (int i = 0; i < 3; i++) {
                     Image image = imagesViewModel.getImage(usersList.get(i).getUsername());
                     if (image != null) {
