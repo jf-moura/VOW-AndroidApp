@@ -60,7 +60,6 @@ public class PodiumRecyclerViewAdapter extends RecyclerView.Adapter<PodiumRecycl
                     intent.putExtra("UserLogged", user);
                     intent.putExtra("UserShown", userList.get(position).getUsername());
                     intent.putExtra("UserShownVisibility", userList.get(position).getVisibility());
-                    // intent.putExtra("UserShownToken", userList.get(position));
                     context.startActivity(intent);
                 }
             }

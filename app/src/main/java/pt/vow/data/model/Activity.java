@@ -3,7 +3,6 @@ package pt.vow.data.model;
 import java.io.Serializable;
 import java.util.List;
 
-import pt.vow.ui.mainPage.Image;
 
 public class Activity implements Serializable {
 

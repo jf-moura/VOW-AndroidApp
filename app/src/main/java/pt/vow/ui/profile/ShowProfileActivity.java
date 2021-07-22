@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -59,7 +60,6 @@ public class ShowProfileActivity extends AppCompatActivity {
     private TextView aboutMeTextView, textAccPrivate;
     private Switch switchMode;
     private boolean mode;
-    private DrawerLayout drawerLayout;
     private BottomNavigationView topNavigationProfile;
     private ImageView imageLock;
 
@@ -78,6 +78,7 @@ public class ShowProfileActivity extends AppCompatActivity {
     private Observer<GetImageResult> imgObs;
     private GetProfileViewModel getProfileViewModel;
     private RelativeLayout relativeLayoutCam;
+    private LinearLayout linearLayoutAccP;
     private ShowProfileActivity mActivity;
     private String userToGet;
     private Boolean userVisibility;
@@ -117,14 +118,16 @@ public class ShowProfileActivity extends AppCompatActivity {
         relativeLayoutCam.setVisibility(View.INVISIBLE);
         imageLock = findViewById(R.id.imageLock);
         textAccPrivate = findViewById(R.id.textAccPrivate);
+        linearLayoutAccP = findViewById(R.id.linearLayoutAccP);
 
         //public account
         if (userVisibility) {
             getActivitiesByUserViewModel.getActivities(userToGet, user.getUsername(), user.getTokenID());
             getMyActivitiesViewModel.getActivities(userToGet, user.getUsername(), user.getTokenID());
         } else {
-            imageLock.setVisibility(View.VISIBLE);
-            textAccPrivate.setVisibility(View.VISIBLE);
+            linearLayoutAccP.setVisibility(View.VISIBLE);
+          //  imageLock.setVisibility(View.VISIBLE);
+          //  textAccPrivate.setVisibility(View.VISIBLE);
             topNavigationProfile.setVisibility(View.GONE);
         }
 
@@ -158,6 +161,11 @@ public class ShowProfileActivity extends AppCompatActivity {
             });
         }
 
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        Fragment fragment = new EnrolledActivitiesFragment();
+        fragmentTransaction.replace(R.id.activities_layout2, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
 
         topNavigationProfile.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -166,13 +174,13 @@ public class ShowProfileActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_enrolled_activities:
                         Fragment afragment = new EnrolledActivitiesFragment();
-                        fragmentTransaction.replace(R.id.activities_layout, afragment);
+                        fragmentTransaction.replace(R.id.activities_layout2, afragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;
                     case R.id.navigation_my_activities:
                         Fragment bfragment = new MyActivitiesFragment();
-                        fragmentTransaction.replace(R.id.activities_layout, bfragment);
+                        fragmentTransaction.replace(R.id.activities_layout2, bfragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;
@@ -181,8 +189,7 @@ public class ShowProfileActivity extends AppCompatActivity {
             }
         });
 
-        this.invalidateOptionsMenu();
-
+      //  this.invalidateOptionsMenu();
     }
 
 

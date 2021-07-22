@@ -53,6 +53,8 @@ import pt.vow.data.model.Activity;
 import pt.vow.data.model.UserInfo;
 import pt.vow.databinding.FragmentFeedBinding;
 import pt.vow.ui.VOW;
+import pt.vow.ui.activityInfo.ActivityParticipantsViewModel;
+import pt.vow.ui.activityInfo.ActivityParticipantsViewModelFactory;
 import pt.vow.ui.getAllUsers.GetAllUsersViewModel;
 import pt.vow.ui.getAllUsers.GetAllUsersViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
@@ -83,6 +85,7 @@ public class FeedFragment extends Fragment {
     private List<UserInfo> users;
     private String[] auxSearchView;
     private String input;
+    private ActivityParticipantsViewModel actParticipantsViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -158,6 +161,10 @@ public class FeedFragment extends Fragment {
             enrolledActivities = activitiesByUser;
         });
 
+        actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(ActivityParticipantsViewModel.class);
+
+
         activitiesViewModel.getActivitiesList().observe(getActivity(), activities -> {
             activityList = activities;
             if (activities.size() == 0)
@@ -179,6 +186,15 @@ public class FeedFragment extends Fragment {
                     long startMillis = beginTime.getTimeInMillis();
                     if (startMillis > currentTime) {
                         aux.put(a.getOwner() + "_" + a.getName(), a);
+                        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
+                        actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
+                            a.addParticipants(participants);
+                            activityList = new ArrayList<>(aux.values());
+                            showFilteredAct(activityList);
+                            RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
+                            recyclerView.setAdapter(adapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        });
                         /*try {
                             downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getOwner() + "_" + a.getName());
                         } catch (IOException e) {
@@ -187,11 +203,7 @@ public class FeedFragment extends Fragment {
                     }
                 }
 
-                activityList = new ArrayList<>(aux.values());
-                showFilteredAct(activityList);
-                RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
             }
         });
 

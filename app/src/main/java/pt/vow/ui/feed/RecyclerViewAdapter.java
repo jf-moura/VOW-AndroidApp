@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
@@ -20,6 +22,9 @@ import java.util.List;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
+import pt.vow.ui.VOW;
+import pt.vow.ui.activityInfo.ActivityParticipantsViewModel;
+import pt.vow.ui.activityInfo.ActivityParticipantsViewModelFactory;
 import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.profile.ActivitiesByUserView;
@@ -30,6 +35,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     List<Activity> activityList;
     ActivitiesByUserView enrolledActivities;
     LoggedInUserView user;
+
 
     public RecyclerViewAdapter(Context context, List<Activity> activityList, LoggedInUserView user, ActivitiesByUserView enrolledActivities) {
         this.context = context;
@@ -48,10 +54,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) +" "+ activityList.get(position).getName());
-        holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) +" "+ activityList.get(position).getOwner());
-        holder.time.setText(holder.itemView.getContext().getString(R.string.date)+" "+ activityList.get(position).getTime());
-        holder.duration.setText(holder.itemView.getContext().getString(R.string.duration)+" " + activityList.get(position).getDurationInMinutes() + " minutes");
+
+
+        if (String.valueOf(activityList.get(position).getParticipants().size()).equals(activityList.get(position).getParticipantNum())) {
+            holder.constraintLayoutFeed.setBackgroundResource(R.drawable.bg_activity_not_available);
+        }
+
+        holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) + " " + activityList.get(position).getName());
+        holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) + " " + activityList.get(position).getOwner());
+        holder.time.setText(holder.itemView.getContext().getString(R.string.date) + " " + activityList.get(position).getTime());
+        holder.duration.setText(holder.itemView.getContext().getString(R.string.duration) + " " + activityList.get(position).getDurationInMinutes() + " minutes");
 
         /*if (activityList.get(position).getImage() != null) {
             holder.activityImage.setVisibility(View.VISIBLE);
@@ -84,6 +96,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         TextView activityName, owner, time, duration;
         ImageView activityImage;
+        ConstraintLayout constraintLayoutFeed;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -92,6 +105,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             time = itemView.findViewById(R.id.textViewTime);
             duration = itemView.findViewById(R.id.textViewDuration);
             activityImage = itemView.findViewById(R.id.activityImage);
+            constraintLayoutFeed = itemView.findViewById(R.id.constraintLayoutFeed);
         }
     }
 }

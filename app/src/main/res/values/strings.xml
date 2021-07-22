@@ -200,6 +200,8 @@
     <string name="podium_info">Join activities to earn points</string>
     <string name="confirm_participants_failed">Wasn\'t able to confirm participants presence</string>
     <string name="confirmed_participants">Participants confirmed with success</string>
+    <string name="participants">Participants:</string>
+    <string name="activity">Activity:</string>
 
     <string-array name="filter">
         <item>Health</item>

@@ -227,4 +227,7 @@
 
     <string name="confirm_participants_failed">Não foi possível confirmar a presença dos participantes</string>
     <string name="confirmed_participants">Participantes confirmados com sucesso!</string>
+
+    <string name="participants">Participantes:</string>
+    <string name="activity">Atividade:</string>
 </resources>
