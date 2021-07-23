@@ -120,28 +120,6 @@ public class MainPageVolunteer extends AppCompatActivity {
             profileInfo = profile;
         });
 
-        activitiesViewModel.getActivitiesList().observe(this, actvities -> {
-            for (Activity a : actvities) {
-                allActivities.put(a.getId(), a);
-                if (a.getImage() == null) {
-                    try {
-                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getId());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        downloadImageViewModel.getImage().observe(this, image -> {
-            if (allActivities != null) {
-                String objName = image.getObjName();
-                Activity a = allActivities.get(objName);
-                if (a != null)
-                    a.setImage(image);
-            }
-        });
-
         notificationId = 0;
         profileImage = null;
         profileInfo = null;

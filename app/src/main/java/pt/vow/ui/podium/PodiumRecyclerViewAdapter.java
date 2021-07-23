@@ -48,6 +48,7 @@ public class PodiumRecyclerViewAdapter extends RecyclerView.Adapter<PodiumRecycl
             holder.userName.setTextColor(Color.WHITE);
             holder.textViewPoints.setTextColor(Color.WHITE);
         }
+
         holder.textViewPosition.setText(String.valueOf(position + 1));
         holder.userName.setText(userList.get(position).getName());
         holder.textViewPoints.setText(String.valueOf(userList.get(position).getScore()));
@@ -69,6 +70,14 @@ public class PodiumRecyclerViewAdapter extends RecyclerView.Adapter<PodiumRecycl
     @Override
     public int getItemCount() {
         return userList.size();
+    }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

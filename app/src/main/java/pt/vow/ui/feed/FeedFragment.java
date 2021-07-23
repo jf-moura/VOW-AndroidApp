@@ -140,8 +140,6 @@ public class FeedFragment extends Fragment {
         getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
         activitiesViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesViewModel.class);
 
-        activitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
-
         getActivitiesByUserViewModel.getActivitiesList().observe(this, activitiesByUser -> {
             enrolledActivities = activitiesByUser;
         });

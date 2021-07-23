@@ -54,6 +54,14 @@ public class ConfirmPartRecyclerViewAdapter extends RecyclerView.Adapter<Confirm
     public int getItemCount() {
         return participantsList.size();
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

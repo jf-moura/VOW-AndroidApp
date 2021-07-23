@@ -75,8 +75,6 @@ public class PodiumFragment extends Fragment {
             }
         }
 
-        getAllUsersViewModel.getAllUsers(user.getUsername(), user.getTokenID());
-
         getAllUsersViewModel.getAllUsersList().observe(getActivity(), users -> {
             usersList = users;
             Collections.sort(usersList, new SortbyPoints());
@@ -84,9 +82,9 @@ public class PodiumFragment extends Fragment {
                 firstPlaceName.setText(users.get(0).getName());
                 secondPlaceName.setText(users.get(1).getName());
                 thirdPlaceName.setText(users.get(2).getName());
-                for (int i = 0; i < 3; i++) {
+                /*for (int i = 0; i < 3; i++) {
                     //TODO: get images
-                    /*if (image != null) {
+                    if (image != null) {
                         byte[] img = image.getImageBytes();
                         Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
                         firstPlaceImg.setImageBitmap(bitmap);
@@ -96,16 +94,15 @@ public class PodiumFragment extends Fragment {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }*/
-                }
+                    }
+                }*/
             }
-
             PodiumRecyclerViewAdapter adapter = new PodiumRecyclerViewAdapter(getContext(), usersList, user);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         });
 
-        downloadImageViewModel.getImage().observe(getActivity(), image -> {
+        /*downloadImageViewModel.getImage().observe(getActivity(), image -> {
             if (usersList != null) {
                 byte[] img = image.getImageBytes();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
@@ -117,7 +114,7 @@ public class PodiumFragment extends Fragment {
                 else if (imgOwner.equals(usersList.get(2).getUsername()))
                     thirdPlaceImg.setImageBitmap(bitmap);
             }
-        });
+        });*/
 
         imageViewInfo.setOnClickListener(new View.OnClickListener() {
             @Override

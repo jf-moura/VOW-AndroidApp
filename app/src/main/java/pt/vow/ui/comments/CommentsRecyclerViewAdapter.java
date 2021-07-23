@@ -124,6 +124,14 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
     public int getItemCount() {
         return commentList.size();
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
