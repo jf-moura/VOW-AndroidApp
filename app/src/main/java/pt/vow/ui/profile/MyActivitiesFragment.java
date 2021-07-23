@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,11 +24,9 @@ import java.util.Map;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
-import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.databinding.ScrollviewActivitiesBinding;
-import pt.vow.ui.VOW;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.mainPage.DownloadImageViewModel;
+import pt.vow.ui.image.DownloadImageViewModel;
 
 public class MyActivitiesFragment extends Fragment {
     private ScrollviewActivitiesBinding binding;
@@ -77,7 +74,7 @@ public class MyActivitiesFragment extends Fragment {
                     if (myActivitiesList.size() == 0) {
                         relativeLayout.setVisibility(View.VISIBLE);
                     }
-                    if (myActivitiesList != null) {
+                    else if (myActivitiesList != null) {
                         aux = new HashMap<>();
                         for (Activity a : myActivitiesList) {
                             aux.put(a.getId(), a);
@@ -89,11 +86,15 @@ public class MyActivitiesFragment extends Fragment {
                                 }
                             }
                         }
-                        List<Activity> activityList = new ArrayList<>(aux.values());
+                        if (aux.isEmpty())
+                            relativeLayout.setVisibility(View.VISIBLE);
+                        else {
+                            List<Activity> activityList = new ArrayList<>(aux.values());
 
-                        adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
-                        myActRecyclerView.setAdapter(adapter);
-                        myActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
+                            myActRecyclerView.setAdapter(adapter);
+                            myActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        }
                     }
 
                 }

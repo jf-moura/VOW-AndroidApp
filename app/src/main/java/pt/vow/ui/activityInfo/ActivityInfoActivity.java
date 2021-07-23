@@ -36,29 +36,18 @@ import pt.vow.ui.comments.RegisterCommentViewModelFactory;
 import pt.vow.ui.confimParticipants.ConfirmParticipantsActivity;
 import pt.vow.ui.disableActivity.DeleteActivityViewModel;
 import pt.vow.ui.disableActivity.DeleteActivityViewModelFactory;
-import pt.vow.ui.enroll.EnrollResult;
-import pt.vow.ui.enroll.EnrollViewModel;
-import pt.vow.ui.enroll.EnrollViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.mainPage.Image;
-import pt.vow.ui.profile.GetActivitiesByUserResult;
-import pt.vow.ui.profile.ProfileRecyclerViewAdapter;
-import pt.vow.ui.profile.UploadImageViewModel;
-import pt.vow.ui.profile.UploadImageViewModelFactory;
-import pt.vow.ui.update.UpdateActivity;
+import pt.vow.ui.image.Image;
+import pt.vow.ui.image.UploadImageViewModel;
+import pt.vow.ui.image.UploadImageViewModelFactory;
 import pt.vow.ui.update.UpdateActivityViewModel;
 import pt.vow.ui.update.UpdateActivityViewModelFactory;
-import pt.vow.ui.update.UpdateFormState;
-import pt.vow.ui.update.UpdateResult;
-import pt.vow.ui.update.UpdateViewModel;
-import pt.vow.ui.update.UpdateViewModelFactory;
 
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
@@ -77,10 +66,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 

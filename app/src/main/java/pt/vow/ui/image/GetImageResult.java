@@ -1,4 +1,4 @@
-package pt.vow.ui.mainPage;
+package pt.vow.ui.image;
 
 import androidx.annotation.Nullable;
 

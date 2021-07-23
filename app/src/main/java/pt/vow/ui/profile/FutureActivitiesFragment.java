@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -22,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +27,7 @@ import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.databinding.ScrollviewActivitiesBinding;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.mainPage.DownloadImageViewModel;
+import pt.vow.ui.image.DownloadImageViewModel;
 
 public class FutureActivitiesFragment extends Fragment {
     private ScrollviewActivitiesBinding binding;
@@ -78,7 +75,7 @@ public class FutureActivitiesFragment extends Fragment {
                     if (activitiesByUserList.size() == 0) {
                         relativeLayout.setVisibility(View.VISIBLE);
                     }
-                    if (activitiesByUserList != null) {
+                    else if (activitiesByUserList != null) {
                         aux = new HashMap<>();
                         for (Activity a : activitiesByUserList) {
                             Calendar currentTime = Calendar.getInstance();
@@ -104,11 +101,15 @@ public class FutureActivitiesFragment extends Fragment {
                             }
                         }
 
-                        List<Activity> activityList = new ArrayList<>(aux.values());
+                        if (aux.isEmpty())
+                            relativeLayout.setVisibility(View.VISIBLE);
+                        else {
+                            List<Activity> activityList = new ArrayList<>(aux.values());
 
-                        adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
-                        enrolledActRecyclerView.setAdapter(adapter);
-                        enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
+                            enrolledActRecyclerView.setAdapter(adapter);
+                            enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        }
                     }
 
                 }

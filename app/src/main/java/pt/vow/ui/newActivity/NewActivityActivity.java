@@ -40,10 +40,9 @@ import java.util.TimeZone;
 
 import pt.vow.R;
 import pt.vow.ui.VOW;
-import pt.vow.ui.activityInfo.ActivityInfoActivity;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.profile.UploadImageViewModel;
-import pt.vow.ui.profile.UploadImageViewModelFactory;
+import pt.vow.ui.image.UploadImageViewModel;
+import pt.vow.ui.image.UploadImageViewModelFactory;
 import pt.vow.ui.route.NewRouteViewModel;
 import pt.vow.ui.route.NewRouteViewModelFactory;
 

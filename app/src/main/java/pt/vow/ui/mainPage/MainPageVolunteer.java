@@ -6,24 +6,17 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.Menu;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.api.services.storage.Storage;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -50,6 +43,9 @@ import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.feed.GetActivitiesViewModelFactory;
 import pt.vow.ui.getAllUsers.GetAllUsersViewModel;
 import pt.vow.ui.getAllUsers.GetAllUsersViewModelFactory;
+import pt.vow.ui.image.DownloadImageViewModel;
+import pt.vow.ui.image.DownloadImageViewModelFactory;
+import pt.vow.ui.image.Image;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.profile.GetActivitiesByUserResult;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
@@ -74,7 +70,6 @@ public class MainPageVolunteer extends AppCompatActivity {
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
     private GetProfileViewModel getProfileViewModel;
     private GetAllUsersViewModel getAllUsersViewModel;
-    private ImagesViewModel imagesViewModel;
 
     private ProfileInfoView profileInfo;
     private List<Activity> activitiesList;
@@ -103,8 +98,6 @@ public class MainPageVolunteer extends AppCompatActivity {
                 .get(GetMyActivitiesViewModel.class);
         getAllUsersViewModel = new ViewModelProvider(this, new GetAllUsersViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetAllUsersViewModel.class);
-        imagesViewModel = new ViewModelProvider(this, new ImagesViewModelFactory(((VOW) getApplication()).getExecutorService()))
-                .get(ImagesViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
@@ -155,7 +148,6 @@ public class MainPageVolunteer extends AppCompatActivity {
         });
 
         downloadImageViewModel.getImage().observe(this, image -> {
-            imagesViewModel.addImage(image);
             if (image.getObjName().equals(user.getUsername())) {
                 profileImage = image;
                 byte[] profileImageInByte = image.getImageBytes();

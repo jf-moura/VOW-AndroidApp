@@ -1,4 +1,4 @@
-package pt.vow.ui.profile;
+package pt.vow.ui.image;
 
 import androidx.lifecycle.ViewModel;
 

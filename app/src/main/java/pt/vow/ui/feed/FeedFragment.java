@@ -44,7 +44,7 @@ import pt.vow.ui.activityInfo.ActivityParticipantsViewModelFactory;
 import pt.vow.ui.getAllUsers.GetAllUsersViewModel;
 import pt.vow.ui.getAllUsers.GetAllUsersViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.mainPage.DownloadImageViewModel;
+import pt.vow.ui.image.DownloadImageViewModel;
 import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.profile.ActivitiesByUserView;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;

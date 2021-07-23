@@ -2,6 +2,7 @@ package pt.vow.data.register;
 
 import java.io.IOException;
 
+import pt.vow.R;
 import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredUser;
 import pt.vow.data.model.UserRegistrationOrganization;
@@ -32,6 +33,8 @@ public class RegisterDataSource {
             if (response.isSuccessful()) {
                 return new Result.Success<>(new RegisteredUser(username));
             }
+            if (response.code() == 409)
+                return new Result.Error(response.code());
             return new Result.Error(new Exception(response.errorBody().toString()));
         } catch (IOException e) {
             return new Result.Error(new IOException("Error registering", e));

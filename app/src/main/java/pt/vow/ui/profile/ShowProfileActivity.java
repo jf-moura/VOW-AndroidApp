@@ -1,7 +1,6 @@
 package pt.vow.ui.profile;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -15,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -23,11 +21,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -39,19 +34,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 
 import pt.vow.R;
 import pt.vow.ui.VOW;
+import pt.vow.ui.image.UploadImageViewModel;
+import pt.vow.ui.image.UploadImageViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.logout.LogoutViewModel;
 import pt.vow.ui.logout.LogoutViewModelFactory;
-import pt.vow.ui.mainPage.DownloadImageViewModel;
-import pt.vow.ui.mainPage.DownloadImageViewModelFactory;
-import pt.vow.ui.mainPage.GetImageResult;
-import pt.vow.ui.mainPage.Image;
-import pt.vow.ui.maps.MapsFragment;
-import pt.vow.ui.podium.PodiumFragment;
+import pt.vow.ui.image.DownloadImageViewModel;
+import pt.vow.ui.image.DownloadImageViewModelFactory;
+import pt.vow.ui.image.GetImageResult;
+import pt.vow.ui.image.Image;
 
 public class ShowProfileActivity extends AppCompatActivity {
     private static final int RESULT_OK = -1;

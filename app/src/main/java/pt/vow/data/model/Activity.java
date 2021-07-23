@@ -3,7 +3,7 @@ package pt.vow.data.model;
 import java.io.Serializable;
 import java.util.List;
 
-import pt.vow.ui.mainPage.Image;
+import pt.vow.ui.image.Image;
 
 
 public class Activity implements Serializable {
@@ -17,10 +17,11 @@ public class Activity implements Serializable {
     String participantNum;
     String durationInMinutes;
     String type;
+    boolean status;
     List<String> participants;
     Image image;
 
-    public Activity(String owner, String id, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes) {
+    public Activity(String owner, String id, String name, String address, String coordinates, String time, String type, String participantNum, boolean status, String durationInMinutes) {
         this.owner = owner;
         this.id = id;
         this.name = name;
@@ -30,6 +31,7 @@ public class Activity implements Serializable {
         this.type = type;
         this.participantNum = participantNum;
         this.durationInMinutes = durationInMinutes;
+        this.status = status;
         this.participants = null;
         this.image = null;
     }
@@ -69,6 +71,8 @@ public class Activity implements Serializable {
     public String getType() {
         return type;
     }
+
+    public boolean getStatus() { return status; }
 
     public void addParticipants(List<String> participants) {
         this.participants = participants;

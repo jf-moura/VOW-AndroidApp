@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -42,14 +43,22 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) +" "+ activityList.get(position).getName());
-            holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) +" "+ activityList.get(position).getOwner());
+            // activity was removed by the user
+            if (!activityList.get(position).getStatus()) {
+                holder.constraintLayoutProfile.setBackgroundResource(R.drawable.bg_activity_not_available);
+                holder.activityName.setText(R.string.activity_not_active);
+                holder.owner.setText(holder.itemView.getContext().getString(R.string.prompt_name) + " " + activityList.get(position).getName());
+                holder.activityImage.setVisibility(View.GONE);
+            } else {
+                holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) + " " + activityList.get(position).getName());
+                holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) + " " + activityList.get(position).getOwner());
 
-            if (activityList.get(position).getImage() != null) {
-                byte[] img = activityList.get(position).getImage().getImageBytes();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                holder.activityImage.setVisibility(View.VISIBLE);
-                holder.activityImage.setImageBitmap(bitmap);
+                if (activityList.get(position).getImage() != null) {
+                    byte[] img = activityList.get(position).getImage().getImageBytes();
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                    holder.activityImage.setVisibility(View.VISIBLE);
+                    holder.activityImage.setImageBitmap(bitmap);
+                }
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -72,12 +81,14 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
 
             TextView activityName, owner;
             ImageView activityImage;
+            ConstraintLayout constraintLayoutProfile;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 activityName = itemView.findViewById(R.id.textViewActivityName);
                 owner = itemView.findViewById(R.id.textViewOwner);
                 activityImage = itemView.findViewById(R.id.activityImageProfile);
+                constraintLayoutProfile = itemView.findViewById(R.id.constraintLayoutProfile);
             }
         }
 }

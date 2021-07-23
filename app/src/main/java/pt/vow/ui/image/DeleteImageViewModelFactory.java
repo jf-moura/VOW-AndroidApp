@@ -1,4 +1,4 @@
-package pt.vow.ui.mainPage;
+package pt.vow.ui.image;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -6,18 +6,18 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.util.concurrent.Executor;
 
-public class ImagesViewModelFactory implements ViewModelProvider.Factory {
+public class DeleteImageViewModelFactory implements ViewModelProvider.Factory {
     private Executor executor;
 
-    public ImagesViewModelFactory(Executor executor) {
+    public DeleteImageViewModelFactory(Executor executor) {
         this.executor = executor;
     }
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(ImagesViewModel.class)) {
-            return (T) new ImagesViewModel(executor);
+        if (modelClass.isAssignableFrom(DeleteImageViewModel.class)) {
+            return (T) new DeleteImageViewModel(executor);
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class");
         }

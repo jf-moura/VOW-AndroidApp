@@ -1,20 +1,19 @@
 package pt.vow.ui.enroll;
 
+import android.content.ContentUris;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.text.Html;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -23,25 +22,18 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.util.List;
-
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.ui.VOW;
-import pt.vow.ui.activityInfo.ActivityParticipantsResult;
-import pt.vow.ui.activityInfo.ActivityParticipantsView;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModel;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.mainPage.Image;
+import pt.vow.ui.image.Image;
 import pt.vow.ui.maps.GetRouteCoordResult;
 import pt.vow.ui.maps.GetRouteCoordViewModelFactory;
 import pt.vow.ui.maps.GetRouteCoordinatesViewModel;
 import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.profile.ActivitiesByUserView;
-import pt.vow.ui.profile.GetActivitiesByUserResult;
-import pt.vow.ui.profile.GetActivitiesByUserViewModel;
-import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;
 
 public class EnrollActivity extends AppCompatActivity {
     private TextView textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
@@ -165,7 +157,9 @@ public class EnrollActivity extends AppCompatActivity {
                 }
                 if (cancelEnrollResult.getSuccess() != null) {
                     enrollButton.setText(getResources().getString(R.string.join));
-                    Toast.makeText(getApplicationContext(), R.string.unjoined_activity, Toast.LENGTH_SHORT).show();
+                    Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, Long.parseLong(activity.getId()));
+                    //getContentResolver().delete(deleteUri, null, null);
+                    //Toast.makeText(getApplicationContext(), R.string.unjoined_activity, Toast.LENGTH_SHORT).show();
                     actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
                 }
             }
@@ -178,6 +172,7 @@ public class EnrollActivity extends AppCompatActivity {
                     enrollViewModel.enrollInActivity(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
                     // TODO: Falta ver os erros
                     Intent intentPop = new Intent(EnrollActivity.this, Pop.class);
+                    intentPop.putExtra("id", activity.getId());
                     intentPop.putExtra("title", activity.getName());
                     intentPop.putExtra("location", activity.getAddress());
                     intentPop.putExtra("time", activity.getTime());

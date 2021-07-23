@@ -1,6 +1,5 @@
 package pt.vow.ui.profile;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -36,7 +35,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavArgument;
-import androidx.navigation.NavHostController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -51,16 +49,15 @@ import pt.vow.R;
 
 import pt.vow.databinding.FragmentProfileBinding;
 import pt.vow.ui.VOW;
-import pt.vow.ui.activityInfo.GetRatingViewModel;
-import pt.vow.ui.activityInfo.GetRatingViewModelFactory;
 import pt.vow.ui.frontPage.FrontPageActivity;
-import pt.vow.ui.login.LoginActivity;
-import pt.vow.ui.mainPage.DownloadImageViewModel;
-import pt.vow.ui.mainPage.GetImageResult;
+import pt.vow.ui.image.DownloadImageViewModel;
+import pt.vow.ui.image.GetImageResult;
+import pt.vow.ui.image.UploadImageViewModel;
+import pt.vow.ui.image.UploadImageViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.logout.LogoutViewModel;
 import pt.vow.ui.logout.LogoutViewModelFactory;
-import pt.vow.ui.mainPage.Image;
+import pt.vow.ui.image.Image;
 import pt.vow.ui.update.ChangeVisibilityResult;
 import pt.vow.ui.update.ChangeVisibilityViewModel;
 import pt.vow.ui.update.ChangeVisibilityViewModelFactory;
@@ -244,10 +241,12 @@ public class ProfileFragment extends Fragment {
                 e.printStackTrace();
             }
             downloadImageViewModel.getImage().observe(getViewLifecycleOwner(), images -> {
-                image = images;
-                byte[] img = images.getImageBytes();
-                bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                profileImage.setImageBitmap(bitmap);
+                if (images.getObjName().equals(user.getUsername())) {
+                    image = images;
+                    byte[] img = images.getImageBytes();
+                    bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                    profileImage.setImageBitmap(bitmap);
+                }
             });
         }
 

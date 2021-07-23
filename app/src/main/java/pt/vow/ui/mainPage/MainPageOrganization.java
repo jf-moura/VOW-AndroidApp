@@ -10,36 +10,29 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavArgument;
 import androidx.navigation.NavController;
-import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.io.IOException;
-import java.util.List;
 
 import pt.vow.R;
-import pt.vow.data.model.Activity;
-import pt.vow.data.model.UserInfo;
 import pt.vow.databinding.ActivityMainPageOrganizationBinding;
 import pt.vow.ui.VOW;
 import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.feed.GetActivitiesViewModelFactory;
 import pt.vow.ui.getAllUsers.GetAllUsersViewModel;
 import pt.vow.ui.getAllUsers.GetAllUsersViewModelFactory;
+import pt.vow.ui.image.DownloadImageViewModel;
+import pt.vow.ui.image.DownloadImageViewModelFactory;
+import pt.vow.ui.image.Image;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 import pt.vow.ui.profile.GetActivitiesByUserViewModelFactory;
@@ -60,10 +53,8 @@ public class MainPageOrganization extends AppCompatActivity {
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
     private GetAllUsersViewModel getAllUsersViewModel;
     private GetProfileViewModel getProfileViewModel;
-    private ImagesViewModel imagesViewModel;
 
     private ProfileInfoView profileInfo;
-    private List<Activity> activitiesList;
     private Image profileImage;
 
     @Override
@@ -87,8 +78,6 @@ public class MainPageOrganization extends AppCompatActivity {
                 .get(GetProfileViewModel.class);
         getAllUsersViewModel = new ViewModelProvider(this, new GetAllUsersViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetAllUsersViewModel.class);
-        imagesViewModel = new ViewModelProvider(this, new ImagesViewModelFactory(((VOW) getApplication()).getExecutorService()))
-                .get(ImagesViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
 
@@ -136,7 +125,6 @@ public class MainPageOrganization extends AppCompatActivity {
         });
 
         downloadImageViewModel.getImage().observe(this, image -> {
-            imagesViewModel.addImage(image);
             if (image.getObjName().equals(user.getUsername())) {
                 profileImage = image;
                 byte[] profileImageInByte = image.getImageBytes();

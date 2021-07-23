@@ -2,8 +2,6 @@ package pt.vow.ui.profile;
 
 import java.io.Serializable;
 
-import pt.vow.ui.mainPage.Image;
-
 public class ProfileInfoView implements Serializable {
     private String username, tokenID, name, email, phoneNumber, dateBirth, bio, website;
     private boolean visibility, status;

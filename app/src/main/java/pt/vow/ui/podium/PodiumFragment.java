@@ -19,34 +19,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.cloud.storage.Acl;
 
-import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import pt.vow.R;
-import pt.vow.data.model.Activity;
 import pt.vow.data.model.UserInfo;
 import pt.vow.databinding.FragmentPodiumBinding;
-import pt.vow.ui.VOW;
-import pt.vow.ui.activityInfo.GetRatingViewModel;
-import pt.vow.ui.activityInfo.GetRatingViewModelFactory;
-import pt.vow.ui.feed.GetActivitiesViewModel;
-import pt.vow.ui.feed.RecyclerViewAdapter;
 import pt.vow.ui.getAllUsers.GetAllUsersViewModel;
-import pt.vow.ui.getAllUsers.GetAllUsersViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.mainPage.DownloadImageViewModel;
-import pt.vow.ui.mainPage.Image;
-import pt.vow.ui.mainPage.ImagesViewModel;
+import pt.vow.ui.image.DownloadImageViewModel;
 
 public class PodiumFragment extends Fragment {
 
     private DownloadImageViewModel downloadImageViewModel;
-    private ImagesViewModel imagesViewModel;
     private FragmentPodiumBinding binding;
     private RecyclerView recyclerView;
     private LoggedInUserView user;
@@ -60,7 +47,6 @@ public class PodiumFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
-        imagesViewModel = new ViewModelProvider(getActivity()).get(ImagesViewModel.class);
 
         binding = FragmentPodiumBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -99,8 +85,8 @@ public class PodiumFragment extends Fragment {
                 secondPlaceName.setText(users.get(1).getName());
                 thirdPlaceName.setText(users.get(2).getName());
                 for (int i = 0; i < 3; i++) {
-                    Image image = imagesViewModel.getImage(usersList.get(i).getUsername());
-                    if (image != null) {
+                    //TODO: get images
+                    /*if (image != null) {
                         byte[] img = image.getImageBytes();
                         Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
                         firstPlaceImg.setImageBitmap(bitmap);
@@ -110,7 +96,7 @@ public class PodiumFragment extends Fragment {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }
+                    }*/
                 }
             }
 

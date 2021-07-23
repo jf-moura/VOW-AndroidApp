@@ -12,6 +12,7 @@ import pt.vow.R;
 import pt.vow.data.Result;
 import pt.vow.data.model.RegisteredUser;
 import pt.vow.data.register.RegisterRepository;
+import retrofit2.Response;
 
 public class RegisterViewModel extends ViewModel {
 
@@ -43,7 +44,10 @@ public class RegisterViewModel extends ViewModel {
                     RegisteredUser data = ((Result.Success<RegisteredUser>) result).getData();
                     registerResult.postValue(new RegisterResult(new RegisteredUserView(data.getDisplayName())));
                 } else {
-                    registerResult.postValue(new RegisterResult(R.string.register_failed));
+                    if (((Result.Error) result).getCode() == 409)
+                        registerResult.postValue(new RegisterResult(R.string.username_already_used));
+                    else
+                        registerResult.postValue(new RegisterResult(R.string.register_failed));
                 }
             }
         });

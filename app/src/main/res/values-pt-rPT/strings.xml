@@ -230,4 +230,7 @@
 
     <string name="participants">Participantes:</string>
     <string name="activity">Atividade:</string>
+    <string name="not_deleted_act">Esta atividade foi desativada</string>
+    <string name="share">Partilhe a nossa aplicação</string>
+    <string name="check_website">Veja o nosso website!</string>
 </resources>

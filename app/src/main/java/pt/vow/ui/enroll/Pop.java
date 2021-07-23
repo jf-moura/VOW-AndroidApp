@@ -20,7 +20,7 @@ public class Pop extends AppCompatActivity {
 
     private Button buttonYes, buttonNo;
     private TextView textView1;
-    private String activityTitle, location, time, duration;
+    private String activityID, activityTitle, location, time, duration;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +39,7 @@ public class Pop extends AppCompatActivity {
 
         getWindow().setLayout((int) (width * .7), (int) (height * .25));
 
+        activityID = (String) getIntent().getSerializableExtra("id");
         activityTitle = (String) getIntent().getSerializableExtra("title");
         location = (String) getIntent().getSerializableExtra("location");
         time = (String) getIntent().getSerializableExtra("time");
@@ -60,6 +61,7 @@ public class Pop extends AppCompatActivity {
 
                 Intent intent = new Intent(Intent.ACTION_INSERT);
                 intent.setData(Events.CONTENT_URI);
+                intent.putExtra(Events._ID, activityID);
                 intent.putExtra(Events.TITLE, activityTitle);
                 intent.putExtra(Events.EVENT_LOCATION, location);
                 intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startMillis);
@@ -69,6 +71,7 @@ public class Pop extends AppCompatActivity {
                 } else {
                     Toast.makeText(Pop.this, "There is no app that support this action", Toast.LENGTH_SHORT).show();
                 }
+                finish();
             }
         });
 

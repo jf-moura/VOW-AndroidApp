@@ -14,18 +14,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.io.IOException;
+
 import pt.vow.R;
 import pt.vow.ui.VOW;
 import pt.vow.ui.disableUser.DeleteUserResult;
 import pt.vow.ui.disableUser.DeleteUserViewModel;
 import pt.vow.ui.disableUser.DeleteUserViewModelFactory;
 import pt.vow.ui.frontPage.FrontPageActivity;
+import pt.vow.ui.image.DeleteImageViewModel;
+import pt.vow.ui.image.DeleteImageViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 
 public class PopDeleteAccount extends AppCompatActivity {
     private Button buttonYes, buttonNo;
     private TextView textView;
     private DeleteUserViewModel deleteUserViewModel;
+    private DeleteImageViewModel deleteImageViewModel;
     private LoggedInUserView user;
     private PopDeleteAccount mActivity;
 
@@ -39,6 +44,8 @@ public class PopDeleteAccount extends AppCompatActivity {
 
         deleteUserViewModel = new ViewModelProvider(this, new DeleteUserViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(DeleteUserViewModel.class);
+        deleteImageViewModel = new ViewModelProvider(this, new DeleteImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(DeleteImageViewModel.class);
 
         buttonYes = findViewById(R.id.buttonYes);
         buttonNo = findViewById(R.id.buttonNo);
@@ -70,6 +77,12 @@ public class PopDeleteAccount extends AppCompatActivity {
                             return;
                         }
                         if (deleteUserResult.getSuccess() != null) {
+                            // delete profile image
+                            try {
+                                deleteImageViewModel.deleteImage("vow-project-311114", "vow_profile_pictures", user.getUsername());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             Toast.makeText(getApplicationContext(), R.string.user_deleted, Toast.LENGTH_SHORT).show();
 
                             //go back to front page

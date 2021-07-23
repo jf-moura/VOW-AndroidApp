@@ -1,4 +1,4 @@
-package pt.vow.ui.profile;
+package pt.vow.ui.image;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -6,18 +6,18 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.util.concurrent.Executor;
 
-public class UploadImageViewModelFactory implements ViewModelProvider.Factory {
+public class DownloadImageViewModelFactory implements ViewModelProvider.Factory {
     private Executor executor;
 
-    public UploadImageViewModelFactory(Executor executor) {
+    public DownloadImageViewModelFactory(Executor executor) {
         this.executor = executor;
     }
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(UploadImageViewModel.class)) {
-            return (T) new UploadImageViewModel(executor);
+        if (modelClass.isAssignableFrom(DownloadImageViewModel.class)) {
+            return (T) new DownloadImageViewModel(executor);
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class");
         }
