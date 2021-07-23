@@ -32,7 +32,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
@@ -74,6 +76,7 @@ public class MainPageVolunteer extends AppCompatActivity {
     private ProfileInfoView profileInfo;
     private List<Activity> activitiesList;
     private Image profileImage;
+    private Map<String, Activity> allActivities;
 
     private Observer<GetActivitiesByUserResult> actByUserObs;
 
@@ -85,6 +88,7 @@ public class MainPageVolunteer extends AppCompatActivity {
         binding = ActivityMainPagePersonBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         mActivity = this;
+        allActivities = new HashMap<>();
 
         activitiesViewModel = new ViewModelProvider(this, new GetActivitiesViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetActivitiesViewModel.class);
@@ -114,6 +118,28 @@ public class MainPageVolunteer extends AppCompatActivity {
 
         getProfileViewModel.profile().observe(this, profile -> {
             profileInfo = profile;
+        });
+
+        activitiesViewModel.getActivitiesList().observe(this, actvities -> {
+            for (Activity a : actvities) {
+                allActivities.put(a.getId(), a);
+                if (a.getImage() == null) {
+                    try {
+                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getId());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        downloadImageViewModel.getImage().observe(this, image -> {
+            if (allActivities != null) {
+                String objName = image.getObjName();
+                Activity a = allActivities.get(objName);
+                if (a != null)
+                    a.setImage(image);
+            }
         });
 
         notificationId = 0;
