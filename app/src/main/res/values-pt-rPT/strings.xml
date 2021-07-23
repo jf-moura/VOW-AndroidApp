@@ -233,4 +233,8 @@
     <string name="not_deleted_act">Esta atividade foi desativada</string>
     <string name="share">Partilhe a nossa aplicação</string>
     <string name="check_website">Veja o nosso website!</string>
+
+
+    <string name="username_already_used">Nome de utilizador ou email já estão a ser usados</string>
+    <string name="activity_not_active">Atividade Indisponível</string>
 </resources>

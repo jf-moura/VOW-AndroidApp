@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     private LoginActivity mActivity;
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
-    private boolean saveLogin, test;
+    private boolean saveLogin, test, fromRegister;
     private LoggedInUserView userLogged;
 
     @Override
@@ -57,8 +57,9 @@ public class LoginActivity extends AppCompatActivity {
 
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
         test = getIntent().getBooleanExtra("test", true);
+        fromRegister = getIntent().getBooleanExtra("fromRegister", false);
 
-        if (saveLogin && test) {
+        if (saveLogin && test && !fromRegister) {
             usernameEditText.setText(loginPreferences.getString("username", ""));
             passwordEditText.setText(loginPreferences.getString("password", ""));
             rememberMe.setChecked(true);

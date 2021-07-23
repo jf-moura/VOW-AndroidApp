@@ -25,6 +25,7 @@ import android.widget.Toast;
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.data.model.Commentary;
+import pt.vow.data.model.UserInfo;
 import pt.vow.ui.VOW;
 import pt.vow.ui.comments.CommentsRecyclerViewAdapter;
 import pt.vow.ui.comments.GetActCommentsResult;
@@ -68,6 +69,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -184,6 +187,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
         // showImageType();
 
+
         //if the user is the owner of the activity
         if (user.getUsername().equals(activity.getOwner()))
             showOwnerFunctionalities();
@@ -242,6 +246,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         textTime.setText(" " + activity.getTime());
         textDuration.setText(" " + Integer.parseInt(activity.getDurationInMinutes()) / 60 + "h" + Integer.parseInt(activity.getDurationInMinutes()) % 60);
         textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b> " + totalRate + "/5.0"));
+
 
         submitBttn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -336,8 +341,22 @@ public class ActivityInfoActivity extends AppCompatActivity {
             }
         });
 
+        class SortbyTimestamp implements Comparator<Commentary> {
+
+            // Used for sorting in ascending order of
+            // timestamp
+            public int compare(Commentary a, Commentary b) {
+                int ca = getTimeStamp(a);
+                int cb = getTimeStamp(b);
+
+                return cb - ca;
+            }
+        }
+
+
         getActCommentsViewModel.getActCommentsList().observe(this, comments -> {
             commentaryList = comments;
+            Collections.sort(commentaryList, new SortbyTimestamp());
             CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(getApplicationContext(), mActivity, commentaryList, user, activity);
             actCommentsRecyclerView.setAdapter(adapter);
             actCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
@@ -524,7 +543,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        float bitmapRatio = (float)width / (float) height;
+        float bitmapRatio = (float) width / (float) height;
         if (bitmapRatio > 1) {
             width = maxSize;
             height = (int) (width / bitmapRatio);
@@ -650,9 +669,12 @@ public class ActivityInfoActivity extends AppCompatActivity {
         editNumPart.setVisibility(View.VISIBLE);
         editDuration.setVisibility(View.VISIBLE);
         saveUpdateBttn.setVisibility(View.VISIBLE);
-        deleteActBttn.setVisibility(View.VISIBLE);
         ratingBar.setVisibility(View.GONE);
         submitBttn.setVisibility(View.GONE);
+        if (!activity.getStatus())
+            deleteActBttn.setVisibility(View.INVISIBLE);
+        else
+            deleteActBttn.setVisibility(View.VISIBLE);
     }
 
     private void resetButtons() {
@@ -669,6 +691,20 @@ public class ActivityInfoActivity extends AppCompatActivity {
         cancelEditNumPart.setVisibility(View.GONE);
         cancelEditDuration.setVisibility(View.GONE);
         //TODO: mudar activity info
+    }
+
+    private int getTimeStamp(Commentary a) {
+        String[] dateTime = a.getLastModificationTime().split(" ");
+        String[] hours = dateTime[3].split(":");
+
+        Calendar beginTime = Calendar.getInstance();
+
+        if (dateTime[4].equals("PM"))
+            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
+        else
+            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+
+        return (int) beginTime.getTimeInMillis();
     }
 
 }

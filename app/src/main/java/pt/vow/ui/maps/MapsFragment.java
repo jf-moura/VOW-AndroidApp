@@ -786,7 +786,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 activity = curAct;
                 break;
             }
-        Toast.makeText(getActivity().getApplicationContext(), "Info window", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getActivity(), EnrollActivity.class);
         intent.putExtra("UserLogged", user);
         intent.putExtra("Activity", activity);

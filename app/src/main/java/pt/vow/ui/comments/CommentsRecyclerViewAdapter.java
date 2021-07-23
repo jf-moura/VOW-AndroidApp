@@ -55,6 +55,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.textViewUserName.setText(commentList.get(position).getCommentOwner());
         holder.textViewComment.setText(commentList.get(position).getComment());
+        holder.textViewTimestamp.setText(commentList.get(position).getLastModificationTime());
 
         if (commentList.get(position).getCommentOwner().equals(user.getUsername())) {
             holder.editBttn.setVisibility(View.VISIBLE);
@@ -126,7 +127,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textViewUserName, textViewComment;
+        TextView textViewUserName, textViewComment, textViewTimestamp;
         EditText editTextComment;
         ImageButton editBttn, confirmBttn, trashBttn;
 
@@ -138,6 +139,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
             editBttn = itemView.findViewById(R.id.editBttn);
             confirmBttn = itemView.findViewById(R.id.confirmCommentBttn);
             trashBttn = itemView.findViewById(R.id.trashBttn);
+            textViewTimestamp = itemView.findViewById(R.id.textViewTimestamp);
         }
     }
 }

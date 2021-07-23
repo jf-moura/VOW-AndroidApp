@@ -148,6 +148,7 @@ public class RegisterActivity extends AppCompatActivity {
                     registerUserSuccess(registerResult.getSuccess());
                     setResult(Activity.RESULT_OK);
                     Intent intent = new Intent(mActivity, LoginActivity.class);
+                    intent.putExtra("fromRegister", true);
                     startActivity(intent);
                 }
             }
