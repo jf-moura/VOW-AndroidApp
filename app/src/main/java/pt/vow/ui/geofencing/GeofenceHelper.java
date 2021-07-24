@@ -12,6 +12,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 import android.content.Context;
 
+import java.util.List;
+
 import pt.vow.data.model.Activity;
 import pt.vow.ui.login.LoggedInUserView;
 
@@ -31,11 +33,19 @@ public class GeofenceHelper extends ContextWrapper {
 
     }
 
-    public GeofencingRequest getGeofencingRequest(Geofence geofence) {
+    public GeofencingRequest getGeofencingRequest2(Geofence geofence) {
 
         return new GeofencingRequest.Builder()
-                .addGeofence(geofence)
                 .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                .addGeofence(geofence)
+                .build();
+    }
+
+    public GeofencingRequest getGeofencingRequest(List<Geofence> geofences) {
+
+        return new GeofencingRequest.Builder()
+                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                .addGeofences(geofences)
                 .build();
     }
 
@@ -79,19 +89,6 @@ public class GeofenceHelper extends ContextWrapper {
             }
         }
         return e.getLocalizedMessage();
-    }
-
-    public void addActivityInfo(Activity a) {
-        activity = a;
-        notificationHelper.addActivityInfo(activity);
-        geo.addActivityInfo(activity);
-
-    }
-
-    public void addUserLogged(LoggedInUserView user) {
-        this.user = user;
-        notificationHelper.addUserLogged(user);
-        geo.addUserLogged(user);
     }
 
 

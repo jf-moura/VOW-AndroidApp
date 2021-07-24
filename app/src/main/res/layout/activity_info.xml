@@ -318,7 +318,7 @@
                     android:id="@+id/textTimeTitle"
                     android:layout_width="60dp"
                     android:layout_height="30dp"
-                    android:text="@string/time"
+                    android:text="@string/date"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"

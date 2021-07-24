@@ -100,9 +100,7 @@
         <activity
             android:name=".ui.confimParticipants.ConfirmParticipantsActivity"
             android:label="@string/confirm_act_participants" />
-        <activity android:name=".ui.geofencing.MapsGeofencing">
-
-        </activity>
+        <activity android:name=".ui.geofencing.MapsGeofencing"></activity>
 
         <activity
             android:name=".ui.frontPage.FrontPageActivity"

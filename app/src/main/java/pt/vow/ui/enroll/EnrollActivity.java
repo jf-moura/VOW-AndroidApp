@@ -117,10 +117,12 @@ public class EnrollActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle(activity.getName());
 
+        String time = showTime(activity.getTime());
+
         textViewActName.setText(Html.fromHtml("<b>" + getResources().getString(R.string.activity_name) + "</b>" + " " + activity.getName()));
         textViewActOwner.setText(Html.fromHtml("<b>" + getResources().getString(R.string.organization) + "</b>" + " " + activity.getOwner()));
         textViewAddress.setText(Html.fromHtml("<b>" + getResources().getString(R.string.address) + "</b>" + " " + activity.getAddress()));
-        textViewTime.setText(Html.fromHtml("<b>" + getResources().getString(R.string.time) + "</b>" + " " + activity.getTime()));
+        textViewTime.setText(Html.fromHtml("<b>" + getResources().getString(R.string.date) + "</b>" + " " + time));
         textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + "</b>" + " " + activity.getParticipantNum()));
         textViewDuration.setText(Html.fromHtml("<b>" + getResources().getString(R.string.duration) + "</b>" + " " + Integer.parseInt(activity.getDurationInMinutes()) / 60 + "h" + Integer.parseInt(activity.getDurationInMinutes()) % 60));
 
@@ -375,6 +377,17 @@ public class EnrollActivity extends AppCompatActivity {
             beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
 
         return (int) beginTime.getTimeInMillis();
+    }
+
+    private String showTime(String time) {
+        String[] dateTime = time.split(" ");
+        String[] hours = dateTime[3].split(":");
+
+        String h = hours[0] + ":" + hours[1] + " " +dateTime[4];
+        String d = dateTime[1].split(",")[0] + "/" + dateTime[0] + "/" + dateTime[2];
+        String finalD = d + " " + h;
+
+        return finalD;
     }
 
     private int monthToIntegerShort(String month) {

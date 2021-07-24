@@ -144,7 +144,7 @@
     <string name="title_activities_data">As Minhas Atividades</string>
     <string name="about_me">Sobre mim</string>
     <string name="confirm">Confirmo</string>
-    <string name="enrolled_activities">Actividades Que Participei:</string>
+    <string name="enrolled_activities">Actividades Realizadas:</string>
 
     <!--route-->
     <string name="route_name">Nome da rota:</string>
@@ -152,7 +152,7 @@
     <string name="title_new_route">Nova Rota</string>
 
     <string name="title_my_activities">As minhas atividades</string>
-    <string name="title_enrolled_activities">Atividades em que participei</string>
+    <string name="title_enrolled_activities">Atividades realizadas</string>
     <string name="title_future_activities">Atividades Futuras</string>
     <string name="set_rating_failed">Erro a definir pontuação</string>
     <string name="choose_image">Adicione uma imagem</string>
@@ -234,7 +234,12 @@
     <string name="share">Partilhe a nossa aplicação</string>
     <string name="check_website">Veja o nosso website!</string>
 
-
     <string name="username_already_used">Nome de utilizador ou email já estão a ser usados</string>
     <string name="activity_not_active">Atividade Indisponível</string>
+
+    <string name="restore_activity">Quer reativar esta atividade?</string>
+    <string name="restore_activity_failed">Não foi possível reativar esta atividade</string>
+    <string name="activity_restored">Atividade Reativada</string>
+    <string name="add_number">Adicione o seu número de telemóvel</string>
+    <string name="change_pass">Altere a palavra passe</string>
 </resources>

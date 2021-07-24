@@ -210,6 +210,8 @@
     <string name="restore_activity">Want to restore this activity?</string>
     <string name="restore_activity_failed">Couldn\'t restore this activity</string>
     <string name="activity_restored">Activity was restored</string>
+    <string name="add_number">Add your phone number</string>
+    <string name="change_pass">Change Password</string>
 
 
     <string-array name="filter">

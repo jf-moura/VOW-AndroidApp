@@ -50,7 +50,7 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
             holder.owner.setText(holder.itemView.getContext().getString(R.string.prompt_name) + " " + activityList.get(position).getName());
             holder.activityImage.setVisibility(View.GONE);
         } else {
-            holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) + " " + activityList.get(position).getName());
+            holder.activityName.setText(activityList.get(position).getName());
             holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) + " " + activityList.get(position).getOwner());
 
             if (activityList.get(position).getImage() != null) {

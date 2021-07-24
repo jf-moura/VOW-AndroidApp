@@ -248,11 +248,11 @@ public class ActivityInfoActivity extends AppCompatActivity {
             participantsList = participants;
             textPartNum.setText(participants.size() + "/" + activity.getParticipantNum());
         });
-
+        String time = showTime(activity.getTime());
         textActName.setText(" " + activity.getName());
         textOwner.setText(" " + activity.getOwner());
         textAddress.setText(" " + activity.getAddress());
-        textTime.setText(" " + activity.getTime());
+        textTime.setText(" " + time);
         textDuration.setText(" " + Integer.parseInt(activity.getDurationInMinutes()) / 60 + "h" + Integer.parseInt(activity.getDurationInMinutes()) % 60);
         textViewRating.setText(Html.fromHtml("<b>" + getResources().getString(R.string.rating) + "</b> " + totalRate + "/5.0"));
 
@@ -731,6 +731,17 @@ public class ActivityInfoActivity extends AppCompatActivity {
             beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
 
         return (int) beginTime.getTimeInMillis();
+    }
+
+    private String showTime(String time) {
+        String[] dateTime = time.split(" ");
+        String[] hours = dateTime[3].split(":");
+
+        String h = hours[0] + ":" + hours[1] + " " + dateTime[4];
+        String d = dateTime[1].split(",")[0] + "/" + dateTime[0] + "/" + dateTime[2];
+        String finalD = d + " " + h;
+
+        return finalD;
     }
 
 }

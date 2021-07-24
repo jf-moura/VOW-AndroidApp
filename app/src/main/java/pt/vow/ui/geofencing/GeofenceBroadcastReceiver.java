@@ -24,6 +24,7 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
     private Activity activity;
     private LoggedInUserView user;
     private String test;
+    private String name;
 
 
     @Override
@@ -38,7 +39,7 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
 
         Bundle bundle = intent.getExtras();
-      //  test = intent.getStringExtra("test");
+        //  test = intent.getStringExtra("test");
         activity = (Activity) intent.getSerializableExtra("Activity");
         user = (LoggedInUserView) intent.getSerializableExtra("UserLogged");
 
@@ -50,33 +51,28 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
         List<Geofence> geofenceList = geofencingEvent.getTriggeringGeofences();
         for (Geofence geofence : geofenceList) {
             Log.d(TAG, "onReceive: " + geofence.getRequestId());
-        }
+            String[] aux = geofence.getRequestId().split("_");
+            name = aux[2];
+
 //        Location location = geofencingEvent.getTriggeringLocation();
-        int transitionType = geofencingEvent.getGeofenceTransition();
+            int transitionType = geofencingEvent.getGeofenceTransition();
 
+            switch (transitionType) {
+                case Geofence.GEOFENCE_TRANSITION_ENTER:
+                    Toast.makeText(context, R.string.near_activity, Toast.LENGTH_SHORT).show();
+                    notificationHelper.sendHighPriorityNotification(context.getResources().getString(R.string.near_activity), context.getResources().getString(R.string.activity_name) + " " + aux[2], EnrollActivity.class);
+                    break;
+                case Geofence.GEOFENCE_TRANSITION_DWELL:
+                    Toast.makeText(context, "GEOFENCE_TRANSITION_DWELL", Toast.LENGTH_SHORT).show();
+                    notificationHelper.sendHighPriorityNotification(context.getResources().getString(R.string.join_activity), "", EnrollActivity.class);
+                    break;
+                case Geofence.GEOFENCE_TRANSITION_EXIT:
+                    //Toast.makeText(context, "GEOFENCE_TRANSITION_EXIT", Toast.LENGTH_SHORT).show();
+                    //notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_EXIT", "", MapsFragment.class, titleString, user);
+                    break;
+            }
 
-        switch (transitionType) {
-            case Geofence.GEOFENCE_TRANSITION_ENTER:
-                Toast.makeText(context, R.string.near_activity, Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification(context.getResources().getString(R.string.near_activity), "", EnrollActivity.class);
-                break;
-            case Geofence.GEOFENCE_TRANSITION_DWELL:
-                Toast.makeText(context, "GEOFENCE_TRANSITION_DWELL", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification(context.getResources().getString(R.string.join_activity), "", EnrollActivity.class);
-                break;
-            case Geofence.GEOFENCE_TRANSITION_EXIT:
-                //Toast.makeText(context, "GEOFENCE_TRANSITION_EXIT", Toast.LENGTH_SHORT).show();
-                //notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_EXIT", "", MapsFragment.class, titleString, user);
-                break;
         }
-
     }
 
-    public void addActivityInfo(Activity a) {
-        activity = a;
-    }
-
-    public void addUserLogged(LoggedInUserView user) {
-        this.user = user;
-    }
 }

@@ -18,10 +18,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.List;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
+import pt.vow.data.model.Commentary;
 import pt.vow.ui.VOW;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModel;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModelFactory;
@@ -58,7 +60,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.constraintLayoutFeed.setBackgroundResource(R.drawable.bg_activity_not_available);
         }
 
-        holder.activityName.setText(holder.itemView.getContext().getString(R.string.prompt_name) + " " + activityList.get(position).getName());
+        holder.activityName.setText(activityList.get(position).getName());
 
         if (activityList.get(position).getImage() != null) {
             byte[] img = activityList.get(position).getImage().getImageBytes();
@@ -69,8 +71,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.duration.setVisibility(View.GONE);
             holder.activityImage.setImageBitmap(bitmap);
         } else {
+            String finalD = showTime(activityList.get(position).getTime());
             holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) + " " + activityList.get(position).getOwner());
-            holder.time.setText(holder.itemView.getContext().getString(R.string.date) + " " + activityList.get(position).getTime());
+            holder.time.setText(holder.itemView.getContext().getString(R.string.date) + " " + finalD);
             holder.duration.setText(holder.itemView.getContext().getString(R.string.duration) + " " + activityList.get(position).getDurationInMinutes() + " minutes");
         }
 
@@ -91,10 +94,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         return activityList.size();
     }
+
     @Override
     public long getItemId(int position) {
         return position;
     }
+
     @Override
     public int getItemViewType(int position) {
         return position;
@@ -115,5 +120,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             activityImage = itemView.findViewById(R.id.activityImage);
             constraintLayoutFeed = itemView.findViewById(R.id.constraintLayoutFeed);
         }
+    }
+
+    private String showTime(String time) {
+        String[] dateTime = time.split(" ");
+        String[] hours = dateTime[3].split(":");
+
+        String h = hours[0] + ":" + hours[1] + " " +dateTime[4];
+        String d = dateTime[1].split(",")[0] + "/" + dateTime[0] + "/" + dateTime[2];
+        String finalD = d + " " + h;
+
+        return finalD;
     }
 }

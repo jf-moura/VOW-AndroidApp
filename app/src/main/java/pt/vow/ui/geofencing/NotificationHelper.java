@@ -53,12 +53,12 @@ public class NotificationHelper extends ContextWrapper {
 
     public void sendHighPriorityNotification(String title, String body, Class activityName) {
 
-        Intent intent = new Intent(this, activityName);
+    /*    Intent intent = new Intent(this, activityName);
         intent.setAction("PlacesProximityHandlerService2");
         intent.putExtra("Activity", activity);
         intent.putExtra("UserLogged",  user);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 267, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
+       PendingIntent pendingIntent = PendingIntent.getActivity(this, 267, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+ */
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
 //                .setContentTitle(title)
 //                .setContentText(body)
@@ -66,18 +66,11 @@ public class NotificationHelper extends ContextWrapper {
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.icon_foreground))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(body))
-                .setContentIntent(pendingIntent)
+              //  .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .build();
 
         NotificationManagerCompat.from(this).notify(new Random().nextInt(), notification);
     }
 
-    public void addActivityInfo(Activity a) {
-        activity = a;
-    }
-
-    public void addUserLogged(LoggedInUserView user) {
-        this.user = user;
-    }
 }

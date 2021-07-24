@@ -81,9 +81,7 @@ public class MapsGeofencing extends FragmentActivity implements OnMapReadyCallba
         //  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eiffel, 16));
 
         enableUserLocation();
-
         mMap.setOnMapLongClickListener(this);
-       // addGeofenceToActivities();
     }
 
     private void enableUserLocation() {
@@ -158,13 +156,14 @@ public class MapsGeofencing extends FragmentActivity implements OnMapReadyCallba
         mMap.clear();
         addMarker(latLng);
         addCircle(latLng, GEOFENCE_RADIUS);
-        addGeofence(latLng, GEOFENCE_RADIUS);
+        LatLng latLng1 = new LatLng(38.780510, -9.094971);
+        addGeofence(latLng1, GEOFENCE_RADIUS);
     }
 
     private void addGeofence(LatLng latLng, float radius) {
 
         Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
-        GeofencingRequest geofencingRequest = geofenceHelper.getGeofencingRequest(geofence);
+        GeofencingRequest geofencingRequest = geofenceHelper.getGeofencingRequest2(geofence);
         PendingIntent pendingIntent = geofenceHelper.getPendingIntent();
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             geofencingClient.addGeofences(geofencingRequest, pendingIntent)
@@ -207,10 +206,4 @@ public class MapsGeofencing extends FragmentActivity implements OnMapReadyCallba
         mMap.addCircle(circleOptions);
     }
 
-    private void addGeofenceToActivities() {
-        LatLng latLng = new LatLng(38.7804889, -9.0950107);
-        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
-        mMap.addMarker(markerOptions);
-        addGeofence(latLng, GEOFENCE_RADIUS);
-    }
 }

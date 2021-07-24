@@ -60,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         fromRegister = getIntent().getBooleanExtra("fromRegister", false);
 
         if (saveLogin && test && !fromRegister) {
+            progressBar.setVisibility(View.VISIBLE);
             usernameEditText.setText(loginPreferences.getString("username", ""));
             passwordEditText.setText(loginPreferences.getString("password", ""));
             rememberMe.setChecked(true);

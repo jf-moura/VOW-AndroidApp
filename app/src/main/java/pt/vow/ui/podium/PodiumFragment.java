@@ -87,15 +87,22 @@ public class PodiumFragment extends Fragment {
 
         getAllUsersViewModel.getAllUsersList().observe(getActivity(), users -> {
             usersList = users;
-            Collections.sort(usersList, new SortbyPoints());
+            List<UserInfo> auxUsersList = new LinkedList<>();
+            for(UserInfo u : usersList){
+                //only volunteers
+                if(u.getRole() == 0)
+                    auxUsersList.add(u);
+            }
+            usersList = auxUsersList;
+            Collections.sort(auxUsersList, new SortbyPoints());
             PodiumRecyclerViewAdapter adapter = new PodiumRecyclerViewAdapter(getContext(), usersList, user);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            if (users.size() >= 3) {
-                firstPlaceName.setText(users.get(0).getName());
-                secondPlaceName.setText(users.get(1).getName());
-                thirdPlaceName.setText(users.get(2).getName());
+            if (usersList.size() >= 3) {
+                firstPlaceName.setText(usersList.get(0).getName());
+                secondPlaceName.setText(usersList.get(1).getName());
+                thirdPlaceName.setText(usersList.get(2).getName());
 
                 Image userImage = usersList.get(0).getImage();
                 if (userImage != null) {
@@ -104,7 +111,7 @@ public class PodiumFragment extends Fragment {
                     firstPlaceImg.setImageBitmap(bitmap);
                 } else {
                     try {
-                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", users.get(0).getUsername());
+                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", usersList.get(0).getUsername());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -116,7 +123,7 @@ public class PodiumFragment extends Fragment {
                     secondPlaceImg.setImageBitmap(bitmap);
                 } else {
                     try {
-                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", users.get(1).getUsername());
+                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", usersList.get(1).getUsername());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -128,7 +135,7 @@ public class PodiumFragment extends Fragment {
                     thirdPlaceImg.setImageBitmap(bitmap);
                 } else {
                     try {
-                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", users.get(2).getUsername());
+                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", usersList.get(2).getUsername());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

@@ -151,10 +151,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     protected String end;
     private GeofencingClient geofencingClient;
     private GeofenceHelper geofenceHelper;
-    private String GEOFENCE_ID = "GEOFENCE_0912";
+    private String GEOFENCE_ID = "GEOFENCE_0912_";
     private float GEOFENCE_RADIUS = 200;
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
+    private List<Geofence> mGeofenceList;
 
     public MapsFragment() {
     }
@@ -164,6 +165,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                              ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_maps, container, false);
+        mGeofenceList = new ArrayList<>();
 
         getRouteCoordinatesViewModel = new ViewModelProvider(this, new GetRouteCoordViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetRouteCoordinatesViewModel.class);
@@ -175,7 +177,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         geofencingClient = LocationServices.getGeofencingClient(getActivity());
         geofenceHelper = new GeofenceHelper(getContext());
-        geofenceHelper.addUserLogged(user);
 
 
         try {
@@ -242,7 +243,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                         .build(getActivity());
                 someActivityResultLauncher.launch(intent);
-             //   startActivityForResult(intent, 100);
+                //   startActivityForResult(intent, 100);
             }
         });
 
@@ -251,6 +252,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
         mPermissionResult.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         root = v;
+
         return v;
     }
 
@@ -576,6 +578,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMap = googleMap;
 
         if (activitiesList != null) {
+
+            mGeofenceList = createGeofenceList();
+            addGeofence();
+
             for (Activity a : activitiesList) {
                 if (a.getCoordinates() != null && !a.getCoordinates().isEmpty()) {
 
@@ -744,7 +750,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         enableUserLocation();
 
-        addGeofenceToActivities();
+        //
+        // addGeofenceToActivities();
         // addGeofenceToActivities2();
         mMap.setOnMapLongClickListener(this::handleMapLongClick);
 
@@ -825,11 +832,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
 
-    private void addGeofence(LatLng latLng, float radius) {
-
-        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER |
-                Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
-        GeofencingRequest geofencingRequest = geofenceHelper.getGeofencingRequest(geofence);
+    private void addGeofence() {
+        //     Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER |
+        //           Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
+        //   List<Geofence> geo = createGeofenceList();
+        GeofencingRequest geofencingRequest = geofenceHelper.getGeofencingRequest(mGeofenceList);
         PendingIntent pendingIntent = geofenceHelper.getPendingIntent();
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             geofencingClient.addGeofences(geofencingRequest, pendingIntent)
@@ -857,24 +864,37 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
 
-    private void addGeofenceToActivities() {
-        //  for (int i = 0; i<activitiesList.size(); i++) {
-        if (!activitiesList.get(0).getCoordinates().isEmpty()) {
-            String[] aux = activitiesList.get(0).getCoordinates().split(",");
-            double lat = Double.parseDouble(aux[0]);
-            double lon = Double.parseDouble(aux[1]);
-            LatLng latLng = new LatLng(lat, lon);
-            geofenceHelper.addActivityInfo(activitiesList.get(0));
-            addGeofence(latLng, GEOFENCE_RADIUS);
+    private List createGeofenceList() {
+        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mGeofenceList = new ArrayList<>();
+            for (int i = 0; i < activitiesList.size(); i++) {
+                if (!activitiesList.get(i).getCoordinates().isEmpty() && activitiesList.size() != 0) {
+                    String[] aux = activitiesList.get(i).getCoordinates().split(",");
+                    double lat = Double.parseDouble(aux[0]);
+                    double lon = Double.parseDouble(aux[1]);
+                    LatLng latLng = new LatLng(lat, lon);
+                    // addCircle(latLng, GEOFENCE_RADIUS);
+
+                    Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID + activitiesList.get(i).getName(), latLng, GEOFENCE_RADIUS, Geofence.GEOFENCE_TRANSITION_ENTER |
+                            Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
+
+                    mGeofenceList.add(geofence);
+                    // addGeofence(latLng, GEOFENCE_RADIUS);
+                }
+            }
         }
-        //  }
+        return mGeofenceList;
     }
+
 
     private void handleMapLongClick(LatLng latLng) {
         //  mMap.clear();
-      //  addMarker(latLng);
-     //   addCircle(latLng, GEOFENCE_RADIUS);
-     //   addGeofence(latLng, GEOFENCE_RADIUS);
+        //  addMarker(latLng);
+           addCircle(latLng, GEOFENCE_RADIUS);
+        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, GEOFENCE_RADIUS, Geofence.GEOFENCE_TRANSITION_ENTER |
+                Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
+
+        mGeofenceList.add(geofence);
     }
 
     @Override
@@ -893,11 +913,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
 
-    private void addMarker(LatLng latLng) {
-        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
-        mMap.addMarker(markerOptions);
-    }
-
     private void addCircle(LatLng latLng, float radius) {
         CircleOptions circleOptions = new CircleOptions();
         circleOptions.center(latLng);
@@ -908,12 +923,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMap.addCircle(circleOptions);
     }
 
-    private void addGeofenceToActivities2() {
-        LatLng latLng = new LatLng(38.7804889, -9.0950107);
-        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
-        mMap.addMarker(markerOptions);
-        addGeofence(latLng, GEOFENCE_RADIUS);
-    }
 
     private void getActivitiesNearUser() {
         double lat = lastKnownLocation.getLatitude();
