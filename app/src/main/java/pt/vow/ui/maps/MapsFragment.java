@@ -95,7 +95,7 @@ import pt.vow.ui.profile.ActivitiesByUserView;
 import static android.app.Activity.RESULT_OK;
 
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
+public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private static final String TAG = MapsFragment.class.getSimpleName();
 
@@ -178,7 +178,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         geofencingClient = LocationServices.getGeofencingClient(getActivity());
         geofenceHelper = new GeofenceHelper(getContext());
 
-
         try {
             getDirections = getArguments().getBoolean("getDirections");
             end = getArguments().getString("destination");
@@ -250,7 +249,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (getDirections) {
             displayTrack(start, end);
         }
-        mPermissionResult.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        //mPermissionResult.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
         root = v;
 
         return v;
@@ -413,9 +413,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
+
     }
 
-    private ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
+    /*private ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             result -> {
                 if (result) {
@@ -423,7 +424,42 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 } else {
                     Log.e(TAG, "onActivityResult: PERMISSION DENIED");
                 }
-            });
+            });*/
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == FINE_LOCATION_ACCESS_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //We have the permission
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    mMap.setMyLocationEnabled(true);
+                }
+            } else {
+                //We do not have the permission..
+                //Ask for permission
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    //We need to show user a dialog for displaying why the permission is needed and then ask for the permission...
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
+                }
+            }
+        } else {
+            //We do not have the permission..
+        }
+        if (requestCode == BACKGROUND_LOCATION_ACCESS_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //We have the permission
+                Log.e(TAG, "onActivityResult: PERMISSION GRANTED");
+
+            } else {
+                //We do not have the permission..
+                Log.e(TAG, "onActivityResult: PERMISSION DENIED");
+            }
+        }
+    }
+
 
     /*@Override
     public void onRequestPermissionsResult(int requestCode,
@@ -581,7 +617,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
             mGeofenceList = createGeofenceList();
             if (!mGeofenceList.isEmpty())
-            addGeofence();
+                addGeofence();
 
             for (Activity a : activitiesList) {
                 if (a.getCoordinates() != null && !a.getCoordinates().isEmpty()) {
@@ -738,10 +774,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             }
         });
 
-        mMap.setOnInfoWindowClickListener(this::onInfoWindowClick);
+        mMap.setOnInfoWindowClickListener(this);
 
         // Prompt the user for permission.
         getLocationPermission();
+
+        if (Build.VERSION.SDK_INT >= 29) {
+            //We show a dialog and ask for permission
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
+        }
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -750,11 +791,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         getDeviceLocation();
 
         enableUserLocation();
-
-        //
-        // addGeofenceToActivities();
-        // addGeofenceToActivities2();
-        mMap.setOnMapLongClickListener(this::handleMapLongClick);
 
     }
 
@@ -885,33 +921,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             }
         }
         return mGeofenceList;
-    }
-
-
-    private void handleMapLongClick(LatLng latLng) {
-        //  mMap.clear();
-        //  addMarker(latLng);
-           addCircle(latLng, GEOFENCE_RADIUS);
-        Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, GEOFENCE_RADIUS, Geofence.GEOFENCE_TRANSITION_ENTER |
-                Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
-
-        mGeofenceList.add(geofence);
-    }
-
-    @Override
-    public void onMapLongClick(LatLng latLng) {
-
-        //We need background permission
-        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            handleMapLongClick(latLng);
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
-                //We show a dialog and ask for permission
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
-            } else {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
-            }
-        }
     }
 
     private void addCircle(LatLng latLng, float radius) {
