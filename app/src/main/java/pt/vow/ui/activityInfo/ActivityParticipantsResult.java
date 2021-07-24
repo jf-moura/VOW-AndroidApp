@@ -8,11 +8,11 @@ public class ActivityParticipantsResult {
     @Nullable
     private Integer error;
 
-    ActivityParticipantsResult(@Nullable Integer error) {
+    public ActivityParticipantsResult(@Nullable Integer error) {
         this.error = error;
     }
 
-    ActivityParticipantsResult(@Nullable ActivityParticipantsView success) {
+    public ActivityParticipantsResult(@Nullable ActivityParticipantsView success) {
         this.success = success;
     }
 

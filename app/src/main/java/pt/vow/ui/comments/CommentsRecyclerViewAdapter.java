@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +27,7 @@ import pt.vow.ui.VOW;
 import pt.vow.ui.activityInfo.ActivityInfoActivity;
 import pt.vow.ui.activityInfo.GetRatingViewModel;
 import pt.vow.ui.activityInfo.GetRatingViewModelFactory;
+import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.login.LoggedInUserView;
 
 public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRecyclerViewAdapter.ViewHolder> {
@@ -33,9 +35,17 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
     List<Commentary> commentList;
     LoggedInUserView user;
     Activity activity;
-    ActivityInfoActivity mActivity;
+    AppCompatActivity mActivity;
 
     public CommentsRecyclerViewAdapter(Context context, ActivityInfoActivity mActivity, List<Commentary> commentList, LoggedInUserView user, Activity activity) {
+        this.context = context;
+        this.commentList = commentList;
+        this.user = user;
+        this.activity = activity;
+        this.mActivity = mActivity;
+    }
+
+    public CommentsRecyclerViewAdapter(Context context, EnrollActivity mActivity, List<Commentary> commentList, LoggedInUserView user, Activity activity) {
         this.context = context;
         this.commentList = commentList;
         this.user = user;

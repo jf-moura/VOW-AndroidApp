@@ -23,6 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -51,7 +52,9 @@ import java.util.List;
 
 import pt.vow.R;
 import pt.vow.databinding.FragmentNewActivityMapBinding;
+import pt.vow.ui.feed.GetActivitiesViewModel;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.profile.GetMyActivitiesViewModel;
 
 import static android.app.Activity.RESULT_OK;
 

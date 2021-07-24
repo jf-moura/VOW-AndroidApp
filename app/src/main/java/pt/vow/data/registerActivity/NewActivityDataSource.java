@@ -40,8 +40,4 @@ public class NewActivityDataSource {
         }
     }
 
-
-    public void deleteActivity() {
-        // TODO: revoke activity
-    }
 }

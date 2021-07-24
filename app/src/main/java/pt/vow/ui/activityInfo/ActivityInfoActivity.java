@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
@@ -34,7 +35,12 @@ import pt.vow.ui.comments.GetActCommentsViewModelFactory;
 import pt.vow.ui.comments.RegisterCommentResult;
 import pt.vow.ui.comments.RegisterCommentViewModel;
 import pt.vow.ui.comments.RegisterCommentViewModelFactory;
+import pt.vow.ui.confimParticipants.ConfirmPartRecyclerViewAdapter;
 import pt.vow.ui.confimParticipants.ConfirmParticipantsActivity;
+import pt.vow.ui.confimParticipants.ConfirmParticipantsViewModel;
+import pt.vow.ui.confimParticipants.ConfirmParticipantsViewModelFactory;
+import pt.vow.ui.confimParticipants.ParticipantsConfirmedViewModel;
+import pt.vow.ui.confimParticipants.ParticipantsConfirmedViewModelFactory;
 import pt.vow.ui.disableActivity.DeleteActivityViewModel;
 import pt.vow.ui.disableActivity.DeleteActivityViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
@@ -67,6 +73,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -83,18 +91,21 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private ImageButton cancelEditNumPart, cancelEditActName, cancelEditDuration, cancelEditAddress, cancelEditDescription;
     private TimePicker editTextDuration;
     private FloatingActionButton camera;
-    private Button submitBttn, saveUpdateBttn, postCommentBttn, addImageBttn, checkPartBttn;
+    private Button submitBttn, saveUpdateBttn, postCommentBttn, addImageBttn;
     private EditText editTextComment;
     private RatingBar ratingBar;
     private ImageView activityImage;
 
     private LoggedInUserView user;
     private Activity activity;
+    private List<String> confirmedPart;
+    private List<String> participantsList;
     private GetRatingViewModel getRatingViewModel;
     private SetRatingViewModel setRatingViewModel;
     private UploadImageViewModel uploadImageViewModel;
     private DeleteActivityViewModel deleteActivityViewModel;
     private ActivityParticipantsViewModel actParticipantsViewModel;
+    private ParticipantsConfirmedViewModel participantsConfirmedViewModel;
     private double totalRate;
     private String durationInMinutes, date;
     private Uri imageUri;
@@ -106,7 +117,6 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private RegisterCommentViewModel registerCommentViewModel;
     private GetActCommentsViewModel getActCommentsViewModel;
 
-    private Observer<GetActCommentsResult> actCommentsObs;
     private List<Commentary> commentaryList;
     private RecyclerView actCommentsRecyclerView;
     private UpdateActivityViewModel updateActivityViewModel;
@@ -178,11 +188,9 @@ public class ActivityInfoActivity extends AppCompatActivity {
         deleteActBttn = findViewById(R.id.deleteActBttn);
         addImageBttn = findViewById(R.id.addImage);
         camera = findViewById(R.id.camera);
-        //imageType = findViewById(R.id.imageViewType2);
         activityImage = findViewById(R.id.activityImageInfo);
         postCommentBttn = findViewById(R.id.buttonPostComment);
         actCommentsRecyclerView = findViewById(R.id.comments_recycler_view);
-        //checkPartBttn = findViewById(R.id.checkPartBttn);
         textViewConfirmPart = findViewById(R.id.textViewConfirmPart);
 
         // showImageType();
@@ -237,6 +245,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         }
 
         actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
+            participantsList = participants;
             textPartNum.setText(participants.size() + "/" + activity.getParticipantNum());
         });
 
@@ -356,6 +365,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
         getActCommentsViewModel.getActCommentsList().observe(this, comments -> {
             commentaryList = comments;
+            if (!comments.isEmpty())
+                actCommentsRecyclerView.setVisibility(View.VISIBLE);
             Collections.sort(commentaryList, new SortbyTimestamp());
             CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(getApplicationContext(), mActivity, commentaryList, user, activity);
             actCommentsRecyclerView.setAdapter(adapter);
@@ -368,6 +379,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 Intent intent = new Intent(ActivityInfoActivity.this, ConfirmParticipantsActivity.class);
                 intent.putExtra("UserLogged", user);
                 intent.putExtra("Activity", activity);
+                intent.putExtra("Participants", (Serializable) participantsList);
+                intent.putExtra("ConfirmedParticipants", (Serializable) confirmedPart);
                 startActivity(intent);
             }
         });
@@ -499,6 +512,19 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
                 someActivityResultLauncher.launch(intent);
             }
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        participantsConfirmedViewModel = new ViewModelProvider(this, new ParticipantsConfirmedViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(ParticipantsConfirmedViewModel.class);
+        participantsConfirmedViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+
+        participantsConfirmedViewModel.getParticipantsList().observe(this, participantsConfirmed -> {
+            confirmedPart = participantsConfirmed;
         });
 
     }
@@ -694,7 +720,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
     }
 
     private int getTimeStamp(Commentary a) {
-        String[] dateTime = a.getLastModificationTime().split(" ");
+        String[] dateTime = a.getCreationTime().split(" ");
         String[] hours = dateTime[3].split(":");
 
         Calendar beginTime = Calendar.getInstance();

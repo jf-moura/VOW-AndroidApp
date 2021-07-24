@@ -29,8 +29,8 @@ public class ActivityParticipantsRepository {
         this.participants = participants;
     }
 
-    public Result<ActivityParticipantsView> getParticipants(String username, String tokenID, String owner, String activityID) {
-        Result<ActivityParticipantsView> result = dataSource.getActParticipants(username, tokenID, owner, activityID);
+    public Result<ActivityParticipantsView> getParticipants(String username, String tokenID, boolean presetOnly, String owner, String activityID) {
+        Result<ActivityParticipantsView> result = dataSource.getActParticipants(username, tokenID, presetOnly, owner, activityID);
         if (result instanceof Result.Success) {
            setParticipants(((Result.Success<ActivityParticipantsView>) result).getData());
         }

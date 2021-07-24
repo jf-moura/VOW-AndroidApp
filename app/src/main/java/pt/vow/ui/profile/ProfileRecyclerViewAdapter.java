@@ -64,10 +64,17 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ActivityInfoActivity.class);
-                intent.putExtra("Activity", activityList.get(position));
-                intent.putExtra("UserLogged", user);
-                context.startActivity(intent);
+                if (activityList.get(position).getStatus()) {
+                    Intent intent = new Intent(context, ActivityInfoActivity.class);
+                    intent.putExtra("Activity", activityList.get(position));
+                    intent.putExtra("UserLogged", user);
+                    context.startActivity(intent);
+                } else {
+                    Intent intent = new Intent(context, PopRestoreActivity.class);
+                    intent.putExtra("Activity", activityList.get(position));
+                    intent.putExtra("UserLogged", user);
+                    context.startActivity(intent);
+                }
             }
         });
     }

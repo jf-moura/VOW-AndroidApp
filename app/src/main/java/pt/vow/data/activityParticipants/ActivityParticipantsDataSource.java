@@ -22,8 +22,8 @@ public class ActivityParticipantsDataSource {
         this.service = retrofit.create(ApiActivityParticipants.class);
     }
 
-    public Result<ActivityParticipantsView> getActParticipants(String username, String tokenID, String owner, String activityid) {
-        Call<List<String>> getActParticipantsCall = service.getActivityParticipants(username, tokenID, owner, activityid);
+    public Result<ActivityParticipantsView> getActParticipants(String username, String tokenID, Boolean presentOnly, String owner, String activityid) {
+        Call<List<String>> getActParticipantsCall = service.getActivityParticipants(username, tokenID, presentOnly, owner, activityid);
         try {
             Response<List<String>> response = getActParticipantsCall.execute();
             if (response.isSuccessful()) {

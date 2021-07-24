@@ -10,6 +10,7 @@ import android.provider.CalendarContract;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,26 +22,46 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import pt.vow.R;
 import pt.vow.data.model.Activity;
+import pt.vow.data.model.Commentary;
 import pt.vow.ui.VOW;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModel;
 import pt.vow.ui.activityInfo.ActivityParticipantsViewModelFactory;
+import pt.vow.ui.comments.CommentsRecyclerViewAdapter;
+import pt.vow.ui.comments.GetActCommentsViewModel;
+import pt.vow.ui.comments.GetActCommentsViewModelFactory;
+import pt.vow.ui.comments.RegisterCommentResult;
+import pt.vow.ui.comments.RegisterCommentViewModel;
+import pt.vow.ui.comments.RegisterCommentViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.image.Image;
+import pt.vow.ui.mainPage.MainPageOrganization;
 import pt.vow.ui.maps.GetRouteCoordResult;
 import pt.vow.ui.maps.GetRouteCoordViewModelFactory;
 import pt.vow.ui.maps.GetRouteCoordinatesViewModel;
 import pt.vow.ui.maps.MapsFragment;
 import pt.vow.ui.profile.ActivitiesByUserView;
+import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 
 public class EnrollActivity extends AppCompatActivity {
     private TextView textViewDuration, textViewNumPart, textViewTime, textViewActName, textViewActOwner, textViewAddress;
-    private Button enrollButton, directionsButton;
+    private Button enrollButton, directionsButton, postCommentBttn;
     private ImageView activityImage;
+    private RecyclerView actCommentsRecyclerView;
+    private EditText editTextComment;
 
     private EnrollViewModel enrollViewModel;
+    private RegisterCommentViewModel registerCommentViewModel;
+    private GetActCommentsViewModel getActCommentsViewModel;
     private CancelEnrollViewModel cancelEnrollViewModel;
     private GetRouteCoordinatesViewModel getRouteCoordinatesViewModel;
     private LoggedInUserView user;
@@ -51,6 +72,7 @@ public class EnrollActivity extends AppCompatActivity {
     private EnrollActivity mActivity;
     private ImageView imageType;
     private String dest;
+    private List<Commentary> commentaryList;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +90,10 @@ public class EnrollActivity extends AppCompatActivity {
         enrollButton = findViewById(R.id.enrollButton);
         directionsButton = findViewById(R.id.btnDirections);
 
+        editTextComment = findViewById(R.id.editTextComment);
+        postCommentBttn = findViewById(R.id.buttonPostComment);
+        actCommentsRecyclerView = findViewById(R.id.comments_recycler_view);
+
         imageType = findViewById(R.id.imageViewType);
 
         dest = "";
@@ -78,7 +104,10 @@ public class EnrollActivity extends AppCompatActivity {
                 .get(CancelEnrollViewModel.class);
         actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(ActivityParticipantsViewModel.class);
-
+        registerCommentViewModel = new ViewModelProvider(this, new RegisterCommentViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(RegisterCommentViewModel.class);
+        getActCommentsViewModel = new ViewModelProvider(this, new GetActCommentsViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(GetActCommentsViewModel.class);
         getRouteCoordinatesViewModel = new ViewModelProvider(this, new GetRouteCoordViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetRouteCoordinatesViewModel.class);
 
@@ -103,20 +132,27 @@ public class EnrollActivity extends AppCompatActivity {
                 }
             }
         }
-        if (aux != null) { //it means that user already joined the activity
+        if (aux != null) //it means that user already joined the activity
             enrollButton.setText(getResources().getString(R.string.unjoin));
-        }
+        else
+            enrollButton.setText(getResources().getString(R.string.join));
 
         showImageType();
 
         actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+        getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
 
         actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
             textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + " </b>" + participants.size() + "/" + activity.getParticipantNum()));
-            if (participants.size() == Integer.parseInt(activity.getParticipantNum())) {
-                enrollButton.setEnabled(false);
+            if (activitiesList == null) {
+                for (String part : participants)
+                    if (part.equals(user.getUsername()))
+                        enrollButton.setText(getResources().getString(R.string.unjoin));
+
+                if (participants.size() == Integer.parseInt(activity.getParticipantNum()) && aux != null) {
+                    enrollButton.setEnabled(false);
+                }
             }
-            //else enrollButton.setEnabled(true);
         });
 
         Image actImage = activity.getImage();
@@ -126,6 +162,57 @@ public class EnrollActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             activityImage.setImageBitmap(bitmap);
         }
+
+        registerCommentViewModel.getRegisterCommentResult().observe(this, new Observer<RegisterCommentResult>() {
+            @Override
+            public void onChanged(RegisterCommentResult registerCommentResult) {
+                if (registerCommentResult == null) {
+                    return;
+                }
+                if (registerCommentResult.getError() != null) {
+                    showActionFailed(registerCommentResult.getError());
+                    return;
+                }
+                if (registerCommentResult.getSuccess() != null) {
+                    Toast.makeText(getApplicationContext(), R.string.register_comment, Toast.LENGTH_SHORT).show();
+                    editTextComment.setText("");
+                    getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+                }
+            }
+        });
+
+        postCommentBttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //register the comment
+                String comment = editTextComment.getText().toString();
+                registerCommentViewModel.registerComment(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId(), comment);
+                getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+            }
+        });
+
+        class SortbyTimestamp implements Comparator<Commentary> {
+
+            // Used for sorting in ascending order of
+            // timestamp
+            public int compare(Commentary a, Commentary b) {
+                int ca = getTimeStamp(a);
+                int cb = getTimeStamp(b);
+
+                return cb - ca;
+            }
+        }
+
+        getActCommentsViewModel.getActCommentsList().observe(this, comments -> {
+            commentaryList = comments;
+            if (!comments.isEmpty())
+                actCommentsRecyclerView.setVisibility(View.VISIBLE);
+            Collections.sort(commentaryList, new SortbyTimestamp());
+            CommentsRecyclerViewAdapter adapter = new CommentsRecyclerViewAdapter(getApplicationContext(), mActivity, commentaryList, user, activity);
+            actCommentsRecyclerView.setAdapter(adapter);
+            actCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        });
+
 
         enrollViewModel.getEnrollResult().observe(this, new Observer<EnrollResult>() {
             @Override
@@ -207,7 +294,6 @@ public class EnrollActivity extends AppCompatActivity {
     }
 
 
-
     private void showGetActivitiesFailed(@StringRes Integer errorString) {
         Toast.makeText(this.getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
@@ -275,6 +361,63 @@ public class EnrollActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private int getTimeStamp(Commentary a) {
+        String[] dateTime = a.getCreationTime().split(" ");
+        String[] hours = dateTime[3].split(":");
+
+        Calendar beginTime = Calendar.getInstance();
+
+        if (dateTime[4].equals("PM"))
+            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
+        else
+            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+
+        return (int) beginTime.getTimeInMillis();
+    }
+
+    private int monthToIntegerShort(String month) {
+        int result = 0;
+        switch (month) {
+            case "Jan":
+                result = 0;
+                break;
+            case "Fev":
+                result = 1;
+                break;
+            case "Mar":
+                result = 2;
+                break;
+            case "Apr":
+                result = 3;
+                break;
+            case "May":
+                result = 4;
+                break;
+            case "Jun":
+                result = 5;
+                break;
+            case "Jul":
+                result = 6;
+                break;
+            case "Aug":
+                result = 7;
+                break;
+            case "Sep":
+                result = 8;
+                break;
+            case "Oct":
+                result = 9;
+                break;
+            case "Nov":
+                result = 10;
+                break;
+            case "Dec":
+                result = 11;
+                break;
+        }
+        return result;
     }
 
 }

@@ -48,8 +48,6 @@ public class MapsGeofencing extends FragmentActivity implements OnMapReadyCallba
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
 
-    private GetActivitiesViewModel getActivitiesViewModel;
-    private List<Activity> activityList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

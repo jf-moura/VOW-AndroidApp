@@ -10,7 +10,7 @@ import retrofit2.http.Query;
 
 public interface ApiActivityParticipants {
     @GET("rest/get/participants")
-    Call<List<String>> getActivityParticipants(@Header("username") String username, @Header("tokenID") String tokenID, @Query("activityOwner") String owner,
+    Call<List<String>> getActivityParticipants(@Header("username") String username, @Header("tokenID") String tokenID, @Header("getPresentOnly") boolean presentOnly, @Query("activityOwner") String owner,
                                                @Query("activityID") String activityid);
 
 }

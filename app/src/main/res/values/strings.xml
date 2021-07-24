@@ -207,6 +207,9 @@
     <string name="check_website">Check our website!</string>
     <string name="username_already_used">Username or email already in use</string>
     <string name="activity_not_active">Activity Deactivated</string>
+    <string name="restore_activity">Want to restore this activity?</string>
+    <string name="restore_activity_failed">Couldn\'t restore this activity</string>
+    <string name="activity_restored">Activity was restored</string>
 
 
     <string-array name="filter">

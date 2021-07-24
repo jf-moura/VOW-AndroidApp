@@ -29,7 +29,6 @@ public class NewActivityRepository {
 
     public void deleteActivity() {
         user = null;
-        dataSource.deleteActivity();
     }
 
     private void setRegisteredActivity(RegisteredActivityView user) {

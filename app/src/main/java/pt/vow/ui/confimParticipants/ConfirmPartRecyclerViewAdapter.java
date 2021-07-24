@@ -18,13 +18,15 @@ import pt.vow.R;
 public class ConfirmPartRecyclerViewAdapter extends RecyclerView.Adapter<ConfirmPartRecyclerViewAdapter.ViewHolder> {
     Context context;
     List<String> participantsList;
+    List<Integer> participantsAlreadyConf;
     List<String> participantsConfirmedList;
 
 
-    public ConfirmPartRecyclerViewAdapter(Context context, List<String> participantsList, List<String> participantsConfirmedList) {
+    public ConfirmPartRecyclerViewAdapter(Context context, List<String> participantsList, List<Integer> participantsAlreadyConf, List<String> participantsConfirmedList) {
         this.context = context;
         this.participantsList = participantsList;
         this.participantsConfirmedList = participantsConfirmedList;
+        this.participantsAlreadyConf = participantsAlreadyConf;
     }
 
     @NonNull
@@ -39,15 +41,21 @@ public class ConfirmPartRecyclerViewAdapter extends RecyclerView.Adapter<Confirm
     public void onBindViewHolder(@NonNull ConfirmPartRecyclerViewAdapter.ViewHolder holder, int position) {
         holder.textViewPartName.setText(participantsList.get(position));
 
-        holder.checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.checkBox.isChecked())
-                    participantsConfirmedList.add(participantsList.get(position));
-                else
-                    participantsConfirmedList.remove(participantsList.get(position));
-            }
-        });
+        if (participantsAlreadyConf.get(position) == 1) {
+            holder.checkBox.setChecked(true);
+            holder.checkBox.setEnabled(false);
+        }
+        //else {
+            holder.checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (holder.checkBox.isChecked())
+                        participantsConfirmedList.add(participantsList.get(position));
+                    else
+                        participantsConfirmedList.remove(participantsList.get(position));
+                }
+            });
+        //}
     }
 
     @Override

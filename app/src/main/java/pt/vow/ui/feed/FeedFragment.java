@@ -140,6 +140,8 @@ public class FeedFragment extends Fragment {
         getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
         activitiesViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesViewModel.class);
 
+        activitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
+
         getActivitiesByUserViewModel.getActivitiesList().observe(this, activitiesByUser -> {
             enrolledActivities = activitiesByUser;
         });
@@ -149,47 +151,48 @@ public class FeedFragment extends Fragment {
 
 
         activitiesViewModel.getActivitiesList().observe(getActivity(), activities -> {
-            activityList = activities;
-            if (activities.size() == 0)
-                activitiesTextView.setText(R.string.no_activities_available);
-            else if (activities != null) {
-                aux = new HashMap<>();
-                for (Activity a : activities) {
-                    long currentTime = Calendar.getInstance().getTimeInMillis();
+            if (activityList != activities) {
+                activityList = activities;
+                if (activities.size() == 0)
+                    activitiesTextView.setText(R.string.no_activities_available);
+                else if (activities != null) {
+                    aux = new HashMap<>();
+                    for (Activity a : activities) {
+                        long currentTime = Calendar.getInstance().getTimeInMillis();
 
-                    String[] dateTime = a.getTime().split(" ");
-                    String[] hours = dateTime[3].split(":");
+                        String[] dateTime = a.getTime().split(" ");
+                        String[] hours = dateTime[3].split(":");
 
-                    Calendar beginTime = Calendar.getInstance();
-                    if (dateTime[4].equals("PM"))
-                        beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
-                    else
-                        beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+                        Calendar beginTime = Calendar.getInstance();
+                        if (dateTime[4].equals("PM"))
+                            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12, Integer.valueOf(hours[1]));
+                        else
+                            beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
 
-                    long startMillis = beginTime.getTimeInMillis();
-                    if (startMillis > currentTime) {
-                        aux.put(a.getId(), a);
-                        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
-                        //TODO: isto funciona?
-                        actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
-                            a.addParticipants(participants);
-                        });
-                        if (a.getImage() == null) {
-                            try {
-                                downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getId());
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                        long startMillis = beginTime.getTimeInMillis();
+                        if (startMillis > currentTime) {
+                            aux.put(a.getId(), a);
+
+                            //if(a.getParticipants() == null)
+                            //actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
+
+                            if (a.getImage() == null) {
+                                try {
+                                    downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getId());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
+                    activityList = new ArrayList<>(aux.values());
+                    showFilteredAct(activityList);
+
+                    adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
                 }
-                activityList = new ArrayList<>(aux.values());
-                showFilteredAct(activityList);
-
-                adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
             }
         });
 
@@ -204,6 +207,10 @@ public class FeedFragment extends Fragment {
             }
             recyclerView.setAdapter(adapter);
         });
+
+        /*actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
+            a.addParticipants(participants);
+        });*/
     }
 
     @Override

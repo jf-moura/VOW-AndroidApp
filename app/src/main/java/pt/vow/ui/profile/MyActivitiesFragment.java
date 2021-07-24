@@ -41,8 +41,6 @@ public class MyActivitiesFragment extends Fragment {
     private List<Activity> myActivitiesList;
     private Map<String, Activity> aux;
 
-    private Observer<GetMyActivitiesResult> myActObs;
-
     private RelativeLayout relativeLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -60,7 +58,7 @@ public class MyActivitiesFragment extends Fragment {
         downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getMyActivitiesViewModel = new ViewModelProvider(getActivity()).get(GetMyActivitiesViewModel.class);
 
-        getMyActivitiesViewModel.getActivitiesResult().observeForever(myActObs = new Observer<GetMyActivitiesResult>() {
+        getMyActivitiesViewModel.getActivitiesResult().observe(getActivity(), new Observer<GetMyActivitiesResult>() {
             @Override
             public void onChanged(@Nullable GetMyActivitiesResult getActivitiesResult) {
                 if (getActivitiesResult == null) {
@@ -73,8 +71,8 @@ public class MyActivitiesFragment extends Fragment {
                     myActivitiesList = getActivitiesResult.getSuccess().getActivities();
                     if (myActivitiesList.size() == 0) {
                         relativeLayout.setVisibility(View.VISIBLE);
-                    }
-                    else if (myActivitiesList != null) {
+                        myActRecyclerView.setAdapter(null);
+                    } else if (myActivitiesList != null) {
                         aux = new HashMap<>();
                         for (Activity a : myActivitiesList) {
                             aux.put(a.getId(), a);
@@ -86,9 +84,11 @@ public class MyActivitiesFragment extends Fragment {
                                 }
                             }
                         }
-                        if (aux.isEmpty())
+                        if (aux.isEmpty()) {
                             relativeLayout.setVisibility(View.VISIBLE);
-                        else {
+                            myActRecyclerView.setAdapter(null);
+                        } else {
+                            relativeLayout.setVisibility(View.GONE);
                             List<Activity> activityList = new ArrayList<>(aux.values());
 
                             adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
@@ -115,10 +115,14 @@ public class MyActivitiesFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        getMyActivitiesViewModel.getActivities(user.getUsername(), user.getUsername(), user.getTokenID());
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        if (myActObs != null)
-            getMyActivitiesViewModel.getActivitiesResult().removeObserver(myActObs);
     }
 
     private void showGetActivitiesFailed(@StringRes Integer errorString) {

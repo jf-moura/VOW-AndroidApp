@@ -19,15 +19,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.cloud.storage.Acl;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import pt.vow.R;
 import pt.vow.data.model.UserInfo;
 import pt.vow.databinding.FragmentPodiumBinding;
 import pt.vow.ui.getAllUsers.GetAllUsersViewModel;
+import pt.vow.ui.image.Image;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.image.DownloadImageViewModel;
 
@@ -39,6 +46,7 @@ public class PodiumFragment extends Fragment {
     private LoggedInUserView user;
     private GetAllUsersViewModel getAllUsersViewModel;
     private List<UserInfo> usersList;
+    private Map<String, Image> images;
     private ShapeableImageView firstPlaceImg, secondPlaceImg, thirdPlaceImg;
     private TextView firstPlaceName, secondPlaceName, thirdPlaceName;
     private ImageView imageViewInfo;
@@ -53,6 +61,8 @@ public class PodiumFragment extends Fragment {
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
         getAllUsersViewModel = new ViewModelProvider(getActivity()).get(GetAllUsersViewModel.class);
+
+        images = new HashMap<>();
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);
@@ -78,43 +88,65 @@ public class PodiumFragment extends Fragment {
         getAllUsersViewModel.getAllUsersList().observe(getActivity(), users -> {
             usersList = users;
             Collections.sort(usersList, new SortbyPoints());
-            if (usersList.size() >= 3) {
-                firstPlaceName.setText(users.get(0).getName());
-                secondPlaceName.setText(users.get(1).getName());
-                thirdPlaceName.setText(users.get(2).getName());
-                /*for (int i = 0; i < 3; i++) {
-                    //TODO: get images
-                    if (image != null) {
-                        byte[] img = image.getImageBytes();
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                        firstPlaceImg.setImageBitmap(bitmap);
-                    } else {
-                        try {
-                            downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", usersList.get(i).getName());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }*/
-            }
             PodiumRecyclerViewAdapter adapter = new PodiumRecyclerViewAdapter(getContext(), usersList, user);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+            if (users.size() >= 3) {
+                firstPlaceName.setText(users.get(0).getName());
+                secondPlaceName.setText(users.get(1).getName());
+                thirdPlaceName.setText(users.get(2).getName());
+
+                Image userImage = usersList.get(0).getImage();
+                if (userImage != null) {
+                    byte[] img = userImage.getImageBytes();
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                    firstPlaceImg.setImageBitmap(bitmap);
+                } else {
+                    try {
+                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", users.get(0).getUsername());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                userImage = usersList.get(1).getImage();
+                if (userImage != null) {
+                    byte[] img = userImage.getImageBytes();
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                    secondPlaceImg.setImageBitmap(bitmap);
+                } else {
+                    try {
+                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", users.get(1).getUsername());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                userImage = usersList.get(2).getImage();
+                if (userImage != null) {
+                    byte[] img = userImage.getImageBytes();
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+                    thirdPlaceImg.setImageBitmap(bitmap);
+                } else {
+                    try {
+                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", users.get(2).getUsername());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         });
 
-        /*downloadImageViewModel.getImage().observe(getActivity(), image -> {
-            if (usersList != null) {
-                byte[] img = image.getImageBytes();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                String imgOwner = image.getObjName();
-                if (imgOwner.equals(usersList.get(0).getUsername()))
-                    firstPlaceImg.setImageBitmap(bitmap);
-                else if (imgOwner.equals(usersList.get(1).getUsername()))
-                    secondPlaceImg.setImageBitmap(bitmap);
-                else if (imgOwner.equals(usersList.get(2).getUsername()))
-                    thirdPlaceImg.setImageBitmap(bitmap);
-            }
-        });*/
+        downloadImageViewModel.getImage().observe(getActivity(), image -> {
+            String objName = image.getObjName();
+            byte[] img = image.getImageBytes();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+            if (objName.equals(usersList.get(0).getUsername()))
+                firstPlaceImg.setImageBitmap(bitmap);
+            else if (objName.equals(usersList.get(1).getUsername()))
+                secondPlaceImg.setImageBitmap(bitmap);
+            else if (objName.equals(usersList.get(2).getUsername()))
+                thirdPlaceImg.setImageBitmap(bitmap);
+        });
 
         imageViewInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +156,12 @@ public class PodiumFragment extends Fragment {
         });
 
         return root;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getAllUsersViewModel.getAllUsers(user.getUsername(), user.getTokenID());
     }
 
     @Override

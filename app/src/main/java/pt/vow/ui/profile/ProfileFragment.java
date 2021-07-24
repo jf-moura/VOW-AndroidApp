@@ -118,8 +118,8 @@ public class ProfileFragment extends Fragment {
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
-        getActivitiesByUserViewModel.getActivities(user.getUsername(), user.getUsername(), user.getTokenID());
-        getMyActivitiesViewModel.getActivities(user.getUsername(), user.getUsername(), user.getTokenID());
+        getActivitiesByUserViewModel.getActivities(user.getUsername(),user.getUsername(), String.valueOf(user.getTokenID()));
+        getMyActivitiesViewModel.getActivities(user.getUsername(),user.getUsername(), String.valueOf(user.getTokenID()));
 
         profileImage = root.findViewById(R.id.profileImage);
         aboutMeTextView = root.findViewById(R.id.aboutMeTextView);

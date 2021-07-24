@@ -497,8 +497,10 @@
                 android:layout_marginBottom="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/durationLayout">
+                app:layout_constraintTop_toBottomOf="@+id/durationLayout"
+                app:layout_constraintVertical_bias="0.0">
 
                 <TextView
                     android:id="@+id/textViewRating"
@@ -539,19 +541,18 @@
 
                 <EditText
                     android:id="@+id/editTextComment"
-                    android:layout_width="300dp"
+                    android:layout_width="270dp"
                     android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/bg_comment_box"
                     android:ems="10"
                     android:gravity="top"
                     android:hint="@string/add_comment"
                     android:inputType="textPersonName"
                     android:padding="7dp"
-                    app:layout_constraintEnd_toEndOf="@+id/rating_bar"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/rating_bar"
-                    app:layout_constraintTop_toBottomOf="@+id/rating_bar" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/comments_recycler_view" />
 
                 <Button
                     android:id="@+id/submitBttn"
@@ -567,16 +568,18 @@
 
                 <Button
                     android:id="@+id/buttonPostComment"
-                    android:layout_width="100dp"
-                    android:layout_height="42dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="30dp"
+                    android:background="@color/teal_200"
                     android:text="@string/post"
                     android:textSize="10sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/editTextComment"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="@+id/editTextComment"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextComment"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.05"
+                    app:layout_constraintStart_toEndOf="@+id/editTextComment"
+                    app:layout_constraintTop_toBottomOf="@+id/comments_recycler_view"
                     app:layout_constraintVertical_bias="0.0" />
 
                 <Button
@@ -584,9 +587,9 @@
                     android:layout_width="97dp"
                     android:layout_height="48dp"
                     android:layout_marginEnd="10dp"
+                    android:enabled="false"
                     android:text="@string/save_changes"
                     android:textSize="9sp"
-                    android:enabled="false"
                     android:visibility="gone"
                     app:layout_constraintEnd_toStartOf="@+id/deleteActBttn"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -608,11 +611,10 @@
                     android:layout_width="377dp"
                     android:layout_height="188dp"
                     android:layout_marginTop="20dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/buttonPostComment"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintTop_toBottomOf="@+id/rating_bar" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

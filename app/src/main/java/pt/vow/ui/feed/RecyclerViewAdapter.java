@@ -54,7 +54,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
         if (activityList.get(position).getParticipants() != null && String.valueOf(activityList.get(position).getParticipants().size()).equals(activityList.get(position).getParticipantNum())) {
             holder.constraintLayoutFeed.setBackgroundResource(R.drawable.bg_activity_not_available);
         }

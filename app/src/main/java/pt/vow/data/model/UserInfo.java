@@ -1,5 +1,7 @@
 package pt.vow.data.model;
 
+import pt.vow.ui.image.Image;
+
 public class UserInfo {
     String name;
     String username;
@@ -13,6 +15,7 @@ public class UserInfo {
     Integer role;
     Boolean status;
     Integer score;
+    Image image;
 
 
     public UserInfo(String name, String username, String email, String phoneNumber, String dateBirth, String bio, String website, String creationTime, Boolean visibility, Integer role, Boolean status,  Integer score) {
@@ -28,6 +31,7 @@ public class UserInfo {
         this.role = role;
         this.status = status;
         this.score = score;
+        this.image = null;
     }
 
     public String getName() {
@@ -76,5 +80,13 @@ public class UserInfo {
 
     public Integer getScore() {
         return score;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public Image getImage() {
+        return image;
     }
 }
