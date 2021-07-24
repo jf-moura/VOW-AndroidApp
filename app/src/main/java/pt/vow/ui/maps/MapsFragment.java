@@ -580,6 +580,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (activitiesList != null) {
 
             mGeofenceList = createGeofenceList();
+            if (!mGeofenceList.isEmpty())
             addGeofence();
 
             for (Activity a : activitiesList) {

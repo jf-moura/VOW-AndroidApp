@@ -221,8 +221,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
         }
         // Activity hasn't occured or the user is the owner of the activity
         if (startMillis >= currentTime.getTimeInMillis() || activity.getOwner().equals(user.getUsername())) {
-            ratingBar.setVisibility(View.INVISIBLE);
-            submitBttn.setVisibility(View.INVISIBLE);
+            ratingBar.setVisibility(View.GONE);
+            submitBttn.setVisibility(View.GONE);
         } else {
             getRatingViewModel.getRating(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
 

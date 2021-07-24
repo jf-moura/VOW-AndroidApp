@@ -84,6 +84,10 @@ public class RegisterActivity extends AppCompatActivity {
                         textViewDateBirth.setVisibility(view.GONE);
                         isOrganization = true;
                         editTextPhoneNumber.setHint(R.string.phone_number_org);
+                        registerViewModel.registerDataChangedOrganization(editTextName.getText().toString(),
+                                editTextUsername.getText().toString(), editTextEmail.getText().toString(),
+                                editTextPassword.getText().toString(), editTextConfirmation.getText().toString(),
+                                editTextPhoneNumber.getText().toString(), editTextOrgWebsite.getText().toString());
                         break;
 
                     case 1:
@@ -92,6 +96,9 @@ public class RegisterActivity extends AppCompatActivity {
                         textViewDateBirth.setVisibility(view.VISIBLE);
                         isOrganization = false;
                         editTextPhoneNumber.setHint(R.string.phone_number);
+                        registerViewModel.registerDataChangedPerson(editTextName.getText().toString(),
+                            editTextUsername.getText().toString(), editTextEmail.getText().toString(),
+                            editTextPassword.getText().toString(), editTextConfirmation.getText().toString(), editTextPhoneNumber.getText().toString());
                         break;
                 }
             }
@@ -131,6 +138,8 @@ public class RegisterActivity extends AppCompatActivity {
                     if (newActivityFormState.getWebsiteError() != null) {
                         editTextOrgWebsite.setError(getString(newActivityFormState.getWebsiteError()));
                     }
+                } else {
+                    editTextPhoneNumber.setError(null);
                 }
             }
         });
