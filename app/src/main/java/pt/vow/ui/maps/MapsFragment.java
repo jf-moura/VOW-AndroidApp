@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -275,9 +276,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getActivity().getMenuInflater().inflate(R.menu.current_place_menu, menu);
-        return true;
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.current_place_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -410,12 +412,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
+
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
             // Get the current location of the device and set the position of the map.
             getDeviceLocation();
             if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
                     Manifest.permission.ACCESS_BACKGROUND_LOCATION)
                     != PackageManager.PERMISSION_GRANTED)
-            mPermissionResult.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+                mPermissionResult.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         } else {
             mPermissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
             /*ActivityCompat.requestPermissions(getActivity(),
@@ -715,6 +720,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation();
+
+        // Prompt the user for permission.
+        getLocationPermission();
+
         //enableUserLocation();
 
 
@@ -831,7 +842,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mGeofenceList = new ArrayList<>();
             for (int i = 0; i < activitiesList.size(); i++) {
-                if (!activitiesList.get(i).getCoordinates().isEmpty() && activitiesList.size() != 0) {
+                if (!activitiesList.get(i).getCoordinates().isEmpty() && activitiesList.get(i).getStatus()) {
                     String[] aux = activitiesList.get(i).getCoordinates().split(",");
                     double lat = Double.parseDouble(aux[0]);
                     double lon = Double.parseDouble(aux[1]);
