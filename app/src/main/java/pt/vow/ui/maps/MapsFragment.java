@@ -122,18 +122,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     // location retrieved by the Fused Location Provider.
     private Location lastKnownLocation;
 
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int DEFAULT_ZOOM = 15;
 
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-
-    // Used for selecting the current place.
-    private static final int M_MAX_ENTRIES = 5;
-    private String[] likelyPlaceNames;
-    private String[] likelyPlaceAddresses;
-    private List[] likelyPlaceAttributions;
-    private LatLng[] likelyPlaceLatLngs;
 
     //marker with button
     private MapWrapperLayout mapWrapperLayout;
@@ -149,7 +141,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     //polyline object
     private List<Polyline> polylines = null;
     private Boolean getDirections;
-    private FragmentActivity mActivity;
+
     private View root;
     protected String start;
     protected String end;
@@ -158,7 +150,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private String GEOFENCE_ID = "GEOFENCE_0912_";
     private float GEOFENCE_RADIUS = 200;
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
-    private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
     private List<Geofence> mGeofenceList;
 
     public MapsFragment() {
@@ -275,133 +266,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         super.onSaveInstanceState(outState);
     }
 
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.current_place_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.option_get_place) {
-            showCurrentPlace();
-        }
-        return true;
-    }
-
-    /**
-     * Prompts the user to select the current place from a list of likely places, and shows the
-     * current place on the map - provided the user has granted location permission.
-     */
-    // [START maps_current_place_show_current_place]
-    private void showCurrentPlace() {
-        if (mMap == null) {
-            return;
-        }
-
-        if (locationPermissionGranted) {
-            // Use fields to define the data types to return.
-            List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG, Place.Field.ID, Place.Field.NAME);
-
-            // Use the builder to create a FindCurrentPlaceRequest.
-            FindCurrentPlaceRequest request =
-                    FindCurrentPlaceRequest.newInstance(placeFields);
-
-            // Get the likely places - that is, the businesses and other points of interest that
-            // are the best match for the device's current location.
-            @SuppressWarnings("MissingPermission") final Task<FindCurrentPlaceResponse> placeResult =
-                    placesClient.findCurrentPlace(request);
-            placeResult.addOnCompleteListener(new OnCompleteListener<FindCurrentPlaceResponse>() {
-                @Override
-                public void onComplete(@NonNull Task<FindCurrentPlaceResponse> task) {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        FindCurrentPlaceResponse likelyPlaces = task.getResult();
-
-                        // Set the count, handling cases where less than 5 entries are returned.
-                        int count;
-                        if (likelyPlaces.getPlaceLikelihoods().size() < M_MAX_ENTRIES) {
-                            count = likelyPlaces.getPlaceLikelihoods().size();
-                        } else {
-                            count = M_MAX_ENTRIES;
-                        }
-
-                        int i = 0;
-                        likelyPlaceNames = new String[count];
-                        likelyPlaceAddresses = new String[count];
-                        likelyPlaceAttributions = new List[count];
-                        likelyPlaceLatLngs = new LatLng[count];
-
-                        for (PlaceLikelihood placeLikelihood : likelyPlaces.getPlaceLikelihoods()) {
-                            // Build a list of likely places to show the user.
-                            likelyPlaceNames[i] = placeLikelihood.getPlace().getName();
-                            likelyPlaceAddresses[i] = placeLikelihood.getPlace().getAddress();
-                            likelyPlaceAttributions[i] = placeLikelihood.getPlace()
-                                    .getAttributions();
-                            likelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
-
-                            i++;
-                            if (i > (count - 1)) {
-                                break;
-                            }
-                        }
-
-                        // Show a dialog offering the user the list of likely places, and add a
-                        // marker at the selected place.
-                        MapsFragment.this.openPlacesDialog();
-                    } else {
-                        Log.e(TAG, "Exception: %s", task.getException());
-                    }
-                }
-            });
-        } else {
-            // The user has not granted permission.
-            Log.i(TAG, "The user did not grant location permission.");
-
-            // Add a default marker, because the user hasn't selected a place.
-            mMap.addMarker(new MarkerOptions()
-                    .title(getString(R.string.default_info_title))
-                    .position(defaultLocation)
-                    .snippet(getString(R.string.default_info_snippet)));
-
-            // Prompt the user for permission.
-            getLocationPermission();
-        }
-    }
-
-    private void openPlacesDialog() {
-        // Ask the user to choose the place where they are now.
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // The "which" argument contains the position of the selected item.
-                LatLng markerLatLng = likelyPlaceLatLngs[which];
-                String markerSnippet = likelyPlaceAddresses[which];
-                if (likelyPlaceAttributions[which] != null) {
-                    markerSnippet = markerSnippet + "\n" + likelyPlaceAttributions[which];
-                }
-
-                // Add a marker for the selected place, with an info window
-                // showing information about that place.
-                mMap.addMarker(new MarkerOptions()
-                        .title(likelyPlaceNames[which])
-                        .position(markerLatLng)
-                        .snippet(markerSnippet));
-
-                // Position the map's camera at the location of the marker.
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-                        DEFAULT_ZOOM));
-            }
-        };
-
-        // Display the dialog.
-        AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.pick_place)
-                .setItems(likelyPlaceNames, listener)
-                .show();
-    }
-
-
     private void getLocationPermission() {
         /*
          * Request location permission, so that we can get the location of the
@@ -423,9 +287,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 mPermissionResult.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         } else {
             mPermissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
-            /*ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);*/
         }
     }
 
@@ -726,8 +587,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         // Prompt the user for permission.
         getLocationPermission();
 
-        //enableUserLocation();
-
 
     }
 
@@ -792,20 +651,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
-    /*private void enableUserLocation() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-        } else {
-            //Ask for permission
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-                //We need to show user a dialog for displaying why the permission is needed and then ask for the permission...
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
-            } else {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
-            }
-        }
-    }*/
-
     private void addGeofence() {
         //     Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER |
         //           Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
@@ -847,42 +692,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     double lat = Double.parseDouble(aux[0]);
                     double lon = Double.parseDouble(aux[1]);
                     LatLng latLng = new LatLng(lat, lon);
-                    // addCircle(latLng, GEOFENCE_RADIUS);
 
                     Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID + activitiesList.get(i).getName(), latLng, GEOFENCE_RADIUS, Geofence.GEOFENCE_TRANSITION_ENTER |
                             Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT);
 
                     mGeofenceList.add(geofence);
-                    // addGeofence(latLng, GEOFENCE_RADIUS);
                 }
             }
         }
         return mGeofenceList;
     }
 
-    private void addCircle(LatLng latLng, float radius) {
-        CircleOptions circleOptions = new CircleOptions();
-        circleOptions.center(latLng);
-        circleOptions.radius(radius);
-        circleOptions.strokeColor(Color.argb(255, 255, 0, 0));
-        circleOptions.fillColor(Color.argb(64, 255, 0, 0));
-        circleOptions.strokeWidth(4);
-        mMap.addCircle(circleOptions);
-    }
-
-
-    private void getActivitiesNearUser() {
-        double lat = lastKnownLocation.getLatitude();
-        double lng = lastKnownLocation.getLongitude();
-
-        //calcular bounding box
-        LatLngBounds curScreen = mMap.getProjection()
-                .getVisibleRegion().latLngBounds;
-        double p1lat = curScreen.southwest.longitude;
-        double p1lon = curScreen.northeast.latitude;
-        double p2lat = curScreen.northeast.longitude;
-        double p2lon = curScreen.southwest.latitude;
-
-    }
 
 }

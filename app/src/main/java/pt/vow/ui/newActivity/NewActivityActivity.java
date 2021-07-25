@@ -216,7 +216,7 @@ public class NewActivityActivity extends AppCompatActivity {
                     int hour = durationPicker.getHour();
                     int minutes = durationPicker.getMinute();
                     int aux = hour * 60 + minutes;
-                    durationInMinutes = new String().concat(String.valueOf(aux));
+                    durationInMinutes = "".concat(String.valueOf(aux));
                     newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
                             address, date, type, editTextPartNum.getText().toString(), durationInMinutes, editTextDescription.getText().toString());
                 });
@@ -273,7 +273,7 @@ public class NewActivityActivity extends AppCompatActivity {
                 cal.set(Calendar.MINUTE, minute);
 
                 // TODO: timezone does not yet change due to winter/summer time
-                date = new String().concat(String.valueOf(dayOfMonth)).concat("/")
+                date = "".concat(String.valueOf(dayOfMonth)).concat("/")
                         .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
                         .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
 

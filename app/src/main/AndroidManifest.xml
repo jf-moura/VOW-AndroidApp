@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="pt.vow">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -33,7 +32,7 @@
         <receiver
             android:name=".ui.geofencing.GeofenceBroadcastReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -61,7 +60,7 @@
             android:label="@string/title_activity_main_person" />
         <activity
             android:name=".ui.mainPage.MainPageOrganization"
-            android:label="@string/title_activity_main_page"></activity>
+            android:label="@string/title_activity_main_page" />
         <activity
             android:name=".ui.update.UpdateActivity"
             android:label="@string/settings" />
@@ -100,8 +99,6 @@
         <activity
             android:name=".ui.confimParticipants.ConfirmParticipantsActivity"
             android:label="@string/confirm_act_participants" />
-
-        <activity android:name=".ui.geofencing.MapsGeofencing"></activity>
 
         <activity
             android:name=".ui.frontPage.FrontPageActivity"

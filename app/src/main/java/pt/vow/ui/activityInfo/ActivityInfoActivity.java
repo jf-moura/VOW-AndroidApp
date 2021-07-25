@@ -484,7 +484,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
                     int hour = editTextDuration.getHour();
                     int minutes = editTextDuration.getMinute();
                     int aux = hour * 60 + minutes;
-                    durationInMinutes = new String().concat(String.valueOf(aux));
+                    durationInMinutes = "".concat(String.valueOf(aux));
                     updateActivityViewModel.updateActivityDataChanged(editTextActName.getText().toString(), editTextAddress.getText().toString(),
                             date, activity.getType(), editTextNumPart.getText().toString(),
                             durationInMinutes, editTextDescription.getText().toString());
@@ -581,7 +581,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
                 String timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
                 // TODO: timezone does not yet change due to winter/summer time
-                date = new String().concat(String.valueOf(dayOfMonth)).concat("/")
+                date = "".concat(String.valueOf(dayOfMonth)).concat("/")
                         .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
                         .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
 

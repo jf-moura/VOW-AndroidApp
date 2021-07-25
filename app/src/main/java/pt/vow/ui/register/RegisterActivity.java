@@ -64,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
         switchMode = findViewById(R.id.switch1);
 
-        date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
+        date = "".concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
                 .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
 
         final Button confirmButton = findViewById(R.id.confirmBttn);
@@ -200,7 +200,7 @@ public class RegisterActivity extends AppCompatActivity {
                 new DatePicker.OnDateChangedListener() {
                     @Override
                     public void onDateChanged(DatePicker view, int year, int month, int dayOfMonth) {
-                        date = new String().concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
+                        date = "".concat(String.valueOf(datePickerDateBirth.getDayOfMonth())).concat("/")
                                 .concat(String.valueOf(datePickerDateBirth.getMonth() + 1)).concat("/").concat(String.valueOf(datePickerDateBirth.getYear()));
                     }
                 });
