@@ -150,17 +150,19 @@ public class NewActivityMapFragment extends Fragment implements OnMapReadyCallba
                 Double lat = Double.parseDouble(latlong[0]);
                 Double lon = Double.parseDouble(latlong[1]);
                 LatLng l = new LatLng(lat, lon);
-                for (Marker marker : mMarkerArray) {
-                    if (marker.getPosition().latitude == l.latitude && marker.getPosition().longitude == l.longitude) {
-                        marker.remove();
-                        mMarkerArray.remove(marker);
+                if (!mMarkerArray.isEmpty()) {
+                    for (Marker marker : mMarkerArray) {
+                        if (marker.getPosition().latitude == l.latitude && marker.getPosition().longitude == l.longitude) {
+                            marker.remove();
+                            mMarkerArray.remove(marker);
+                        }
                     }
-                }
-                coordinates.remove(latlong);
-                counter--;
-                if (counter == 0) {
-                    goBackBttn.setVisibility(View.GONE);
-                    confirmBttn.setVisibility(View.GONE);
+                    coordinates.remove(coordinates.get(counter - 1));
+                    counter--;
+                    if (counter == 0) {
+                        goBackBttn.setVisibility(View.GONE);
+                        confirmBttn.setVisibility(View.GONE);
+                    }
                 }
             }
         });
@@ -420,6 +422,15 @@ public class NewActivityMapFragment extends Fragment implements OnMapReadyCallba
 
                         mMap.clear();
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(pl.getLatLng()));
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(pl.getLatLng());
+                        markerOptions.title(String.valueOf(counter + 1));
+                        Marker marker = mMap.addMarker(markerOptions);
+                        mMarkerArray.add(marker);
+                        coordinates.add(pl.getLatLng().latitude + "," + pl.getLatLng().longitude);
+                        counter++;
+                        goBackBttn.setVisibility(View.VISIBLE);
+                        confirmBttn.setVisibility(View.VISIBLE);
                     } else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR)
                         Autocomplete.getStatusFromIntent(result.getData());
                 }

@@ -277,31 +277,6 @@
                     app:layout_constraintStart_toEndOf="@+id/textAddressTitle"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageButton
-                    android:id="@+id/editAddressBttn"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginEnd="20dp"
-                    android:backgroundTint="@android:color/transparent"
-                    android:src="@drawable/ic_fi_rr_pencil"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:visibility="visible" />
-
-                <ImageButton
-                    android:id="@+id/cancelEditAddressBttn"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginEnd="20dp"
-                    android:backgroundTint="@android:color/transparent"
-                    android:src="@drawable/ic_fi_rr_cross_circle"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

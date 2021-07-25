@@ -118,7 +118,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     // location retrieved by the Fused Location Provider.
     private Location lastKnownLocation;
 
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 10001;
     private static final int DEFAULT_ZOOM = 15;
 
     private static final String KEY_CAMERA_POSITION = "camera_position";
@@ -577,6 +577,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        enableUserLocation();
+
+        // Prompt the user for permission.
+        getLocationPermission();
         if (activitiesList != null) {
 
             mGeofenceList = createGeofenceList();
@@ -739,8 +743,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         mMap.setOnInfoWindowClickListener(this::onInfoWindowClick);
 
-        // Prompt the user for permission.
-        getLocationPermission();
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -748,9 +750,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-        enableUserLocation();
 
-        //
         // addGeofenceToActivities();
         // addGeofenceToActivities2();
         mMap.setOnMapLongClickListener(this::handleMapLongClick);

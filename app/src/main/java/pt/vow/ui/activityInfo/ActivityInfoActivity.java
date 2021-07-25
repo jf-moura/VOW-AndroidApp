@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
@@ -26,19 +25,14 @@ import android.widget.Toast;
 import pt.vow.R;
 import pt.vow.data.model.Activity;
 import pt.vow.data.model.Commentary;
-import pt.vow.data.model.UserInfo;
 import pt.vow.ui.VOW;
 import pt.vow.ui.comments.CommentsRecyclerViewAdapter;
-import pt.vow.ui.comments.GetActCommentsResult;
 import pt.vow.ui.comments.GetActCommentsViewModel;
 import pt.vow.ui.comments.GetActCommentsViewModelFactory;
 import pt.vow.ui.comments.RegisterCommentResult;
 import pt.vow.ui.comments.RegisterCommentViewModel;
 import pt.vow.ui.comments.RegisterCommentViewModelFactory;
-import pt.vow.ui.confimParticipants.ConfirmPartRecyclerViewAdapter;
 import pt.vow.ui.confimParticipants.ConfirmParticipantsActivity;
-import pt.vow.ui.confimParticipants.ConfirmParticipantsViewModel;
-import pt.vow.ui.confimParticipants.ConfirmParticipantsViewModelFactory;
 import pt.vow.ui.confimParticipants.ParticipantsConfirmedViewModel;
 import pt.vow.ui.confimParticipants.ParticipantsConfirmedViewModelFactory;
 import pt.vow.ui.disableActivity.DeleteActivityViewModel;
@@ -74,7 +68,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -87,8 +80,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private ActivityInfoActivity mActivity;
     private TextView textActName, textDescription, textOwner, textAddress, textTime, textPartNum, textDuration, textViewRating, textViewConfirmPart;
     private EditText editTextNumPart, editTextActName, editTextAddress, editTextDescription;
-    private ImageButton editNumPart, editTime, editActName, editDuration, editAddress, editDescription;
-    private ImageButton cancelEditNumPart, cancelEditActName, cancelEditDuration, cancelEditAddress, cancelEditDescription;
+    private ImageButton editNumPart, editTime, editActName, editDuration, editDescription;
+    private ImageButton cancelEditNumPart, cancelEditActName, cancelEditDuration, cancelEditDescription;
     private TimePicker editTextDuration;
     private FloatingActionButton camera;
     private Button submitBttn, saveUpdateBttn, postCommentBttn, addImageBttn;
@@ -167,14 +160,12 @@ public class ActivityInfoActivity extends AppCompatActivity {
         editTextDescription = findViewById(R.id.editTextDescription);
 
         editActName = findViewById(R.id.editNameBttn);
-        editAddress = findViewById(R.id.editAddressBttn);
         editDuration = findViewById(R.id.editDurationBttn);
         editNumPart = findViewById(R.id.editPartNumBttn);
         editTime = findViewById(R.id.editTimeBttn);
         editDescription = findViewById(R.id.editDescriptionBttn);
 
         cancelEditActName = findViewById(R.id.cancelEditNameBttn);
-        cancelEditAddress = findViewById(R.id.cancelEditAddressBttn);
         cancelEditDuration = findViewById(R.id.cancelEditDurBttn);
         cancelEditNumPart = findViewById(R.id.cancelEditPartNumBttn);
         cancelEditDescription = findViewById(R.id.cancelEditDescriptionBttn);
@@ -409,7 +400,6 @@ public class ActivityInfoActivity extends AppCompatActivity {
             cancelEditDescription.setVisibility(View.VISIBLE);
         });
 
-        //TODO: ADDRESS UPDATE
 
         editDuration.setOnClickListener(v -> {
             textDuration.setVisibility(View.INVISIBLE);
@@ -439,7 +429,6 @@ public class ActivityInfoActivity extends AppCompatActivity {
             cancelEditDescription.setVisibility(View.GONE);
         });
 
-        //TODO: ADDRESS UPDATE
 
         cancelEditDuration.setOnClickListener(v -> {
             textDuration.setVisibility(View.VISIBLE);
@@ -690,7 +679,6 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private void showOwnerFunctionalities() {
         editActName.setVisibility(View.VISIBLE);
         editDescription.setVisibility(View.VISIBLE);
-        editAddress.setVisibility(View.VISIBLE);
         editTime.setVisibility(View.VISIBLE);
         editNumPart.setVisibility(View.VISIBLE);
         editDuration.setVisibility(View.VISIBLE);
@@ -706,14 +694,12 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private void resetButtons() {
         editActName.setVisibility(View.VISIBLE);
         editDescription.setVisibility(View.VISIBLE);
-        editAddress.setVisibility(View.VISIBLE);
         editTime.setVisibility(View.VISIBLE);
         editNumPart.setVisibility(View.VISIBLE);
         editDuration.setVisibility(View.VISIBLE);
         saveUpdateBttn.setEnabled(false);
         cancelEditActName.setVisibility(View.GONE);
         cancelEditDescription.setVisibility(View.GONE);
-        cancelEditAddress.setVisibility(View.GONE);
         cancelEditNumPart.setVisibility(View.GONE);
         cancelEditDuration.setVisibility(View.GONE);
         //TODO: mudar activity info
