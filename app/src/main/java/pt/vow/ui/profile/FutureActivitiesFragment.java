@@ -36,11 +36,9 @@ public class FutureActivitiesFragment extends Fragment {
     private ProfileRecyclerViewAdapter adapter;
 
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
-    private DownloadImageViewModel downloadImageViewModel;
     private LoggedInUserView user;
 
     private List<Activity> activitiesByUserList;
-    private Map<String, Activity> aux;
 
     private RelativeLayout relativeLayout;
 
@@ -56,7 +54,6 @@ public class FutureActivitiesFragment extends Fragment {
         enrolledActRecyclerView = root.findViewById(R.id.activities_recycler_view_profile);
         relativeLayout = root.findViewById(R.id.empty_state);
 
-        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
 
         getActivitiesByUserViewModel.getActivitiesResult().observe(getActivity(), new Observer<GetActivitiesByUserResult>() {
@@ -75,7 +72,7 @@ public class FutureActivitiesFragment extends Fragment {
                         enrolledActRecyclerView.setAdapter(null);
                     }
                     else if (activitiesByUserList != null) {
-                        aux = new HashMap<>();
+                        List<Activity> aux = new ArrayList<>(activitiesByUserList);
                         for (Activity a : activitiesByUserList) {
                             Calendar currentTime = Calendar.getInstance();
 
@@ -91,12 +88,7 @@ public class FutureActivitiesFragment extends Fragment {
 
                             long startMillis = beginTime.getTimeInMillis();
                             if (startMillis >= currentTime.getTimeInMillis()) {
-                                aux.put(a.getId(), a);
-                                try {
-                                    downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getId());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                aux.add(a);
                             }
                         }
 
@@ -106,9 +98,8 @@ public class FutureActivitiesFragment extends Fragment {
                         }
                         else {
                             relativeLayout.setVisibility(View.GONE);
-                            List<Activity> activityList = new ArrayList<>(aux.values());
 
-                            adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
+                            adapter = new ProfileRecyclerViewAdapter(getContext(), aux, user);
                             enrolledActRecyclerView.setAdapter(adapter);
                             enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                         }
@@ -116,16 +107,6 @@ public class FutureActivitiesFragment extends Fragment {
 
                 }
             }
-        });
-
-        downloadImageViewModel.getImage().observe(getActivity(), image -> {
-            if (aux != null) {
-                String objName = image.getObjName();
-                Activity a = aux.get(objName);
-                if (a != null)
-                    a.setImage(image);
-            }
-            enrolledActRecyclerView.setAdapter(adapter);
         });
 
         return root;

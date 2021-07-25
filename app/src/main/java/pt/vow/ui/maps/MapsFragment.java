@@ -40,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -77,6 +78,8 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -249,8 +252,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (getDirections) {
             displayTrack(start, end);
         }
-        //mPermissionResult.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-        ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+
         root = v;
 
         return v;
@@ -408,96 +410,30 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
+            // Get the current location of the device and set the position of the map.
+            getDeviceLocation();
+            if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED)
+            mPermissionResult.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         } else {
-            ActivityCompat.requestPermissions(getActivity(),
+            mPermissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            /*ActivityCompat.requestPermissions(getActivity(),
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);*/
         }
-
     }
 
-    /*private ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
+    private ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             result -> {
                 if (result) {
+                    getLocationPermission();
                     Log.e(TAG, "onActivityResult: PERMISSION GRANTED");
                 } else {
                     Log.e(TAG, "onActivityResult: PERMISSION DENIED");
                 }
-            });*/
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == FINE_LOCATION_ACCESS_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //We have the permission
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    mMap.setMyLocationEnabled(true);
-                }
-            } else {
-                //We do not have the permission..
-                //Ask for permission
-                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    //We need to show user a dialog for displaying why the permission is needed and then ask for the permission...
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
-                } else {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
-                }
-            }
-        } else {
-            //We do not have the permission..
-        }
-        if (requestCode == BACKGROUND_LOCATION_ACCESS_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //We have the permission
-                Log.e(TAG, "onActivityResult: PERMISSION GRANTED");
-
-            } else {
-                //We do not have the permission..
-                Log.e(TAG, "onActivityResult: PERMISSION DENIED");
-            }
-        }
-    }
-
-
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // locationPermissionGranted = false;
-        if (requestCode == FINE_LOCATION_ACCESS_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //We have the permission
-                // locationPermissionGranted = true;
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    mMap.setMyLocationEnabled(true);
-                } else {
-                    //Ask for permission
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        //We need to show user a dialog for displaying why the permission is needed and then ask for the permission...
-                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
-                    } else {
-                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
-                    }
-                }
-            } else {
-                //We do not have the permission..
-            }
-        }
-
-        if (requestCode == BACKGROUND_LOCATION_ACCESS_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //We have the permission
-                Toast.makeText(getActivity(), "You can add geofences...", Toast.LENGTH_SHORT).show();
-            } else {
-                //We do not have the permission..
-                Toast.makeText(getActivity(), "Background location access is neccessary for geofences to trigger...", Toast.LENGTH_SHORT).show();
-            }
-        }
-        //updateLocationUI();
-    }*/
+            });
 
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
@@ -776,21 +712,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         mMap.setOnInfoWindowClickListener(this);
 
-        // Prompt the user for permission.
-        getLocationPermission();
-
-        if (Build.VERSION.SDK_INT >= 29) {
-            //We show a dialog and ask for permission
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
-        }
-
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
+        //enableUserLocation();
 
-        enableUserLocation();
 
     }
 
@@ -855,7 +781,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
-    private void enableUserLocation() {
+    /*private void enableUserLocation() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         } else {
@@ -867,7 +793,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
             }
         }
-    }
+    }*/
 
     private void addGeofence() {
         //     Geofence geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER |

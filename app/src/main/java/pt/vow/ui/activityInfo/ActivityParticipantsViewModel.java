@@ -14,7 +14,7 @@ import pt.vow.data.activityParticipants.ActivityParticipantsRepository;
 
 public class ActivityParticipantsViewModel extends ViewModel {
     private MutableLiveData<ActivityParticipantsResult> activityParticipantsResult = new MutableLiveData<>();
-    private MutableLiveData<List<String>> participants = new MutableLiveData<>();
+    private MutableLiveData<ActivityParticipantsView> participants = new MutableLiveData<>();
     private ActivityParticipantsRepository participantsRepository;
     private final Executor executor;
 
@@ -34,8 +34,8 @@ public class ActivityParticipantsViewModel extends ViewModel {
                 Result<ActivityParticipantsView> result = participantsRepository.getParticipants(username, tokenID, false, owner, activityId);
                 if (result instanceof Result.Success) {
                     ActivityParticipantsView data = ((Result.Success<ActivityParticipantsView>) result).getData();
-                    participants.postValue(data.getParticipants());
-                    activityParticipantsResult.postValue(new ActivityParticipantsResult(new ActivityParticipantsView(data.participants)));
+                    participants.postValue(data);
+                    activityParticipantsResult.postValue(new ActivityParticipantsResult(new ActivityParticipantsView(data.getActivityID(), data.participants)));
                 } else {
                     activityParticipantsResult.postValue(new ActivityParticipantsResult(R.string.act_participants_failed));
                 }
@@ -43,7 +43,7 @@ public class ActivityParticipantsViewModel extends ViewModel {
         });
     }
 
-    public LiveData<List<String>> getParticipantsList() {
+    public LiveData<ActivityParticipantsView> getParticipantsList() {
         return participants;
     }
 }

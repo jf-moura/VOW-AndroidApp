@@ -23,12 +23,12 @@ public class ActivityParticipantsDataSource {
     }
 
     public Result<ActivityParticipantsView> getActParticipants(String username, String tokenID, Boolean presentOnly, String owner, String activityid) {
-        Call<List<String>> getActParticipantsCall = service.getActivityParticipants(username, tokenID, presentOnly, owner, activityid);
+        Call<ActivityParticipantsView> getActParticipantsCall = service.getActivityParticipants(username, tokenID, presentOnly, owner, activityid);
         try {
-            Response<List<String>> response = getActParticipantsCall.execute();
+            Response<ActivityParticipantsView> response = getActParticipantsCall.execute();
             if (response.isSuccessful()) {
-                List<String> p = response.body();
-                return new Result.Success<>(new ActivityParticipantsView(p));
+                ActivityParticipantsView p = response.body();
+                return new Result.Success<>(p);
             }
             return new Result.Error(new Exception(response.errorBody().toString()));
         } catch (IOException e) {

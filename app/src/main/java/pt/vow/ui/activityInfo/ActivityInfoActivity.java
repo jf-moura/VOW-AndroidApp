@@ -96,15 +96,12 @@ public class ActivityInfoActivity extends AppCompatActivity {
     private GetRatingViewModel getRatingViewModel;
     private SetRatingViewModel setRatingViewModel;
     private UploadImageViewModel uploadImageViewModel;
-    private DeleteActivityViewModel deleteActivityViewModel;
     private ActivityParticipantsViewModel actParticipantsViewModel;
     private ParticipantsConfirmedViewModel participantsConfirmedViewModel;
     private double totalRate;
     private String durationInMinutes, date;
     private Uri imageUri;
     private static Bitmap bitmap;
-    //private long rate;
-    private Observer<GetRatingResult> rateObs;
     private ImageButton deleteActBttn;
     private ImageView imageType;
     private RegisterCommentViewModel registerCommentViewModel;
@@ -126,8 +123,6 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 .get(SetRatingViewModel.class);
         actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(ActivityParticipantsViewModel.class);
-        deleteActivityViewModel = new ViewModelProvider(this, new DeleteActivityViewModelFactory(((VOW) getApplication()).getExecutorService()))
-                .get(DeleteActivityViewModel.class);
         registerCommentViewModel = new ViewModelProvider(this, new RegisterCommentViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(RegisterCommentViewModel.class);
         getActCommentsViewModel = new ViewModelProvider(this, new GetActCommentsViewModelFactory(((VOW) getApplication()).getExecutorService()))
@@ -140,8 +135,14 @@ public class ActivityInfoActivity extends AppCompatActivity {
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         activity = (Activity) getIntent().getSerializableExtra("Activity");
 
-        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+        participantsList = activity.getParticipants();
+
         getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+
+        if (participantsList == null)
+            actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+        else
+            textPartNum.setText(participantsList.size() + "/" + activity.getParticipantNum());
 
         getSupportActionBar().setTitle(activity.getName());
 
@@ -236,8 +237,8 @@ public class ActivityInfoActivity extends AppCompatActivity {
         }
 
         actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
-            participantsList = participants;
-            textPartNum.setText(participants.size() + "/" + activity.getParticipantNum());
+            participantsList = participants.getParticipants();
+            textPartNum.setText(participantsList.size() + "/" + activity.getParticipantNum());
         });
         String time = showTime(activity.getTime());
         textActName.setText(" " + activity.getName());
@@ -302,7 +303,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
             }
         });
 
-        Image actImage = activity.getImage();
+        /*Image actImage = activity.getImage();
         if (actImage != null) {
             if (user.getUsername().equals(activity.getOwner()))
                 camera.setVisibility(View.VISIBLE);
@@ -311,7 +312,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             activityImage.setImageBitmap(bitmap);
         } else if (user.getUsername().equals(activity.getOwner()))
-            addImageBttn.setVisibility(View.VISIBLE);
+            addImageBttn.setVisibility(View.VISIBLE);*/
 
         registerCommentViewModel.getRegisterCommentResult().observe(this, new Observer<RegisterCommentResult>() {
             @Override

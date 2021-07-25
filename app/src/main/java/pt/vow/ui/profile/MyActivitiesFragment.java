@@ -35,11 +35,9 @@ public class MyActivitiesFragment extends Fragment {
     private ProfileRecyclerViewAdapter adapter;
 
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
-    private DownloadImageViewModel downloadImageViewModel;
     private LoggedInUserView user;
 
     private List<Activity> myActivitiesList;
-    private Map<String, Activity> aux;
 
     private RelativeLayout relativeLayout;
 
@@ -55,7 +53,6 @@ public class MyActivitiesFragment extends Fragment {
 
         relativeLayout = root.findViewById(R.id.empty_state);
 
-        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getMyActivitiesViewModel = new ViewModelProvider(getActivity()).get(GetMyActivitiesViewModel.class);
 
         getMyActivitiesViewModel.getActivitiesResult().observe(getActivity(), new Observer<GetMyActivitiesResult>() {
@@ -73,25 +70,17 @@ public class MyActivitiesFragment extends Fragment {
                         relativeLayout.setVisibility(View.VISIBLE);
                         myActRecyclerView.setAdapter(null);
                     } else if (myActivitiesList != null) {
-                        aux = new HashMap<>();
+                        List<Activity> aux = new ArrayList<>(myActivitiesList);
                         for (Activity a : myActivitiesList) {
-                            aux.put(a.getId(), a);
-                            if (a.getImage() == null) {
-                                try {
-                                    downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getId());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                            aux.add(a);
                         }
                         if (aux.isEmpty()) {
                             relativeLayout.setVisibility(View.VISIBLE);
                             myActRecyclerView.setAdapter(null);
                         } else {
                             relativeLayout.setVisibility(View.GONE);
-                            List<Activity> activityList = new ArrayList<>(aux.values());
 
-                            adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
+                            adapter = new ProfileRecyclerViewAdapter(getContext(), aux, user);
                             myActRecyclerView.setAdapter(adapter);
                             myActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                         }
@@ -99,16 +88,6 @@ public class MyActivitiesFragment extends Fragment {
 
                 }
             }
-        });
-
-        downloadImageViewModel.getImage().observe(getActivity(), image -> {
-            if (aux != null) {
-                String objName = image.getObjName();
-                Activity a = aux.get(objName);
-                if (a != null)
-                    a.setImage(image);
-            }
-            myActRecyclerView.setAdapter(adapter);
         });
 
         return root;

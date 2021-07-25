@@ -52,29 +52,20 @@ public class ProfileRecyclerViewAdapter extends RecyclerView.Adapter<ProfileRecy
         } else {
             holder.activityName.setText(activityList.get(position).getName());
             holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) + " " + activityList.get(position).getOwner());
-
-            if (activityList.get(position).getImage() != null) {
-                byte[] img = activityList.get(position).getImage().getImageBytes();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-                holder.activityImage.setVisibility(View.VISIBLE);
-                holder.activityImage.setImageBitmap(bitmap);
-            }
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = null;
                 if (activityList.get(position).getStatus()) {
-                    Intent intent = new Intent(context, ActivityInfoActivity.class);
-                    intent.putExtra("Activity", activityList.get(position));
-                    intent.putExtra("UserLogged", user);
-                    context.startActivity(intent);
+                    intent = new Intent(context, ActivityInfoActivity.class);
                 } else {
-                    Intent intent = new Intent(context, PopRestoreActivity.class);
-                    intent.putExtra("Activity", activityList.get(position));
-                    intent.putExtra("UserLogged", user);
-                    context.startActivity(intent);
+                    intent = new Intent(context, PopRestoreActivity.class);
                 }
+                intent.putExtra("Activity", activityList.get(position));
+                intent.putExtra("UserLogged", user);
+                context.startActivity(intent);
             }
         });
     }

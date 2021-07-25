@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,6 +43,8 @@ import pt.vow.ui.comments.GetActCommentsViewModelFactory;
 import pt.vow.ui.comments.RegisterCommentResult;
 import pt.vow.ui.comments.RegisterCommentViewModel;
 import pt.vow.ui.comments.RegisterCommentViewModelFactory;
+import pt.vow.ui.image.DownloadImageViewModel;
+import pt.vow.ui.image.DownloadImageViewModelFactory;
 import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.image.Image;
 import pt.vow.ui.mainPage.MainPageOrganization;
@@ -64,15 +67,17 @@ public class EnrollActivity extends AppCompatActivity {
     private GetActCommentsViewModel getActCommentsViewModel;
     private CancelEnrollViewModel cancelEnrollViewModel;
     private GetRouteCoordinatesViewModel getRouteCoordinatesViewModel;
+    private DownloadImageViewModel downloadImageViewModel;
     private LoggedInUserView user;
     private Activity activity;
     private ActivitiesByUserView activitiesList;
     private ActivityParticipantsViewModel actParticipantsViewModel;
-    private Activity aux;
+    private int aux;
     private EnrollActivity mActivity;
     private ImageView imageType;
     private String dest;
     private List<Commentary> commentaryList;
+    private List<String> activityPart;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +102,7 @@ public class EnrollActivity extends AppCompatActivity {
         imageType = findViewById(R.id.imageViewType);
 
         dest = "";
+        aux = 0;
 
         enrollViewModel = new ViewModelProvider(this, new EnrollViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(EnrollViewModel.class);
@@ -110,6 +116,8 @@ public class EnrollActivity extends AppCompatActivity {
                 .get(GetActCommentsViewModel.class);
         getRouteCoordinatesViewModel = new ViewModelProvider(this, new GetRouteCoordViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetRouteCoordinatesViewModel.class);
+        downloadImageViewModel = new ViewModelProvider(this, new DownloadImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
+                .get(DownloadImageViewModel.class);
 
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         activity = (Activity) getIntent().getSerializableExtra("Activity");
@@ -119,6 +127,13 @@ public class EnrollActivity extends AppCompatActivity {
 
         String time = showTime(activity.getTime());
 
+        getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+        try {
+            downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", activity.getId());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         textViewActName.setText(Html.fromHtml("<b>" + getResources().getString(R.string.activity_name) + "</b>" + " " + activity.getName()));
         textViewActOwner.setText(Html.fromHtml("<b>" + getResources().getString(R.string.organization) + "</b>" + " " + activity.getOwner()));
         textViewAddress.setText(Html.fromHtml("<b>" + getResources().getString(R.string.address) + "</b>" + " " + activity.getAddress()));
@@ -126,44 +141,48 @@ public class EnrollActivity extends AppCompatActivity {
         textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + "</b>" + " " + activity.getParticipantNum()));
         textViewDuration.setText(Html.fromHtml("<b>" + getResources().getString(R.string.duration) + "</b>" + " " + Integer.parseInt(activity.getDurationInMinutes()) / 60 + "h" + Integer.parseInt(activity.getDurationInMinutes()) % 60));
 
-        if (activitiesList != null) {
-            for (Activity a : activitiesList.getActivities()) {
-                if (a.getId().equals(activity.getId())) {
-                    aux = a;
+        activityPart = activity.getParticipants();
+        if (activityPart == null)
+            actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
+        else {
+            for (String partUsername : activityPart)
+                if (partUsername.equals(user.getUsername())) {
+                    aux = 1;
                     break;
                 }
-            }
+            if (activityPart.size() == Integer.parseInt(activity.getParticipantNum()) && aux == 0)
+                enrollButton.setEnabled(false);
+            textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + " </b>" + activityPart.size() + "/" + activity.getParticipantNum()));
         }
-        if (aux != null) //it means that user already joined the activity
+
+        if (aux == 1) //it means that user already joined the activity
             enrollButton.setText(getResources().getString(R.string.unjoin));
         else
             enrollButton.setText(getResources().getString(R.string.join));
 
         showImageType();
 
-        actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
-        getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
-
         actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
-            textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + " </b>" + participants.size() + "/" + activity.getParticipantNum()));
+            List<String> partList = participants.getParticipants();
+            textViewNumPart.setText(Html.fromHtml("<b>" + getResources().getString(R.string.number_participants) + " </b>" + partList.size() + "/" + activity.getParticipantNum()));
             if (activitiesList == null) {
-                for (String part : participants)
+                for (String part : partList)
                     if (part.equals(user.getUsername()))
                         enrollButton.setText(getResources().getString(R.string.unjoin));
 
-                if (participants.size() == Integer.parseInt(activity.getParticipantNum()) && aux != null) {
+                if (partList.size() == Integer.parseInt(activity.getParticipantNum()) && aux == 1)
                     enrollButton.setEnabled(false);
-                }
             }
         });
 
-        Image actImage = activity.getImage();
-        if (actImage != null) {
+
+        downloadImageViewModel.getImage().observe(this, image -> {
             activityImage.setVisibility(View.VISIBLE);
-            byte[] img = actImage.getImageBytes();
+            byte[] img = image.getImageBytes();
             Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
             activityImage.setImageBitmap(bitmap);
-        }
+        });
+
 
         registerCommentViewModel.getRegisterCommentResult().observe(this, new Observer<RegisterCommentResult>() {
             @Override
@@ -246,9 +265,6 @@ public class EnrollActivity extends AppCompatActivity {
                 }
                 if (cancelEnrollResult.getSuccess() != null) {
                     enrollButton.setText(getResources().getString(R.string.join));
-                    Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, Long.parseLong(activity.getId()));
-                    //getContentResolver().delete(deleteUri, null, null);
-                    //Toast.makeText(getApplicationContext(), R.string.unjoined_activity, Toast.LENGTH_SHORT).show();
                     actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
                 }
             }
@@ -383,7 +399,7 @@ public class EnrollActivity extends AppCompatActivity {
         String[] dateTime = time.split(" ");
         String[] hours = dateTime[3].split(":");
 
-        String h = hours[0] + ":" + hours[1] + " " +dateTime[4];
+        String h = hours[0] + ":" + hours[1] + " " + dateTime[4];
         String d = dateTime[1].split(",")[0] + "/" + dateTime[0] + "/" + dateTime[2];
         String finalD = d + " " + h;
 

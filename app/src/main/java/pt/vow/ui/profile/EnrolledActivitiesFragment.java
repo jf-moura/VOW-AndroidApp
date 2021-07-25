@@ -37,12 +37,10 @@ public class EnrolledActivitiesFragment extends Fragment {
     private RecyclerView enrolledActRecyclerView;
 
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
-    private DownloadImageViewModel downloadImageViewModel;
     private LoggedInUserView user;
     private ProfileRecyclerViewAdapter adapter;
 
     private List<Activity> activitiesByUserList;
-    private Map<String, Activity> aux;
 
     private RelativeLayout relativeLayout;
 
@@ -59,7 +57,6 @@ public class EnrolledActivitiesFragment extends Fragment {
 
         relativeLayout = root.findViewById(R.id.empty_state);
 
-        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(requireActivity()).get(GetActivitiesByUserViewModel.class);
         getActivitiesByUserViewModel.getActivitiesResult().observe(getActivity(), new Observer<GetActivitiesByUserResult>() {
             @Override
@@ -76,7 +73,7 @@ public class EnrolledActivitiesFragment extends Fragment {
                         relativeLayout.setVisibility(View.VISIBLE);
                         enrolledActRecyclerView.setAdapter(null);
                     } else if (activitiesByUserList != null) {
-                        aux = new HashMap<>();
+                        List<Activity> aux = new ArrayList<>(activitiesByUserList);
                         for (Activity a : activitiesByUserList) {
                             Calendar currentTime = Calendar.getInstance();
 
@@ -92,14 +89,7 @@ public class EnrolledActivitiesFragment extends Fragment {
 
                             long startMillis = beginTime.getTimeInMillis();
                             if (startMillis <= currentTime.getTimeInMillis()) {
-                                aux.put(a.getId(), a);
-                                if (a.getImage() == null) {
-                                    try {
-                                        downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getId());
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                                aux.add(a);
                             }
                         }
                         if (aux.isEmpty()) {
@@ -108,9 +98,8 @@ public class EnrolledActivitiesFragment extends Fragment {
                         }
                         else {
                             relativeLayout.setVisibility(View.GONE);
-                            List<Activity> activityList = new ArrayList<>(aux.values());
 
-                            adapter = new ProfileRecyclerViewAdapter(getContext(), activityList, user);
+                            adapter = new ProfileRecyclerViewAdapter(getContext(), aux, user);
                             enrolledActRecyclerView.setAdapter(adapter);
                             enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                         }
@@ -118,16 +107,6 @@ public class EnrolledActivitiesFragment extends Fragment {
 
                 }
             }
-        });
-
-        downloadImageViewModel.getImage().observe(getActivity(), image -> {
-            if (aux != null) {
-                String objName = image.getObjName();
-                Activity a = aux.get(objName);
-                if (a != null)
-                    a.setImage(image);
-            }
-            enrolledActRecyclerView.setAdapter(adapter);
         });
 
         return root;

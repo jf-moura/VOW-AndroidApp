@@ -70,6 +70,7 @@ public class GeofenceHelper extends ContextWrapper {
         intent.putExtra("Activity", activity);
         intent.putExtra("UserLogged", user);
         pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 2607, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
         return pendingIntent;
     }
 

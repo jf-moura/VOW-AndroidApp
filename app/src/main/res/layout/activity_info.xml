@@ -337,7 +337,7 @@
 
                 <TextView
                     android:id="@+id/textPartNumTitle"
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:lines="2"
                     android:text="@string/participants"
@@ -350,7 +350,7 @@
 
                 <TextView
                     android:id="@+id/textViewPartNum"
-                    android:layout_width="135dp"
+                    android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:textSize="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"

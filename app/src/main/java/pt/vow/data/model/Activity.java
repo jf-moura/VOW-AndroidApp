@@ -19,7 +19,7 @@ public class Activity implements Serializable {
     String type;
     boolean status;
     List<String> participants;
-    Image image;
+    //Image image;
 
     public Activity(String owner, String id, String name, String address, String coordinates, String time, String type, String participantNum, boolean status, String durationInMinutes) {
         this.owner = owner;
@@ -33,7 +33,7 @@ public class Activity implements Serializable {
         this.durationInMinutes = durationInMinutes;
         this.status = status;
         this.participants = null;
-        this.image = null;
+        //this.image = null;
     }
 
     public String getOwner() {
@@ -82,11 +82,11 @@ public class Activity implements Serializable {
         return participants;
     }
 
-    public void setImage(Image image) {
+    /*public void setImage(Image image) {
         this.image = image;
     }
 
     public Image getImage() {
         return image;
-    }
+    }*/
 }

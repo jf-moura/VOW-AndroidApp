@@ -59,14 +59,15 @@ public class NotificationHelper extends ContextWrapper {
         intent.putExtra("UserLogged",  user);
        PendingIntent pendingIntent = PendingIntent.getActivity(this, 267, intent, PendingIntent.FLAG_CANCEL_CURRENT);
  */
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-//                .setContentTitle(title)
-//                .setContentText(body)
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID).setOnlyAlertOnce(true)
+              .setContentTitle(title)
+                .setContentText(body)
                 .setSmallIcon(R.drawable.ic_fi_rr_world)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.icon_foreground))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(body))
-              //  .setContentIntent(pendingIntent)
+                //.setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .build();
 

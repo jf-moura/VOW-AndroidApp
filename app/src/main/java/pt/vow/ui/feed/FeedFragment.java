@@ -53,7 +53,6 @@ import pt.vow.ui.profile.GetActivitiesByUserViewModel;
 public class FeedFragment extends Fragment {
     private FeedFragment mActivity;
     private GetActivitiesViewModel activitiesViewModel;
-    private DownloadImageViewModel downloadImageViewModel;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
@@ -136,7 +135,6 @@ public class FeedFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        downloadImageViewModel = new ViewModelProvider(getActivity()).get(DownloadImageViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
         activitiesViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesViewModel.class);
 
@@ -173,16 +171,8 @@ public class FeedFragment extends Fragment {
                         if (startMillis > currentTime) {
                             aux.put(a.getId(), a);
 
-                            //if(a.getParticipants() == null)
-                            //actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
-
-                            if (a.getImage() == null) {
-                                try {
-                                    downloadImageViewModel.downloadImage("vow-project-311114", "vow_profile_pictures", a.getId());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                            if(a.getParticipants() == null)
+                                actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
                         }
                     }
                     activityList = new ArrayList<>(aux.values());
@@ -198,19 +188,11 @@ public class FeedFragment extends Fragment {
 
         this.onCompleteIsEmpty();
 
-        downloadImageViewModel.getImage().observe(getActivity(), image -> {
-            if (aux != null) {
-                String objName = image.getObjName();
-                Activity a = aux.get(objName);
-                if (a != null)
-                    a.setImage(image);
-            }
-            recyclerView.setAdapter(adapter);
+        actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
+            Activity a = aux.get(participants.getActivityID());
+            if (a != null)
+                a.addParticipants(participants.getParticipants());
         });
-
-        /*actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
-            a.addParticipants(participants);
-        });*/
     }
 
     @Override

@@ -62,21 +62,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.activityName.setText(activityList.get(position).getName());
 
-        if (activityList.get(position).getImage() != null) {
-            byte[] img = activityList.get(position).getImage().getImageBytes();
-            Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
-            holder.activityImage.setVisibility(View.VISIBLE);
-            holder.owner.setVisibility(View.GONE);
-            holder.time.setVisibility(View.GONE);
-            holder.duration.setVisibility(View.GONE);
-            holder.activityImage.setImageBitmap(bitmap);
-        } else {
-            String finalD = showTime(activityList.get(position).getTime());
-            holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) + " " + activityList.get(position).getOwner());
-            holder.time.setText(holder.itemView.getContext().getString(R.string.date) + " " + finalD);
-            holder.duration.setText(holder.itemView.getContext().getString(R.string.duration) + " " + activityList.get(position).getDurationInMinutes() + " minutes");
-        }
-
+        String finalD = showTime(activityList.get(position).getTime());
+        holder.owner.setText(holder.itemView.getContext().getString(R.string.organization) + " " + activityList.get(position).getOwner());
+        holder.time.setText(holder.itemView.getContext().getString(R.string.date) + " " + finalD);
+        holder.duration.setText(holder.itemView.getContext().getString(R.string.duration) + " " + activityList.get(position).getDurationInMinutes() + " minutes");
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +115,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         String[] dateTime = time.split(" ");
         String[] hours = dateTime[3].split(":");
 
-        String h = hours[0] + ":" + hours[1] + " " +dateTime[4];
+        String h = hours[0] + ":" + hours[1] + " " + dateTime[4];
         String d = dateTime[1].split(",")[0] + "/" + dateTime[0] + "/" + dateTime[2];
         String finalD = d + " " + h;
 

@@ -38,7 +38,7 @@ public class ParticipantsConfirmedViewModel extends ViewModel {
                 if (result instanceof Result.Success) {
                     ActivityParticipantsView data = ((Result.Success<ActivityParticipantsView>) result).getData();
                     participants.postValue(data.getParticipants());
-                    activityParticipantsResult.postValue(new ActivityParticipantsResult(new ActivityParticipantsView(data.getParticipants())));
+                    activityParticipantsResult.postValue(new ActivityParticipantsResult(new ActivityParticipantsView(data.getActivityID(), data.getParticipants())));
                 } else {
                     activityParticipantsResult.postValue(new ActivityParticipantsResult(R.string.act_participants_failed));
                 }
