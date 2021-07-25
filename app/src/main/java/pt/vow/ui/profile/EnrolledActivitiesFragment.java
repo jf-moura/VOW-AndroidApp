@@ -73,7 +73,7 @@ public class EnrolledActivitiesFragment extends Fragment {
                         relativeLayout.setVisibility(View.VISIBLE);
                         enrolledActRecyclerView.setAdapter(null);
                     } else if (activitiesByUserList != null) {
-                        List<Activity> aux = new ArrayList<>(activitiesByUserList);
+                        List<Activity> aux = new ArrayList<>();
                         for (Activity a : activitiesByUserList) {
                             Calendar currentTime = Calendar.getInstance();
 

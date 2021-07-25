@@ -132,7 +132,7 @@ public class ShowProfileActivity extends AppCompatActivity {
             getProfileViewModel.getProfile(userToGet, user.getUsername(), user.getTokenID());
             getProfileViewModel.profile().observe(this, profile -> {
                 profileInfo = profile;
-                getSupportActionBar().setTitle(profileInfo.getUsername());
+                getSupportActionBar().setTitle(profileInfo.getName());
                 String bio = profileInfo.getBio();
                 aboutMeTextView.setText(bio);
             });

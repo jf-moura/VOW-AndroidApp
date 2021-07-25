@@ -70,7 +70,7 @@ public class MyActivitiesFragment extends Fragment {
                         relativeLayout.setVisibility(View.VISIBLE);
                         myActRecyclerView.setAdapter(null);
                     } else if (myActivitiesList != null) {
-                        List<Activity> aux = new ArrayList<>(myActivitiesList);
+                        List<Activity> aux = new ArrayList<>();
                         for (Activity a : myActivitiesList) {
                             aux.add(a);
                         }
