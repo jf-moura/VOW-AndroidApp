@@ -42,6 +42,9 @@ public class EnrolledActivitiesFragment extends Fragment {
 
     private List<Activity> activitiesByUserList;
 
+    private boolean mine;
+    private String userToGet;
+
     private RelativeLayout relativeLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -52,6 +55,10 @@ public class EnrolledActivitiesFragment extends Fragment {
         View root = binding.getRoot();
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
+
+        Bundle bundle = this.getArguments();
+        mine = bundle.getBoolean("Mine");
+        userToGet = bundle.getString("UserToGet");
 
         enrolledActRecyclerView = root.findViewById(R.id.activities_recycler_view_profile);
 
@@ -68,43 +75,44 @@ public class EnrolledActivitiesFragment extends Fragment {
                     showGetActivitiesFailed(getActivitiesResult.getError());
                 }
                 if (getActivitiesResult.getSuccess() != null) {
-                    activitiesByUserList = getActivitiesResult.getSuccess().getActivities();
-                    if (activitiesByUserList.size() == 0) {
-                        relativeLayout.setVisibility(View.VISIBLE);
-                        enrolledActRecyclerView.setAdapter(null);
-                    } else if (activitiesByUserList != null) {
-                        List<Activity> aux = new ArrayList<>();
-                        for (Activity a : activitiesByUserList) {
-                            Calendar currentTime = Calendar.getInstance();
-
-                            String[] dateTime = a.getTime().split(" ");
-                            String[] hours = dateTime[3].split(":");
-
-                            Calendar beginTime = Calendar.getInstance();
-                            ;
-                            if (dateTime[4].equals("PM"))
-                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12 + Integer.valueOf(a.getDurationInMinutes()) / 60, Integer.valueOf(hours[1]) + Integer.valueOf(a.getDurationInMinutes()) % 60);
-                            else
-                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + Integer.valueOf(a.getDurationInMinutes()) / 60, Integer.valueOf(hours[1]) + Integer.valueOf(a.getDurationInMinutes()) % 60);
-
-                            long startMillis = beginTime.getTimeInMillis();
-                            if (startMillis <= currentTime.getTimeInMillis()) {
-                                aux.add(a);
-                            }
-                        }
-                        if (aux.isEmpty()) {
+                    if (mine && getActivitiesResult.getSuccess().getUserToGet().equals(user.getUsername()) ||
+                    !mine && getActivitiesResult.getSuccess().getUserToGet().equals(userToGet)) {
+                        activitiesByUserList = getActivitiesResult.getSuccess().getActivities();
+                        if (activitiesByUserList.size() == 0) {
                             relativeLayout.setVisibility(View.VISIBLE);
                             enrolledActRecyclerView.setAdapter(null);
-                        }
-                        else {
-                            relativeLayout.setVisibility(View.GONE);
+                        } else if (activitiesByUserList != null) {
+                            List<Activity> aux = new ArrayList<>();
+                            for (Activity a : activitiesByUserList) {
+                                Calendar currentTime = Calendar.getInstance();
 
-                            adapter = new ProfileRecyclerViewAdapter(getContext(), aux, user);
-                            enrolledActRecyclerView.setAdapter(adapter);
-                            enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                String[] dateTime = a.getTime().split(" ");
+                                String[] hours = dateTime[3].split(":");
+
+                                Calendar beginTime = Calendar.getInstance();
+                                ;
+                                if (dateTime[4].equals("PM"))
+                                    beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + 12 + Integer.valueOf(a.getDurationInMinutes()) / 60, Integer.valueOf(hours[1]) + Integer.valueOf(a.getDurationInMinutes()) % 60);
+                                else
+                                    beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + Integer.valueOf(a.getDurationInMinutes()) / 60, Integer.valueOf(hours[1]) + Integer.valueOf(a.getDurationInMinutes()) % 60);
+
+                                long startMillis = beginTime.getTimeInMillis();
+                                if (startMillis <= currentTime.getTimeInMillis()) {
+                                    aux.add(a);
+                                }
+                            }
+                            if (aux.isEmpty()) {
+                                relativeLayout.setVisibility(View.VISIBLE);
+                                enrolledActRecyclerView.setAdapter(null);
+                            } else {
+                                relativeLayout.setVisibility(View.GONE);
+
+                                adapter = new ProfileRecyclerViewAdapter(getContext(), aux, user);
+                                enrolledActRecyclerView.setAdapter(adapter);
+                                enrolledActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            }
                         }
                     }
-
                 }
             }
         });

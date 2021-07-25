@@ -39,6 +39,9 @@ public class MyActivitiesFragment extends Fragment {
 
     private List<Activity> myActivitiesList;
 
+    private boolean mine;
+    private String userToGet;
+
     private RelativeLayout relativeLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -48,6 +51,10 @@ public class MyActivitiesFragment extends Fragment {
         View root = binding.getRoot();
 
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
+
+        Bundle bundle = this.getArguments();
+        mine = bundle.getBoolean("Mine");
+        userToGet = bundle.getString("UserToGet");
 
         myActRecyclerView = root.findViewById(R.id.activities_recycler_view_profile);
 
@@ -65,38 +72,34 @@ public class MyActivitiesFragment extends Fragment {
                     showGetActivitiesFailed(getActivitiesResult.getError());
                 }
                 if (getActivitiesResult.getSuccess() != null) {
-                    myActivitiesList = getActivitiesResult.getSuccess().getActivities();
-                    if (myActivitiesList.size() == 0) {
-                        relativeLayout.setVisibility(View.VISIBLE);
-                        myActRecyclerView.setAdapter(null);
-                    } else if (myActivitiesList != null) {
-                        List<Activity> aux = new ArrayList<>();
-                        for (Activity a : myActivitiesList) {
-                            aux.add(a);
-                        }
-                        if (aux.isEmpty()) {
+                    if (mine && getActivitiesResult.getSuccess().getUserToGet().equals(user.getUsername()) ||
+                            !mine && getActivitiesResult.getSuccess().getUserToGet().equals(userToGet)) {
+                        myActivitiesList = getActivitiesResult.getSuccess().getActivities();
+                        if (myActivitiesList.size() == 0) {
                             relativeLayout.setVisibility(View.VISIBLE);
                             myActRecyclerView.setAdapter(null);
-                        } else {
-                            relativeLayout.setVisibility(View.GONE);
+                        } else if (myActivitiesList != null) {
+                            List<Activity> aux = new ArrayList<>();
+                            for (Activity a : myActivitiesList) {
+                                aux.add(a);
+                            }
+                            if (aux.isEmpty()) {
+                                relativeLayout.setVisibility(View.VISIBLE);
+                                myActRecyclerView.setAdapter(null);
+                            } else {
+                                relativeLayout.setVisibility(View.GONE);
 
-                            adapter = new ProfileRecyclerViewAdapter(getContext(), aux, user);
-                            myActRecyclerView.setAdapter(adapter);
-                            myActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                adapter = new ProfileRecyclerViewAdapter(getContext(), aux, user);
+                                myActRecyclerView.setAdapter(adapter);
+                                myActRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            }
                         }
                     }
-
                 }
             }
         });
 
         return root;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        getMyActivitiesViewModel.getActivities(user.getUsername(), user.getUsername(), user.getTokenID());
     }
 
     @Override

@@ -46,6 +46,7 @@ import pt.vow.ui.image.DownloadImageViewModel;
 import pt.vow.ui.image.DownloadImageViewModelFactory;
 import pt.vow.ui.image.GetImageResult;
 import pt.vow.ui.image.Image;
+import pt.vow.ui.maps.MapsFragment;
 
 public class ShowProfileActivity extends AppCompatActivity {
     private static final int RESULT_OK = -1;
@@ -87,7 +88,6 @@ public class ShowProfileActivity extends AppCompatActivity {
                 .get(LogoutViewModel.class);
         uploadImageViewModel = new ViewModelProvider(this, new UploadImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(UploadImageViewModel.class);
-
         getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetProfileViewModel.class);
         downloadImageViewModel = new ViewModelProvider(this, new DownloadImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
@@ -97,12 +97,9 @@ public class ShowProfileActivity extends AppCompatActivity {
         getMyActivitiesViewModel = new ViewModelProvider(this, new GetMyActivitiesViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(GetMyActivitiesViewModel.class);
 
-        // Bundle bundle = this.getArguments();
-        // user = (LoggedInUserView) bundle.getSerializable("UserLogged");
         user = (LoggedInUserView) getIntent().getSerializableExtra("UserLogged");
         userToGet = (String) getIntent().getSerializableExtra("UserShown");
         userVisibility = (Boolean) getIntent().getSerializableExtra("UserShownVisibility");
-
 
         profileImage = findViewById(R.id.profileImage);
         aboutMeTextView = findViewById(R.id.aboutMeTextView);
@@ -153,8 +150,14 @@ public class ShowProfileActivity extends AppCompatActivity {
             });
         }
 
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("Mine", false);
+        bundle.putString("UserToGet", userToGet);
+
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = new EnrolledActivitiesFragment();
+        fragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.activities_layout2, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -166,12 +169,14 @@ public class ShowProfileActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_enrolled_activities:
                         Fragment afragment = new EnrolledActivitiesFragment();
+                        afragment.setArguments(bundle);
                         fragmentTransaction.replace(R.id.activities_layout2, afragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;
                     case R.id.navigation_my_activities:
                         Fragment bfragment = new MyActivitiesFragment();
+                        bfragment.setArguments(bundle);
                         fragmentTransaction.replace(R.id.activities_layout2, bfragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();

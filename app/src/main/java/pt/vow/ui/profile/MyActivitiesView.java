@@ -8,12 +8,18 @@ import pt.vow.data.model.Activity;
 public class MyActivitiesView implements Serializable {
 
     List<Activity> activities;
+    String userToGet;
 
-    public MyActivitiesView(List<Activity> activities) {
+    public MyActivitiesView(String userToGet, List<Activity> activities) {
+        this.userToGet = userToGet;
         this.activities = activities;
     }
 
     public List<Activity> getActivities() {
         return activities;
+    }
+
+    public String getUserToGet() {
+        return userToGet;
     }
 }

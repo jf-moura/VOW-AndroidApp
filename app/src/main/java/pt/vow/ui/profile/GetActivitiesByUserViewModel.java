@@ -35,7 +35,7 @@ public class GetActivitiesByUserViewModel extends ViewModel {
                 if (result instanceof Result.Success) {
                     ActivitiesByUserView data = ((Result.Success<ActivitiesByUserView>) result).getData();
                     activities.postValue(data);
-                    getActivitiesResult.postValue(new GetActivitiesByUserResult(new ActivitiesByUserView(data.activities)));
+                    getActivitiesResult.postValue(new GetActivitiesByUserResult(new ActivitiesByUserView(data.getUserToGet(), data.getActivities())));
                 } else {
                     getActivitiesResult.postValue(new GetActivitiesByUserResult(R.string.get_activities_failed));
                 }

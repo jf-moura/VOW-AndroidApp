@@ -30,7 +30,7 @@ public class GetActivitiesByUserDataSource {
             Response<List<Activity>> response = getActivitiesByUserCall.execute();
             if (response.isSuccessful()) {
                 List<Activity> ua = response.body();
-                return new Result.Success<>(new ActivitiesByUserView(ua));
+                return new Result.Success<>(new ActivitiesByUserView(userToGet, ua));
             }
             return new Result.Error(new Exception(response.errorBody().toString()));
         } catch (IOException e) {

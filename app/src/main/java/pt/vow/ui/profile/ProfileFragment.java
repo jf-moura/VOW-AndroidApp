@@ -251,6 +251,10 @@ public class ProfileFragment extends Fragment {
         }
 
 
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("Mine", true);
+
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         Fragment fragment = new FutureActivitiesFragment();
         fragmentTransaction.replace(R.id.activities_layout, fragment);
@@ -270,12 +274,14 @@ public class ProfileFragment extends Fragment {
                         break;
                     case R.id.navigation_enrolled_activities:
                         Fragment afragment = new EnrolledActivitiesFragment();
+                        afragment.setArguments(bundle);
                         fragmentTransaction.replace(R.id.activities_layout, afragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;
                     case R.id.navigation_my_activities:
                         Fragment bfragment = new MyActivitiesFragment();
+                        bfragment.setArguments(bundle);
                         fragmentTransaction.replace(R.id.activities_layout, bfragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
