@@ -20,12 +20,12 @@ public class UpdateActivityResult {
     }
 
     @Nullable
-    RegisteredActivity getSuccess() {
+    public RegisteredActivity getSuccess() {
         return success;
     }
 
     @Nullable
-    Integer getError() {
+    public Integer getError() {
         return error;
     }
 }

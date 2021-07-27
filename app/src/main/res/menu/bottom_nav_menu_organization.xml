@@ -5,10 +5,6 @@
         android:icon="@drawable/ic_fi_rr_home"
         android:title="@string/title_feed" />
     <item
-        android:id="@+id/navigation_activities_data"
-        android:icon="@drawable/ic_fi_rr_stats"
-        android:title="@string/title_activities_data" />
-    <item
         android:id="@+id/navigation_choose_type"
         android:icon="@drawable/ic_fi_rr_plus"
         android:title="@string/title_new_activity" />

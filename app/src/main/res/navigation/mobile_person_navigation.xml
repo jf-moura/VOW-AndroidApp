@@ -11,12 +11,6 @@
         android:label="@string/title_feed"
         tools:layout="@layout/fragment_feed" />
 
-    <!--<fragment
-        android:id="@+id/navigation_map"
-        android:name="pt.vow.ui.maps.MapsFragment"
-        android:label="@string/title_map"
-        tools:layout="@layout/fragment_maps" />-->
-
     <fragment
         android:id="@+id/navigation_choose_type"
         android:name="pt.vow.ui.newActivity.NewActivityMapFragment"

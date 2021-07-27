@@ -70,7 +70,7 @@ public class ProfileFragment extends Fragment {
 
     private ShapeableImageView profileImage;
     private TextView aboutMeTextView, textAccPrivate;
-    private LinearLayout settingsLinearLayout, statsLinearLayout, logoutLinearLayout, deleteAccountLinearLayout;
+    private LinearLayout settingsLinearLayout, logoutLinearLayout, deleteAccountLinearLayout;
     private Switch switchMode;
     private boolean mode;
     private DrawerLayout drawerLayout;
@@ -130,7 +130,6 @@ public class ProfileFragment extends Fragment {
 
         drawerLayout = root.findViewById(R.id.drawerLayout);
         settingsLinearLayout = root.findViewById(R.id.settingsLinearLayout);
-        statsLinearLayout = root.findViewById(R.id.statsLinearLayout);
         logoutLinearLayout = root.findViewById(R.id.logoutLinearLayout);
         deleteAccountLinearLayout = root.findViewById(R.id.deleteAccountLinearLayout);
         switchMode = root.findViewById(R.id.switch2);
@@ -138,11 +137,6 @@ public class ProfileFragment extends Fragment {
         textAccPrivate = root.findViewById(R.id.textAccPrivate);
 
         this.getProfileInfo();
-
-        //TODO: escolher se queremos continuar com o stats
-        if (user.getRole() == 0) { //volunteer
-            statsLinearLayout.setVisibility(LinearLayout.GONE);
-        }
 
         if (profileInfo != null) {
             mode = profileInfo.getVisibility();
@@ -159,12 +153,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        statsLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Statistics", Toast.LENGTH_SHORT).show();
-            }
-        });
+
 
         logoutLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

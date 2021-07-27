@@ -99,7 +99,7 @@ public class MainPageOrganization extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_profile, R.id.navigation_choose_type, R.id.navigation_podium, R.id.navigation_activities_data, R.id.navigation_feed)
+                R.id.navigation_profile, R.id.navigation_choose_type, R.id.navigation_podium, R.id.navigation_feed)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main_page);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);

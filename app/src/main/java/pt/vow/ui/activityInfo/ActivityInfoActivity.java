@@ -41,6 +41,7 @@ import pt.vow.ui.login.LoggedInUserView;
 import pt.vow.ui.image.Image;
 import pt.vow.ui.image.UploadImageViewModel;
 import pt.vow.ui.image.UploadImageViewModelFactory;
+import pt.vow.ui.update.UpdateActivityResult;
 import pt.vow.ui.update.UpdateActivityViewModel;
 import pt.vow.ui.update.UpdateActivityViewModelFactory;
 
@@ -205,16 +206,17 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
         long startMillis = beginTime.getTimeInMillis();
 
-        if (activity.getOwner().equals(user.getUsername())) {
+        //IN COMMENT FOR TESTING PURPOSES
+       /* if (activity.getOwner().equals(user.getUsername()) && startMillis <= currentTime.getTimeInMillis()) {
             textViewConfirmPart.setVisibility(View.VISIBLE);
-        }
+        }*/
         if (startMillis >= currentTime.getTimeInMillis()) {
             textViewRating.setVisibility(View.INVISIBLE);
         }
         // Activity hasn't occured or the user is the owner of the activity
         if (startMillis >= currentTime.getTimeInMillis() || activity.getOwner().equals(user.getUsername())) {
-            ratingBar.setVisibility(View.GONE);
-            submitBttn.setVisibility(View.GONE);
+            ratingBar.setVisibility(View.INVISIBLE);
+            submitBttn.setVisibility(View.INVISIBLE);
         } else {
             getRatingViewModel.getRating(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
 
@@ -377,15 +379,6 @@ public class ActivityInfoActivity extends AppCompatActivity {
             }
         });
 
-       /* checkPartBttn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ActivityInfoActivity.this, ConfirmParticipantsActivity.class);
-                intent.putExtra("UserLogged", user);
-                intent.putExtra("Activity", activity);
-                startActivity(intent);
-            }
-        });*/
 
         editActName.setOnClickListener(v -> {
             textActName.setVisibility(View.INVISIBLE);
@@ -443,6 +436,22 @@ public class ActivityInfoActivity extends AppCompatActivity {
             editTextNumPart.setVisibility(View.GONE);
             editNumPart.setVisibility(View.VISIBLE);
             cancelEditNumPart.setVisibility(View.GONE);
+        });
+
+        updateActivityViewModel.getUpdateActResult().observe(this, new Observer<UpdateActivityResult>() {
+            @Override
+            public void onChanged(UpdateActivityResult ratingResult) {
+                if (ratingResult == null) {
+                    return;
+                }
+                if (ratingResult.getError() != null) {
+                    Toast.makeText(getApplicationContext(), R.string.update_failed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (ratingResult.getSuccess() != null) {
+                    Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
+                }
+            }
         });
 
         TextWatcher afterTextChangedListener = new TextWatcher() {
