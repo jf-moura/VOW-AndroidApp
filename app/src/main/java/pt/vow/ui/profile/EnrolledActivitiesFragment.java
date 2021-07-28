@@ -91,7 +91,7 @@ public class EnrolledActivitiesFragment extends Fragment {
 
                                 Calendar beginTime = Calendar.getInstance();
 
-                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]) + Integer.valueOf(a.getDurationInMinutes()) / 60, Integer.valueOf(hours[1]) + Integer.valueOf(a.getDurationInMinutes()) % 60);
+                                beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
 
                                 long startMillis = beginTime.getTimeInMillis();
                                 if (startMillis <= currentTime.getTimeInMillis()) {

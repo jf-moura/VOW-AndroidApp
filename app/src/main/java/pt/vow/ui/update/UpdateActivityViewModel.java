@@ -34,7 +34,7 @@ public class UpdateActivityViewModel extends ViewModel {
         return updateActResult;
     }
 
-    public void updateActivity(String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String coordinateArray, String append, String role, String description) {
+    public void updateActivity(String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String coordinateArray, Boolean append, String role, String description) {
         executor.execute(new Runnable() {
             @Override
             public void run() {

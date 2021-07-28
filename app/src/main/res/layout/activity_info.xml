@@ -500,7 +500,7 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/textViewRating"
                     app:layout_constraintTop_toBottomOf="@+id/textViewRating"
-                    tools:visibility="visible" />
+                    android:visibility="invisible" />
 
                 <RatingBar
                     android:id="@+id/rating_bar"

@@ -204,9 +204,9 @@ public class ActivityInfoActivity extends AppCompatActivity {
         long startMillis = beginTime.getTimeInMillis();
 
         //IN COMMENT FOR TESTING PURPOSES
-       /* if (activity.getOwner().equals(user.getUsername()) && startMillis <= currentTime.getTimeInMillis()) {
+        if (activity.getOwner().equals(user.getUsername()) /*&& startMillis <= currentTime.getTimeInMillis()*/) {
             textViewConfirmPart.setVisibility(View.VISIBLE);
-        }*/
+        }
         if (startMillis >= currentTime.getTimeInMillis()) {
             textViewRating.setVisibility(View.INVISIBLE);
         }
@@ -478,9 +478,18 @@ public class ActivityInfoActivity extends AppCompatActivity {
         saveUpdateBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateActivityViewModel.updateActivity(editTextActName.getText().toString(), editTextAddress.getText().toString(), activity.getCoordinates(),
-                        date, activity.getType(), editTextNumPart.getText().toString(),
-                        durationInMinutes, "", "", String.valueOf(user.getRole()), editTextDescription.getText().toString());
+
+                //rota
+                if (activity.getCoordinates().isEmpty()) {
+                    updateActivityViewModel.updateActivity(editTextActName.getText().toString(), editTextAddress.getText().toString(), activity.getCoordinates(),
+                            date, activity.getType(), editTextNumPart.getText().toString(),
+                            durationInMinutes, "", false, String.valueOf(user.getRole()), editTextDescription.getText().toString());
+                } else {
+                    updateActivityViewModel.updateActivity(editTextActName.getText().toString(), editTextAddress.getText().toString(), activity.getCoordinates(),
+                            date, activity.getType(), editTextNumPart.getText().toString(),
+                            durationInMinutes, "", false, String.valueOf(user.getRole()), editTextDescription.getText().toString());
+
+                }
                 resetButtons();
             }
         });

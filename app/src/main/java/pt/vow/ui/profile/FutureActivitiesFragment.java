@@ -70,8 +70,7 @@ public class FutureActivitiesFragment extends Fragment {
                     if (activitiesByUserList.size() == 0) {
                         relativeLayout.setVisibility(View.VISIBLE);
                         enrolledActRecyclerView.setAdapter(null);
-                    }
-                    else if (activitiesByUserList != null) {
+                    } else if (activitiesByUserList != null) {
                         List<Activity> aux = new ArrayList<>();
                         for (Activity a : activitiesByUserList) {
                             Calendar currentTime = Calendar.getInstance();
@@ -92,8 +91,7 @@ public class FutureActivitiesFragment extends Fragment {
                         if (aux.isEmpty()) {
                             relativeLayout.setVisibility(View.VISIBLE);
                             enrolledActRecyclerView.setAdapter(null);
-                        }
-                        else {
+                        } else {
                             relativeLayout.setVisibility(View.GONE);
 
                             adapter = new ProfileRecyclerViewAdapter(getContext(), aux, user);

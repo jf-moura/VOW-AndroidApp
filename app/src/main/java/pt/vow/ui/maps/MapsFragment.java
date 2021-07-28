@@ -1,25 +1,19 @@
 package pt.vow.ui.maps;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -40,8 +34,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -66,21 +58,15 @@ import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,7 +80,10 @@ import pt.vow.ui.VOW;
 import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.geofencing.GeofenceHelper;
 import pt.vow.ui.login.LoggedInUserView;
+import pt.vow.ui.logout.LogoutViewModel;
+import pt.vow.ui.logout.LogoutViewModelFactory;
 import pt.vow.ui.profile.ActivitiesByUserView;
+import pt.vow.ui.profile.GetActivitiesByUserResult;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -152,6 +141,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private List<Geofence> mGeofenceList;
 
+    private GetNearbyActivitiesViewModel getNearbyActivitiesViewModel;
+
     public MapsFragment() {
     }
 
@@ -168,7 +159,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         enrolledActivities = (ActivitiesByUserView) getArguments().getSerializable("EnrolledActivities");
-        activitiesList = (List<Activity>) getArguments().getSerializable("Activities");
+        //  activitiesList = (List<Activity>) getArguments().getSerializable("Activities");
 
         geofencingClient = LocationServices.getGeofencingClient(getActivity());
         geofenceHelper = new GeofenceHelper(getContext());
@@ -244,6 +235,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (getDirections) {
             displayTrack(start, end);
         }
+
+        getNearbyActivitiesViewModel = new ViewModelProvider(this, new GetNearbyActivitiesViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(GetNearbyActivitiesViewModel.class);
+
 
         root = v;
 
@@ -344,6 +339,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(lastKnownLocation.getLatitude(),
                                             lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            this.getActivitiesNearUser();
+
                         }
                     } else {
                         Log.d(TAG, "Current location is null. Using defaults.");
@@ -351,6 +348,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                         mMap.moveCamera(CameraUpdateFactory
                                 .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
                         mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        this.getActivitiesNearUser();
                     }
                 });
             }
@@ -414,6 +412,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        //  this.getActivitiesNearUser();
+        getNearbyActivitiesViewModel.getNearbyActResult().observeForever(new Observer<GetNearbyActivitiesResult>() {
+            @Override
+            public void onChanged(@Nullable GetNearbyActivitiesResult getActivitiesResult) {
+                if (getActivitiesResult == null) {
+                    return;
+                }
+                if (getActivitiesResult.getError() != null) {
+                    Toast.makeText(getContext(), "failed", Toast.LENGTH_SHORT).show();
+                }
+                if (getActivitiesResult.getSuccess() != null) {
+                    activitiesList = getActivitiesResult.getSuccess().getActivities();
+                }
+            }
+        });
 
         if (activitiesList != null) {
 
@@ -611,6 +625,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
                         mMap.clear();
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(pl.getLatLng()));
+                        getActivitiesNearUser();
                     } else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
 
                         Status status = Autocomplete.getStatusFromIntent(result.getData());
@@ -701,6 +716,37 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             }
         }
         return mGeofenceList;
+    }
+
+    private void getActivitiesNearUser() {
+        //calcular bounding box
+        LatLngBounds curScreen = mMap.getProjection()
+                .getVisibleRegion().latLngBounds;
+        String p1lon = String.valueOf(curScreen.southwest.longitude);
+        String p1lat = String.valueOf(curScreen.northeast.latitude);
+        String p2lon = String.valueOf(curScreen.northeast.longitude);
+        String p2lat = String.valueOf(curScreen.southwest.latitude);
+
+        getNearbyActivitiesViewModel.getNearbyActivities(user.getUsername(), String.valueOf(user.getTokenID()), p1lon, p1lat, p2lon, p2lat);
+
+
+        getNearbyActivitiesViewModel.getNearbyActivitiesList().observe(getActivity(), profile -> {
+            activitiesList = profile;
+        });
+        getNearbyActivitiesViewModel.getNearbyActResult().observe(getActivity(), new Observer<GetNearbyActivitiesResult>() {
+            @Override
+            public void onChanged(@Nullable GetNearbyActivitiesResult getActivitiesResult) {
+                if (getActivitiesResult == null) {
+                    return;
+                }
+                if (getActivitiesResult.getError() != null) {
+                    Toast.makeText(getContext(), "failed", Toast.LENGTH_SHORT).show();
+                }
+                if (getActivitiesResult.getSuccess() != null) {
+                    activitiesList = getActivitiesResult.getSuccess().getActivities();
+                }
+            }
+        });
     }
 
 

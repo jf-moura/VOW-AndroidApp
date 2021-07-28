@@ -10,11 +10,11 @@ public class ActivityUpdate {
     String participantNum;
     String durationInMinutes;
     String coordinateArray;
-    String append;
+    Boolean append;
     String role;
     String description;
 
-    public ActivityUpdate(String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String coordinateArray, String append, String role, String description) {
+    public ActivityUpdate(String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String coordinateArray, Boolean append, String role, String description) {
         this.name = name;
         this.address = address;
         this.coordinates = coordinates;
@@ -60,7 +60,7 @@ public class ActivityUpdate {
         return coordinateArray;
     }
 
-    public String getAppend() {
+    public Boolean getAppend() {
         return append;
     }
 
