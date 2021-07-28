@@ -137,6 +137,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         activity = (Activity) getIntent().getSerializableExtra("Activity");
 
         participantsList = activity.getParticipants();
+        date = null;
 
         getActCommentsViewModel.getActComments(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
 
@@ -600,8 +601,11 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 cal.set(Calendar.MINUTE, minute);
 
-                String timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
-                // TODO: timezone does not yet change due to winter/summer time
+                String timeZone = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    timeZone = TimeZone.getTimeZone("GMT").getDisplayName(TimeZone.getDefault().observesDaylightTime(), TimeZone.SHORT);
+                }
+
                 date = "".concat(String.valueOf(dayOfMonth)).concat("/")
                         .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
                         .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
@@ -609,8 +613,9 @@ public class ActivityInfoActivity extends AppCompatActivity {
                 updateActivityViewModel.updateActivityDataChanged(editTextActName.getText().toString(), editTextAddress.getText().toString(),
                         date, activity.getType(), editTextNumPart.getText().toString(),
                         durationInMinutes, editTextDescription.getText().toString());
+
                 saveUpdateBttn.setEnabled(true);
-            }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
+            }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show();
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
         dpd.getDatePicker().setMinDate(cal.getTimeInMillis());
         dpd.show();

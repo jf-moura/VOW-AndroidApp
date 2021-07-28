@@ -159,7 +159,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         enrolledActivities = (ActivitiesByUserView) getArguments().getSerializable("EnrolledActivities");
-        activitiesList = (List<Activity>) getArguments().getSerializable("Activities");
+        activitiesList = null;//(List<Activity>) getArguments().getSerializable("Activities");
 
         geofencingClient = LocationServices.getGeofencingClient(getActivity());
         geofenceHelper = new GeofenceHelper(getContext());
@@ -707,12 +707,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         //calcular bounding box
         LatLngBounds curScreen = mMap.getProjection()
                 .getVisibleRegion().latLngBounds;
-        String p1lon = String.valueOf(curScreen.southwest.longitude);
-        String p1lat = String.valueOf(curScreen.northeast.latitude);
-        String p2lon = String.valueOf(curScreen.northeast.longitude);
-        String p2lat = String.valueOf(curScreen.southwest.latitude);
+        String p2lon = String.valueOf(curScreen.southwest.longitude);
+        String p2lat = String.valueOf(curScreen.northeast.latitude);
+        String p1lon = String.valueOf(curScreen.northeast.longitude);
+        String p1lat = String.valueOf(curScreen.southwest.latitude);
 
-        getNearbyActivitiesViewModel.getNearbyActivities(user.getUsername(), String.valueOf(user.getTokenID()), p1lon, p1lat, p2lon, p2lat);
+        getNearbyActivitiesViewModel.getNearbyActivities(user.getUsername(), String.valueOf(user.getTokenID()), p1lat, p1lon, p2lat, p2lon);
 
         getNearbyActivitiesViewModel.getNearbyActResult().observe(getActivity(), new Observer<GetNearbyActivitiesResult>() {
             @Override
@@ -724,7 +724,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     Toast.makeText(getContext(), "failed", Toast.LENGTH_SHORT).show();
                 }
                 if (getActivitiesResult.getSuccess() != null) {
-                    //activitiesList = getActivitiesResult.getSuccess().getActivities();
+                    Toast.makeText(getContext(), "success", Toast.LENGTH_SHORT).show();
+                    activitiesList = getActivitiesResult.getSuccess().getActivities();
                 }
             }
         });
