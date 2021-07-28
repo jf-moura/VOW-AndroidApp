@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -50,6 +52,7 @@ public class NewActivityActivity extends AppCompatActivity {
     private static final int RESULT_OK = -1;
 
     private EditText editTextName, editTextPartNum, editTextDescription;
+    private TextView dateText;
     private RadioGroup rg1, rg2;
     private ProgressBar progressBar;
     private ImageView imageView;
@@ -93,31 +96,31 @@ public class NewActivityActivity extends AppCompatActivity {
         geocoder = new Geocoder(this);
 
         type = "";
-        //TODO
+
         if (coordinates.isEmpty()) {
             address = null;
             Toast.makeText(this, R.string.location_unavailable, Toast.LENGTH_SHORT).show();
-        }
-        else {
-        String[] latLng = coordinates.get(0).split(",");
-        double lat = Double.parseDouble(latLng[0]);
-        double lng = Double.parseDouble(latLng[1]);
+        } else {
+            String[] latLng = coordinates.get(0).split(",");
+            double lat = Double.parseDouble(latLng[0]);
+            double lng = Double.parseDouble(latLng[1]);
             try {
                 List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
                 if (addresses.size() > 0)
-                   address = addresses.get(0).getAddressLine(0);
+                    address = addresses.get(0).getAddressLine(0);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         editTextName = findViewById(R.id.editTextNameAct);
-        editTextDescription = findViewById(R.id.editTextNameAct);
+        editTextDescription = findViewById(R.id.editTextDescription);
         editTextPartNum = findViewById(R.id.editTextParticipantNum);
         imageView = findViewById(R.id.imgView);
         imgPickBttn = findViewById(R.id.imgPickBttn);
         dateBttn = findViewById(R.id.bttnDate);
         confirmButton = findViewById(R.id.bttnSaveChanges);
+        dateText = findViewById(R.id.dateText);
 
         rg1 = findViewById(R.id.group1);
         rg2 = findViewById(R.id.group2);
@@ -133,7 +136,7 @@ public class NewActivityActivity extends AppCompatActivity {
         durationPicker.setHour(0);
         durationPicker.setMinute(0);
 
-        timeZone = TimeZone.getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
+        timeZone = TimeZone.getTimeZone("GMT").getDisplayName(TimeZone.getDefault().observesDaylightTime(), TimeZone.SHORT);//getTimeZone("GMT").getDisplayName(false, TimeZone.SHORT);
 
         newActivityViewModel.getNewActFormState().observe(this, newActivityFormState -> {
             if (newActivityFormState == null) {
@@ -244,7 +247,7 @@ public class NewActivityActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 if (coordinates.size() == 1)
                     newActivityViewModel.registerActivity(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
-                        address, coordinates.get(0), date, type, editTextPartNum.getText().toString(), durationInMinutes, editTextDescription.getText().toString());
+                            address, coordinates.get(0), date, type, editTextPartNum.getText().toString(), durationInMinutes, editTextDescription.getText().toString());
                 else if (coordinates.size() > 1)
                     newRouteViewModel.registerRoute(user.getUsername(), String.valueOf(user.getTokenID()), editTextName.getText().toString(),
                             address, date, type, editTextPartNum.getText().toString(), durationInMinutes, coordinates, editTextDescription.getText().toString());
@@ -254,11 +257,11 @@ public class NewActivityActivity extends AppCompatActivity {
         imgPickBttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(intent.ACTION_GET_CONTENT);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(intent.ACTION_GET_CONTENT);
 
-                    someActivityResultLauncher.launch(intent);
+                someActivityResultLauncher.launch(intent);
             }
         });
     }
@@ -272,17 +275,22 @@ public class NewActivityActivity extends AppCompatActivity {
                 cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 cal.set(Calendar.MINUTE, minute);
 
-                // TODO: timezone does not yet change due to winter/summer time
                 date = "".concat(String.valueOf(dayOfMonth)).concat("/")
                         .concat(String.valueOf(monthOfYear + 1)).concat("/").concat(String.valueOf(year)).concat(" ").concat(String.valueOf(hourOfDay))
-                        .concat(":").concat(String.valueOf(minute)).concat(" ").concat(timeZone);
+                        .concat(":").concat(String.valueOf(minute));
+
+                dateText.setText(date);
+                dateText.setVisibility(View.VISIBLE);
+
+                date = date.concat(" ").concat(timeZone);
 
                 newActivityViewModel.newActivityDataChanged(editTextName.getText().toString(),
-                        editTextDescription.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes,  editTextDescription.getText().toString());
-            }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
+                        editTextDescription.getText().toString(), date, type, editTextPartNum.getText().toString(), durationInMinutes, editTextDescription.getText().toString());
+            }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show();
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
         dpd.getDatePicker().setMinDate(cal.getTimeInMillis());
         dpd.show();
+
     }
 
     private void registerActivitySuccess(RegisteredActivityView model) {
@@ -333,7 +341,7 @@ public class NewActivityActivity extends AppCompatActivity {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        float bitmapRatio = (float)width / (float) height;
+        float bitmapRatio = (float) width / (float) height;
         if (bitmapRatio > 1) {
             width = maxSize;
             height = (int) (width / bitmapRatio);
@@ -370,7 +378,7 @@ public class NewActivityActivity extends AppCompatActivity {
         }
     };
 
-    private void updateType(){
+    private void updateType() {
         int chkId1 = rg1.getCheckedRadioButtonId();
         int chkId2 = rg2.getCheckedRadioButtonId();
         int realCheck = chkId1 == -1 ? chkId2 : chkId1;

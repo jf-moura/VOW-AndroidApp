@@ -56,14 +56,14 @@ public class UpdateActivity extends AppCompatActivity {
         if (user.getRole() == 1) {
             editTextEntWebsite.setVisibility(View.VISIBLE);
             textViewWebsiteSett.setVisibility(View.VISIBLE);
-            editTextEntWebsite.setText(profileInfo.getWebsite());
+            editTextEntWebsite.setHint(profileInfo.getWebsite());
         }
 
         final Button confirmButton = findViewById(R.id.bttnSaveChanges);
 
-        editTextBio.setText(profileInfo.getBio());
-        editTextName.setText(profileInfo.getName());
-        editTextPhoneNumber.setText(profileInfo.getPhoneNumber());
+        editTextBio.setHint(profileInfo.getBio());
+        editTextName.setHint(profileInfo.getName());
+        editTextPhoneNumber.setHint(profileInfo.getPhoneNumber());
         if (profileInfo.getPhoneNumber().isEmpty()) {
             editTextPhoneNumber.setHint(getResources().getString(R.string.add_number));
         }
