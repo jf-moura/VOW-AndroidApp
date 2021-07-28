@@ -34,11 +34,11 @@ public class UpdateActivityViewModel extends ViewModel {
         return updateActResult;
     }
 
-    public void updateActivity(String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String coordinateArray, Boolean append, String role, String description) {
+    public void updateActivity(String username, String tokenID, String activityOwner, Long activityID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String coordinateArray, Boolean append, String role, String description) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Result<RegisteredActivity> result = updateActivityRepository.updateActivity(name, address, coordinates, time, type, participantNum, durationInMinutes, coordinateArray, append, role, description);
+                Result<RegisteredActivity> result = updateActivityRepository.updateActivity(username, tokenID, activityOwner, activityID, name, address, coordinates, time, type, participantNum, durationInMinutes, coordinateArray, append, role, description);
                 if (result instanceof Result.Success) {
                     //TODO: alterar
                     updateActResult.postValue(new UpdateActivityResult(new RegisteredActivity(name)));
@@ -49,7 +49,7 @@ public class UpdateActivityViewModel extends ViewModel {
         });
     }
 
-    public void  updateActivityDataChanged(String name, String address, String time, String type, String participantNum, String durationInMinutes, String description) {
+    public void updateActivityDataChanged(String name, String address, String time, String type, String participantNum, String durationInMinutes, String description) {
         if (!isNameValid(name))
             updateActFormState.setValue(new UpdateActivityFormState(R.string.invalid_name, null));
         else if (!isAddressValid(address))

@@ -464,7 +464,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                updateActivityViewModel.updateActivityDataChanged(editTextActName.getText().toString(), editTextAddress.getText().toString(),
+                updateActivityViewModel.updateActivityDataChanged(editTextActName.getText().toString(), textAddress.getText().toString(),
                         date, activity.getType(), editTextNumPart.getText().toString(),
                         durationInMinutes, editTextDescription.getText().toString());
                 saveUpdateBttn.setEnabled(true);
@@ -481,13 +481,19 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
                 //rota
                 if (activity.getCoordinates().isEmpty()) {
-                    updateActivityViewModel.updateActivity(editTextActName.getText().toString(), editTextAddress.getText().toString(), activity.getCoordinates(),
+                    updateActivityViewModel.updateActivity(user.getUsername(), user.getTokenID(), activity.getOwner(),
+                            Long.parseLong(activity.getId()), editTextActName.getText().toString(), textAddress.getText().toString(),
+                            activity.getCoordinates(),
                             date, activity.getType(), editTextNumPart.getText().toString(),
-                            durationInMinutes, "", false, String.valueOf(user.getRole()), editTextDescription.getText().toString());
+                            durationInMinutes, null, false,
+                            String.valueOf(user.getRole()), editTextDescription.getText().toString());
                 } else {
-                    updateActivityViewModel.updateActivity(editTextActName.getText().toString(), editTextAddress.getText().toString(), activity.getCoordinates(),
+                    updateActivityViewModel.updateActivity(user.getUsername(), user.getTokenID(), activity.getOwner(),
+                            Long.parseLong(activity.getId()),editTextActName.getText().toString(), textAddress.getText().toString(),
+                            activity.getCoordinates(),
                             date, activity.getType(), editTextNumPart.getText().toString(),
-                            durationInMinutes, "", false, String.valueOf(user.getRole()), editTextDescription.getText().toString());
+                            durationInMinutes, null, false,
+                            String.valueOf(user.getRole()), editTextDescription.getText().toString());
 
                 }
                 resetButtons();
@@ -616,7 +622,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == AutocompleteActivity.RESULT_OK) {
             Place pl = Autocomplete.getPlaceFromIntent(data);
-            editTextAddress.setText(pl.getAddress());
+            textAddress.setText(pl.getAddress());
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             Status status = Autocomplete.getStatusFromIntent(data);
         }
@@ -709,6 +715,9 @@ public class ActivityInfoActivity extends AppCompatActivity {
 
     private void resetButtons() {
         editActName.setVisibility(View.VISIBLE);
+        editTextActName.setVisibility(View.INVISIBLE);
+    //    textActName.setText(editTextActName.getText().toString());
+        textActName.setVisibility(View.VISIBLE);
         editDescription.setVisibility(View.VISIBLE);
         editTime.setVisibility(View.VISIBLE);
         editNumPart.setVisibility(View.VISIBLE);

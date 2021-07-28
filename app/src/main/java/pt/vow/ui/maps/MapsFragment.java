@@ -159,7 +159,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         user = (LoggedInUserView) getActivity().getIntent().getSerializableExtra("UserLogged");
 
         enrolledActivities = (ActivitiesByUserView) getArguments().getSerializable("EnrolledActivities");
-        //  activitiesList = (List<Activity>) getArguments().getSerializable("Activities");
+        activitiesList = (List<Activity>) getArguments().getSerializable("Activities");
 
         geofencingClient = LocationServices.getGeofencingClient(getActivity());
         geofenceHelper = new GeofenceHelper(getContext());
@@ -238,7 +238,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         getNearbyActivitiesViewModel = new ViewModelProvider(this, new GetNearbyActivitiesViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetNearbyActivitiesViewModel.class);
-
 
         root = v;
 
@@ -414,20 +413,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMap = googleMap;
 
         //  this.getActivitiesNearUser();
-        getNearbyActivitiesViewModel.getNearbyActResult().observeForever(new Observer<GetNearbyActivitiesResult>() {
-            @Override
-            public void onChanged(@Nullable GetNearbyActivitiesResult getActivitiesResult) {
-                if (getActivitiesResult == null) {
-                    return;
-                }
-                if (getActivitiesResult.getError() != null) {
-                    Toast.makeText(getContext(), "failed", Toast.LENGTH_SHORT).show();
-                }
-                if (getActivitiesResult.getSuccess() != null) {
-                    activitiesList = getActivitiesResult.getSuccess().getActivities();
-                }
-            }
-        });
 
         if (activitiesList != null) {
 
@@ -729,10 +714,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         getNearbyActivitiesViewModel.getNearbyActivities(user.getUsername(), String.valueOf(user.getTokenID()), p1lon, p1lat, p2lon, p2lat);
 
-
-        getNearbyActivitiesViewModel.getNearbyActivitiesList().observe(getActivity(), profile -> {
-            activitiesList = profile;
-        });
         getNearbyActivitiesViewModel.getNearbyActResult().observe(getActivity(), new Observer<GetNearbyActivitiesResult>() {
             @Override
             public void onChanged(@Nullable GetNearbyActivitiesResult getActivitiesResult) {
@@ -743,7 +724,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     Toast.makeText(getContext(), "failed", Toast.LENGTH_SHORT).show();
                 }
                 if (getActivitiesResult.getSuccess() != null) {
-                    activitiesList = getActivitiesResult.getSuccess().getActivities();
+                    //activitiesList = getActivitiesResult.getSuccess().getActivities();
                 }
             }
         });

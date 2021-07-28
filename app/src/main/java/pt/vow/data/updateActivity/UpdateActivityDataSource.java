@@ -25,9 +25,9 @@ public class UpdateActivityDataSource {
         this.service = retrofit.create(ApiUpdateActivity.class);
     }
 
-    public Result<RegisteredActivity> updateActivity(String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String coordinateArray, Boolean append, String role, String description) {
+    public Result<RegisteredActivity> updateActivity(String username, String tokenID, String activityOwner, Long activityID, String name, String address, String coordinates, String time, String type, String participantNum, String durationInMinutes, String coordinateArray, Boolean append, String role, String description) {
 
-        Call<Void> updateCall = service.updateActivity(new ActivityUpdate(name, address, coordinates, time, type, participantNum, durationInMinutes, coordinateArray, append, role, description));
+        Call<Void> updateCall = service.updateActivity(username, tokenID, activityOwner, activityID, new ActivityUpdate(name, address, coordinates, time, type, participantNum, durationInMinutes, coordinateArray, append, role, description));
         try {
             Response<Void> response = updateCall.execute();
             if (response.isSuccessful()) {
