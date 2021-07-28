@@ -48,7 +48,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -80,15 +79,12 @@ import pt.vow.ui.VOW;
 import pt.vow.ui.enroll.EnrollActivity;
 import pt.vow.ui.geofencing.GeofenceHelper;
 import pt.vow.ui.login.LoggedInUserView;
-import pt.vow.ui.logout.LogoutViewModel;
-import pt.vow.ui.logout.LogoutViewModelFactory;
 import pt.vow.ui.profile.ActivitiesByUserView;
-import pt.vow.ui.profile.GetActivitiesByUserResult;
 
 import static android.app.Activity.RESULT_OK;
 
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
+public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnCameraMoveStartedListener {
 
     private static final String TAG = MapsFragment.class.getSimpleName();
 
@@ -235,12 +231,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (getDirections) {
             displayTrack(start, end);
         }
-
         getNearbyActivitiesViewModel = new ViewModelProvider(this, new GetNearbyActivitiesViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetNearbyActivitiesViewModel.class);
-
         root = v;
-
         return v;
     }
 
@@ -413,146 +406,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMap = googleMap;
 
         //  this.getActivitiesNearUser();
-
         if (activitiesList != null) {
-
             mGeofenceList = createGeofenceList();
             if (!mGeofenceList.isEmpty())
                 addGeofence();
-
-            for (Activity a : activitiesList) {
-                if (a.getCoordinates() != null && !a.getCoordinates().isEmpty()) {
-
-                    Calendar currentTime = Calendar.getInstance();
-
-                    String[] dateTime = a.getTime().split(" ");
-                    String[] hours = dateTime[3].split(":");
-
-                    Calendar beginTime = Calendar.getInstance();
-                    beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
-                    long startMillis = beginTime.getTimeInMillis();
-
-                    if (startMillis > currentTime.getTimeInMillis()) {
-
-                        String[] latlng = a.getCoordinates().split(",");
-                        final double lat = Double.parseDouble(latlng[0]);
-                        final double lng = Double.parseDouble(latlng[1]);
-                        final LatLng activityLocation = new LatLng(lat, lng);
-
-                        String title = a.getName() + "_" + a.getOwner() + "_" + a.getId();
-
-                        Marker act = null;
-                        switch (a.getType()) {
-                            case "animals":
-                                act = mMap.addMarker(new MarkerOptions()
-                                        .position(activityLocation)
-                                        .title(title)
-                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_animals)));
-                                break;
-                            case "elderly":
-                                act = mMap.addMarker(new MarkerOptions()
-                                        .position(activityLocation)
-                                        .title(title)
-                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_elderly)));
-                                break;
-                            case "children":
-                                act = mMap.addMarker(new MarkerOptions()
-                                        .position(activityLocation)
-                                        .title(title)
-                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_children)));
-                                break;
-                            case "houseBuilding":
-                                act = mMap.addMarker(new MarkerOptions()
-                                        .position(activityLocation)
-                                        .title(title)
-                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_disabled)));
-                                break;
-                            case "health":
-                                act = mMap.addMarker(new MarkerOptions()
-                                        .position(activityLocation)
-                                        .title(title)
-                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_health)));
-                                break;
-                            case "nature":
-                                act = mMap.addMarker(new MarkerOptions()
-                                        .position(activityLocation)
-                                        .title(title)
-                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_nature)));
-                                break;
-                        }
-                    }
-                } else {
-                    getRouteCoordinatesViewModel.getCoordinates(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId(), a);
-
-                    getRouteCoordinatesViewModel.getRouteCoordResult().observe(this, new Observer<GetRouteCoordResult>() {
-                        @Override
-                        public void onChanged(GetRouteCoordResult getRouteCoordResult) {
-                            if (getRouteCoordResult == null) {
-                                return;
-                            }
-                            if (getRouteCoordResult.getError() != null) {
-                                showGetRouteCoordFailed(getRouteCoordResult.getError());
-                            }
-                            if (getRouteCoordResult.getSuccess() != null) {
-                                List<LatLng> routeLatLngs = new ArrayList<>(10);
-                                Activity curAct = getRouteCoordResult.getSuccess().getActivity();
-                                String title = curAct.getName() + "_" + curAct.getOwner() + "_" + curAct.getId();
-                                Marker act = null;
-
-                                for (String coord : getRouteCoordResult.getSuccess().getCoordinates()) {
-                                    String[] latlng = coord.split(",");
-                                    final double lat = Double.parseDouble(latlng[0]);
-                                    final double lng = Double.parseDouble(latlng[1]);
-                                    final LatLng activityLocation = new LatLng(lat, lng);
-                                    routeLatLngs.add(activityLocation);
-
-                                    switch (curAct.getType()) {
-                                        case "animals":
-                                            act = mMap.addMarker(new MarkerOptions()
-                                                    .position(activityLocation)
-                                                    .title(title)
-                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_animals)));
-                                            break;
-                                        case "elderly":
-                                            act = mMap.addMarker(new MarkerOptions()
-                                                    .position(activityLocation)
-                                                    .title(title)
-                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_elderly)));
-                                            break;
-                                        case "children":
-                                            act = mMap.addMarker(new MarkerOptions()
-                                                    .position(activityLocation)
-                                                    .title(title)
-                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_children)));
-                                            break;
-                                        case "houseBuilding":
-                                            act = mMap.addMarker(new MarkerOptions()
-                                                    .position(activityLocation)
-                                                    .title(title)
-                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_disabled)));
-                                            break;
-                                        case "health":
-                                            act = mMap.addMarker(new MarkerOptions()
-                                                    .position(activityLocation)
-                                                    .title(title)
-                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_health)));
-                                            break;
-                                        case "nature":
-                                            act = mMap.addMarker(new MarkerOptions()
-                                                    .position(activityLocation)
-                                                    .title(title)
-                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_nature)));
-                                            break;
-                                    }
-                                }
-                                Polyline polyline = googleMap.addPolyline(new PolylineOptions().color(ContextCompat.getColor(getContext(), R.color.logo_darker_blue)));
-                                polyline.setPoints(routeLatLngs);
-
-                            }
-                        }
-                    });
-                }
-            }
         }
 
         this.mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -576,6 +433,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         });
 
         mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnCameraMoveStartedListener(this);
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -703,6 +561,144 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return mGeofenceList;
     }
 
+    private void showActivities() {
+        if (activitiesList != null) {
+            for (Activity a : activitiesList) {
+                if (a.getCoordinates() != null && !a.getCoordinates().isEmpty()) {
+
+                    Calendar currentTime = Calendar.getInstance();
+
+                    String[] dateTime = a.getTime().split(" ");
+                    String[] hours = dateTime[3].split(":");
+
+                    Calendar beginTime = Calendar.getInstance();
+                    beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+                    long startMillis = beginTime.getTimeInMillis();
+
+                    if (startMillis > currentTime.getTimeInMillis()) {
+
+                        String[] latlng = a.getCoordinates().split(",");
+                        final double lat = Double.parseDouble(latlng[0]);
+                        final double lng = Double.parseDouble(latlng[1]);
+                        final LatLng activityLocation = new LatLng(lat, lng);
+
+                        String title = a.getName() + "_" + a.getOwner() + "_" + a.getId();
+
+                        Marker act = null;
+                        switch (a.getType()) {
+                            case "animals":
+                                act = mMap.addMarker(new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_animals)));
+                                break;
+                            case "elderly":
+                                act = mMap.addMarker(new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_elderly)));
+                                break;
+                            case "children":
+                                act = mMap.addMarker(new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_children)));
+                                break;
+                            case "houseBuilding":
+                                act = mMap.addMarker(new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_disabled)));
+                                break;
+                            case "health":
+                                act = mMap.addMarker(new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_health)));
+                                break;
+                            case "nature":
+                                act = mMap.addMarker(new MarkerOptions()
+                                        .position(activityLocation)
+                                        .title(title)
+                                        .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_nature)));
+                                break;
+                        }
+                    }
+                } else {
+                    getRouteCoordinatesViewModel.getCoordinates(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId(), a);
+
+                    getRouteCoordinatesViewModel.getRouteCoordResult().observe(this, new Observer<GetRouteCoordResult>() {
+                        @Override
+                        public void onChanged(GetRouteCoordResult getRouteCoordResult) {
+                            if (getRouteCoordResult == null) {
+                                return;
+                            }
+                            if (getRouteCoordResult.getError() != null) {
+                                showGetRouteCoordFailed(getRouteCoordResult.getError());
+                            }
+                            if (getRouteCoordResult.getSuccess() != null) {
+                                List<LatLng> routeLatLngs = new ArrayList<>(10);
+                                Activity curAct = getRouteCoordResult.getSuccess().getActivity();
+                                String title = curAct.getName() + "_" + curAct.getOwner() + "_" + curAct.getId();
+                                Marker act = null;
+
+                                for (String coord : getRouteCoordResult.getSuccess().getCoordinates()) {
+                                    String[] latlng = coord.split(",");
+                                    final double lat = Double.parseDouble(latlng[0]);
+                                    final double lng = Double.parseDouble(latlng[1]);
+                                    final LatLng activityLocation = new LatLng(lat, lng);
+                                    routeLatLngs.add(activityLocation);
+
+                                    switch (curAct.getType()) {
+                                        case "animals":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                    .position(activityLocation)
+                                                    .title(title)
+                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_animals)));
+                                            break;
+                                        case "elderly":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                    .position(activityLocation)
+                                                    .title(title)
+                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_elderly)));
+                                            break;
+                                        case "children":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                    .position(activityLocation)
+                                                    .title(title)
+                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_children)));
+                                            break;
+                                        case "houseBuilding":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                    .position(activityLocation)
+                                                    .title(title)
+                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_disabled)));
+                                            break;
+                                        case "health":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                    .position(activityLocation)
+                                                    .title(title)
+                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_health)));
+                                            break;
+                                        case "nature":
+                                            act = mMap.addMarker(new MarkerOptions()
+                                                    .position(activityLocation)
+                                                    .title(title)
+                                                    .icon(BitmapFromVector(getActivity().getApplicationContext(), R.drawable.ic_nature)));
+                                            break;
+                                    }
+                                }
+                                Polyline polyline = mMap.addPolyline(new PolylineOptions().color(ContextCompat.getColor(getContext(), R.color.logo_darker_blue)));
+                                polyline.setPoints(routeLatLngs);
+
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+
     private void getActivitiesNearUser() {
         //calcular bounding box
         LatLngBounds curScreen = mMap.getProjection()
@@ -726,9 +722,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 if (getActivitiesResult.getSuccess() != null) {
                     Toast.makeText(getContext(), "success", Toast.LENGTH_SHORT).show();
                     activitiesList = getActivitiesResult.getSuccess().getActivities();
+                    showActivities();
                 }
             }
         });
+    }
+
+
+    @Override
+    public void onCameraMoveStarted(int i) {
+        if (i == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE)
+            this.getActivitiesNearUser();
+
+
     }
 
 
