@@ -165,6 +165,7 @@ public class ProfileFragment extends Fragment {
                 intent.putExtra("test", false);
                 startActivity(intent);
                 getActivity().finish();
+                getProfileViewModel.getProfile(user.getUsername(), user.getUsername(), user.getTokenID());
             }
         });
 

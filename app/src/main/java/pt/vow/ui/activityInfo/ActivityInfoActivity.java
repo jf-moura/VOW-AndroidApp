@@ -144,6 +144,7 @@ public class ActivityInfoActivity extends AppCompatActivity {
         if (participantsList == null)
             actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), activity.getOwner(), activity.getId());
         else
+            if (activity != null)
             textPartNum.setText(participantsList.size() + "/" + activity.getParticipantNum());
 
         getSupportActionBar().setTitle(activity.getName());

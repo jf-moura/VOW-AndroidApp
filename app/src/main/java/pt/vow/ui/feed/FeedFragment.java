@@ -216,7 +216,7 @@ public class FeedFragment extends Fragment {
                 activityListToMap = activities;
 
                 if (activities != null) {
-                    aux = new HashMap<>();
+                    Map<String, Activity> aux2 = new HashMap<>();
                     for (Activity a : activities) {
                         long currentTime = Calendar.getInstance().getTimeInMillis();
 
@@ -229,14 +229,14 @@ public class FeedFragment extends Fragment {
 
                         long startMillis = beginTime.getTimeInMillis();
                         if (startMillis > currentTime) {
-                            aux.put(a.getId(), a);
+                            aux2.put(a.getId(), a);
 
                             if (a.getParticipants() == null)
                                 actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
                         }
                     }
-                  /*  activityList = new ArrayList<>(aux.values());
-                    showFilteredAct(activityList);
+                    activityListToMap = new ArrayList<>(aux2.values());
+                    /*showFilteredAct(activityList);
 
                     adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
                     recyclerView.setAdapter(adapter);
