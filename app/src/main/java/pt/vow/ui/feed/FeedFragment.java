@@ -173,7 +173,17 @@ public class FeedFragment extends Fragment {
                 else if (curActivities != null) {
                     aux = new HashMap<>();
                     for (Activity a : curActivities) {
-                        if (a.getStatus()) {
+                        long currentTime = Calendar.getInstance().getTimeInMillis();
+
+                        String[] dateTime = a.getTime().split(" ");
+                        String[] hours = dateTime[3].split(":");
+
+                        Calendar beginTime = Calendar.getInstance();
+
+                        beginTime.set(Integer.valueOf(dateTime[2]), monthToIntegerShort(dateTime[0]), Integer.valueOf(dateTime[1].substring(0, dateTime[1].length() - 1)), Integer.valueOf(hours[0]), Integer.valueOf(hours[1]));
+
+                        long startMillis = beginTime.getTimeInMillis();
+                        if (a.getStatus() && startMillis > currentTime) {
                             aux.put(a.getId(), a);
 
                             if (a.getParticipants() == null)
