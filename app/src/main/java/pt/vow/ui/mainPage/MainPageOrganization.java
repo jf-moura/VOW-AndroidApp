@@ -47,7 +47,6 @@ public class MainPageOrganization extends AppCompatActivity {
     private ActivityMainPageOrganizationBinding binding;
     private MainPageOrganization mActivity;
     private LoggedInUserView user;
-    private GetActivitiesViewModel activitiesViewModel;
     private DownloadImageViewModel downloadImageViewModel;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
@@ -66,8 +65,6 @@ public class MainPageOrganization extends AppCompatActivity {
         setContentView(binding.getRoot());
         mActivity = this;
 
-        activitiesViewModel = new ViewModelProvider(this, new GetActivitiesViewModelFactory(((VOW) getApplication()).getExecutorService()))
-                .get(GetActivitiesViewModel.class);
         downloadImageViewModel = new ViewModelProvider(this, new DownloadImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(DownloadImageViewModel.class);
         getActivitiesByUserViewModel = new ViewModelProvider(this, new GetActivitiesByUserViewModelFactory(((VOW) getApplication()).getExecutorService()))

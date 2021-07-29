@@ -66,7 +66,6 @@ public class MainPageVolunteer extends AppCompatActivity {
     private MainPageVolunteer mActivity;
     private LoggedInUserView user;
     private int notificationId;
-    private GetActivitiesViewModel activitiesViewModel;
     private DownloadImageViewModel downloadImageViewModel;
     private GetActivitiesByUserViewModel getActivitiesByUserViewModel;
     private GetMyActivitiesViewModel getMyActivitiesViewModel;
@@ -90,8 +89,6 @@ public class MainPageVolunteer extends AppCompatActivity {
         mActivity = this;
         allActivities = new HashMap<>();
 
-        activitiesViewModel = new ViewModelProvider(this, new GetActivitiesViewModelFactory(((VOW) getApplication()).getExecutorService()))
-                .get(GetActivitiesViewModel.class);
         downloadImageViewModel = new ViewModelProvider(this, new DownloadImageViewModelFactory(((VOW) getApplication()).getExecutorService()))
                 .get(DownloadImageViewModel.class);
         getProfileViewModel = new ViewModelProvider(this, new GetProfileViewModelFactory(((VOW) getApplication()).getExecutorService()))

@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -58,6 +59,8 @@ public class FeedFragment extends Fragment {
     private LoggedInUserView user;
     private FragmentFeedBinding binding;
     private RecyclerViewAdapter adapter;
+    // Store a member variable for the listener
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     private ActivitiesByUserView enrolledActivities;
     private List<Activity> activityList;
@@ -68,6 +71,7 @@ public class FeedFragment extends Fragment {
     private AutoCompleteTextView searchView;
     private AutoCompleteTextView autoCompleteTextView;
     private GetAllUsersViewModel getAllUsersViewModel;
+    private GetFiveActivitiesViewModel getFiveActivitiesViewModel;
     private List<UserInfo> users;
     private String[] auxSearchView;
     private String input;
@@ -96,6 +100,9 @@ public class FeedFragment extends Fragment {
         searchView = root.findViewById(R.id.search_org);
         getAllUsersViewModel = new ViewModelProvider(this, new GetAllUsersViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetAllUsersViewModel.class);
+        getFiveActivitiesViewModel = new ViewModelProvider(this, new GetFiveActivitiesViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(GetFiveActivitiesViewModel.class);
+
         getAllUsersViewModel.getAllUsers(user.getUsername(), user.getTokenID());
 
         getAllUsersViewModel.getAllUsersList().observe(getViewLifecycleOwner(), usersList -> {
@@ -127,19 +134,72 @@ public class FeedFragment extends Fragment {
             });
         });
 
+        recyclerView = root.findViewById(R.id.activities_recycler_view);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadNextDataFromApi(page + 1);
+            }
+        };
+
+        recyclerView.addOnScrollListener(scrollListener);
+        loadNextDataFromApi(1);
 
         setHasOptionsMenu(true);
         return root;
     }
 
+    // Append the next page of data into the adapter
+    // This method probably sends out a network request and appends new data items to your adapter.
+    private void loadNextDataFromApi(int offset) {
+        getFiveActivitiesViewModel.getActivites(user.getUsername(), user.getTokenID(), offset);
+
+        getFiveActivitiesViewModel.getActivitiesResult().observe(getActivity(), getFiveActivitiesResult -> {
+            if (getFiveActivitiesResult == null)
+                return;
+            if (getFiveActivitiesResult.getError() != null) {
+                Toast.makeText(getActivity().getApplicationContext(), getFiveActivitiesResult.getError(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (getFiveActivitiesResult.getSuccess() != null) {
+                List<Activity> curActivities = getFiveActivitiesResult.getSuccess().getActivities();
+                if (curActivities.size() == 0)
+                    activitiesTextView.setText(R.string.no_activities_available);
+                else if (curActivities != null) {
+                    aux = new HashMap<>();
+                    for (Activity a : curActivities) {
+                        if (a.getStatus()) {
+                            aux.put(a.getId(), a);
+
+                            if (a.getParticipants() == null)
+                                actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
+                        }
+                    }
+                    activityList = new ArrayList<>(aux.values());
+                    showFilteredAct(activityList);
+
+                    adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
+                    adapter.notifyItemRangeInserted(offset, 5);
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+        });
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+    }
 
     @Override
     public void onStart() {
         super.onStart();
         getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
-        activitiesViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesViewModel.class);
+        //activitiesViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesViewModel.class);
 
-        activitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
+        //activitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
 
         getActivitiesByUserViewModel.getActivitiesList().observe(this, activitiesByUser -> {
             enrolledActivities = activitiesByUser;
@@ -148,8 +208,7 @@ public class FeedFragment extends Fragment {
         actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(ActivityParticipantsViewModel.class);
 
-
-        activitiesViewModel.getActivitiesList().observe(getActivity(), activities -> {
+        /*activitiesViewModel.getActivitiesList().observe(getActivity(), activities -> {
             if (activityList != activities) {
                 activityList = activities;
                 if (activities.size() == 0)
@@ -183,7 +242,7 @@ public class FeedFragment extends Fragment {
 
                 }
             }
-        });
+        });*/
 
         this.onCompleteIsEmpty();
 
