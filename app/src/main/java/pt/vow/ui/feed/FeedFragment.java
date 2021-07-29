@@ -63,7 +63,7 @@ public class FeedFragment extends Fragment {
     private EndlessRecyclerViewScrollListener scrollListener;
 
     private ActivitiesByUserView enrolledActivities;
-    private List<Activity> activityList;
+    private List<Activity> activityList, activityListToMap;
     private Map<String, Activity> aux;
 
     private RecyclerView recyclerView;
@@ -102,6 +102,9 @@ public class FeedFragment extends Fragment {
                 .get(GetAllUsersViewModel.class);
         getFiveActivitiesViewModel = new ViewModelProvider(this, new GetFiveActivitiesViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(GetFiveActivitiesViewModel.class);
+
+        activitiesViewModel = new ViewModelProvider(this, new GetActivitiesViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
+                .get(GetActivitiesViewModel.class);
 
         getAllUsersViewModel.getAllUsers(user.getUsername(), user.getTokenID());
 
@@ -199,7 +202,7 @@ public class FeedFragment extends Fragment {
         getActivitiesByUserViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesByUserViewModel.class);
         //activitiesViewModel = new ViewModelProvider(getActivity()).get(GetActivitiesViewModel.class);
 
-        //activitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
+        activitiesViewModel.getActivities(user.getUsername(), user.getTokenID());
 
         getActivitiesByUserViewModel.getActivitiesList().observe(this, activitiesByUser -> {
             enrolledActivities = activitiesByUser;
@@ -208,12 +211,11 @@ public class FeedFragment extends Fragment {
         actParticipantsViewModel = new ViewModelProvider(this, new ActivityParticipantsViewModelFactory(((VOW) getActivity().getApplication()).getExecutorService()))
                 .get(ActivityParticipantsViewModel.class);
 
-        /*activitiesViewModel.getActivitiesList().observe(getActivity(), activities -> {
+        activitiesViewModel.getActivitiesList().observe(getActivity(), activities -> {
             if (activityList != activities) {
-                activityList = activities;
-                if (activities.size() == 0)
-                    activitiesTextView.setText(R.string.no_activities_available);
-                else if (activities != null) {
+                activityListToMap = activities;
+
+                if (activities != null) {
                     aux = new HashMap<>();
                     for (Activity a : activities) {
                         long currentTime = Calendar.getInstance().getTimeInMillis();
@@ -233,16 +235,16 @@ public class FeedFragment extends Fragment {
                                 actParticipantsViewModel.getParticipants(user.getUsername(), user.getTokenID(), a.getOwner(), a.getId());
                         }
                     }
-                    activityList = new ArrayList<>(aux.values());
+                  /*  activityList = new ArrayList<>(aux.values());
                     showFilteredAct(activityList);
 
                     adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
                     recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));*/
 
                 }
             }
-        });*/
+        });
 
         this.onCompleteIsEmpty();
 
@@ -263,7 +265,7 @@ public class FeedFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("EnrolledActivities", enrolledActivities);
-        bundle.putSerializable("Activities", (Serializable) activityList);
+        bundle.putSerializable("Activities", (Serializable) activityListToMap);
         Fragment fragment = new MapsFragment();
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

@@ -157,7 +157,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         curP1Lat = null;
 
         enrolledActivities = (ActivitiesByUserView) getArguments().getSerializable("EnrolledActivities");
-        activitiesList = null;//(List<Activity>) getArguments().getSerializable("Activities");
+        activitiesList = (List<Activity>) getArguments().getSerializable("Activities");
 
         geofencingClient = LocationServices.getGeofencingClient(getActivity());
         geofenceHelper = new GeofenceHelper(getContext());
@@ -333,7 +333,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(lastKnownLocation.getLatitude(),
                                             lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                            this.getActivitiesNearUser();
+                            //   this.getActivitiesNearUser();
 
                         }
                     } else {
@@ -342,7 +342,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                         mMap.moveCamera(CameraUpdateFactory
                                 .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
                         mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                        this.getActivitiesNearUser();
+                        // this.getActivitiesNearUser();
                     }
                 });
             }
@@ -413,7 +413,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             if (!mGeofenceList.isEmpty())
                 addGeofence();
         }
-
+        this.showActivities();
         this.mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             @Override
@@ -470,7 +470,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
                         mMap.clear();
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(pl.getLatLng()));
-                        getActivitiesNearUser();
+                      //  getActivitiesNearUser();
                     } else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
 
                         Status status = Autocomplete.getStatusFromIntent(result.getData());
@@ -508,7 +508,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     private void showGetRouteCoordFailed(@StringRes Integer errorString) {
-        Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(getActivity().getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
     private void addGeofence() {
@@ -728,9 +728,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         String p1lon = String.valueOf(curScreen.northeast.longitude);
         String p1lat = String.valueOf(curScreen.southwest.latitude);
 
-        if (curP1Lat == null || Math.abs(Double.parseDouble(curP1Lat) - Double.parseDouble(p1lat)) > 0.03 || Math.abs(Double.parseDouble(curP1Long) - Double.parseDouble(p1lon)) > 0.03 && Math.abs(Double.parseDouble(curP1Lat) - Double.parseDouble(curP2Lat)) < 3)
-            if (i == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE)
-                this.getActivitiesNearUser();
+        // if (curP1Lat == null || Math.abs(Double.parseDouble(curP1Lat) - Double.parseDouble(p1lat)) > 0.03 || Math.abs(Double.parseDouble(curP1Long) - Double.parseDouble(p1lon)) > 0.03 && Math.abs(Double.parseDouble(curP1Lat) - Double.parseDouble(curP2Lat)) < 3)
+        // if (i == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE)
+        //  this.getActivitiesNearUser();
 
     }
 

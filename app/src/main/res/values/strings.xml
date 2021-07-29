@@ -213,7 +213,6 @@
     <string name="add_number">Add your phone number</string>
     <string name="change_pass">Change Password</string>
 
-
     <string-array name="filter">
         <item>Health</item>
         <item>Children</item>
