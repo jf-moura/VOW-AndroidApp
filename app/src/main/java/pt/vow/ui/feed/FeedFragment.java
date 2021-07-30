@@ -64,7 +64,7 @@ public class FeedFragment extends Fragment {
 
     private ActivitiesByUserView enrolledActivities;
     private List<Activity> activityList, activityListToMap;
-    private Map<String, Activity> aux;
+    private Map<String, Activity> aux, aux2;
 
     private RecyclerView recyclerView;
     private TextView activitiesTextView;
@@ -226,7 +226,7 @@ public class FeedFragment extends Fragment {
                 activityListToMap = activities;
 
                 if (activities != null) {
-                    Map<String, Activity> aux2 = new HashMap<>();
+                    aux2 = new HashMap<>();
                     for (Activity a : activities) {
                         long currentTime = Calendar.getInstance().getTimeInMillis();
 
@@ -246,7 +246,7 @@ public class FeedFragment extends Fragment {
                         }
                     }
                     activityListToMap = new ArrayList<>(aux2.values());
-                    /*showFilteredAct(activityList);
+                /*    showFilteredAct(activityList);
 
                     adapter = new RecyclerViewAdapter(getContext(), activityList, user, enrolledActivities);
                     recyclerView.setAdapter(adapter);
@@ -259,7 +259,7 @@ public class FeedFragment extends Fragment {
         this.onCompleteIsEmpty();
 
         actParticipantsViewModel.getParticipantsList().observe(this, participants -> {
-            Activity a = aux.get(participants.getActivityID());
+            Activity a = aux2.get(participants.getActivityID());
             if (a != null)
                 a.addParticipants(participants.getParticipants());
         });
